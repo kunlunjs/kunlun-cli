@@ -1,6 +1,8 @@
 import { get } from 'node-emoji'
 
+// https://raw.githubusercontent.com/omnidan/node-emoji/master/lib/emoji.json
 export const EMOJIS = {
+  MAN_DANCING: get('man_dancing'),
   HEART: get('heart'),
   COFFEE: get('coffee'),
   BEER: get('beer'),

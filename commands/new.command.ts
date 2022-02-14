@@ -9,10 +9,6 @@ export class NewCommand extends AbstractCommand {
       .command('new [name]')
       .alias('n')
       .description('Generate Kunlun application.')
-      .option(
-        '-t, --type [project type]',
-        'Project type(React/Vue/Nest-Prisma-RESTfull/Nest-Prisma-GraphQL).'
-      )
       .option('--directory [directory]', 'Specify the destination directory')
       .option(
         '-d, --dry-run',
@@ -23,6 +19,10 @@ export class NewCommand extends AbstractCommand {
       .option(
         '-p, --package-manager [package-manager]',
         'Specify package manager.'
+      )
+      .option(
+        '-t, --type [project type]',
+        'Project type(React/Vue/Taro/UniApp/Nest-Prisma-RESTfull/Nest-Prisma-GraphQL).'
       )
       // .option(
       //   '-l, --language [language]',
@@ -35,7 +35,15 @@ export class NewCommand extends AbstractCommand {
       .option('--strict', 'Enables strict mode in TypeScript.')
       .action(async (name: string, command: Command) => {
         const options: Input[] = []
-        const availableLanguages = ['js', 'ts', 'javascript', 'typescript']
+        // const availableLanguages = ['js', 'ts', 'javascript', 'typescript']
+        const availableProjectTypes = [
+          'react',
+          'vue',
+          'taro',
+          'uniapp',
+          'nest-prisma-restful',
+          'nest-prisma-graphql'
+        ]
         options.push({ name: 'directory', value: command.directory })
         options.push({ name: 'dry-run', value: !!command.dryRun })
         options.push({ name: 'skip-git', value: !!command.skipGit })
@@ -47,26 +55,32 @@ export class NewCommand extends AbstractCommand {
         })
         if (!!command.type) {
           const lowercasedType = command.type.toLowerCase()
-          const langMatch = availableLanguages.includes(lowercasedType)
+          const langMatch = availableProjectTypes.includes(lowercasedType)
           if (!langMatch) {
             throw new Error(
-              `Invalid type "${command.language}" selected. Available type are "react" or "vue" or "nest-prisma-restful" or "nest-prisma-graphql"`
+              `Invalid type "${command.language}" selected. Available type are "react" or "taro" or "uniapp" or "vue" or "nest-prisma-restful" or "nest-prisma-graphql"`
             )
           }
           switch (lowercasedType) {
             case 'react':
-              command.language = 'React'
+              command.type = 'react'
               break
             case 'vue':
-              command.language = 'vue'
+              command.type = 'vue'
+              break
+            case 'taro':
+              command.type = 'taro'
+              break
+            case 'uniapp':
+              command.type = 'uniapp'
               break
             case 'nest-prisma-restful':
-              command.language = 'nest-prisma-restful'
+              command.type = 'nest-prisma-restful'
               break
             case 'nest-prisma-graphql':
-              command.language = 'nest-prisma-graphql'
+              command.type = 'nest-prisma-graphql'
             default:
-              command.language = lowercasedType
+              command.type = lowercasedType
               break
           }
         }

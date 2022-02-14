@@ -10,6 +10,8 @@ import type { Input } from '../commands'
 import { defaultGitIgnore } from '../lib/configuration/defaults'
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManager, PackageManagerFactory } from '../lib/package-managers'
+
+import { ProjectType } from '../lib/project-types'
 import { generateInput, generateSelect } from '../lib/questions/questions'
 import { GitRunner } from '../lib/runners/git.runner'
 import type { AbstractCollection } from '../lib/schematics'
@@ -81,8 +83,21 @@ const askForMissingInformation = async (inputs: Input[]) => {
   const nameInput = getApplicationNameInput(inputs)
   if (!nameInput!.value) {
     const message = 'What name would you like to use for the new project?'
-    const questions = [generateInput('name', message)('kunlun-app')]
+    const questions = [
+      generateInput('name', message)('kunlun-app'),
+      generateSelect('type')(MESSAGES.PROJECT_TYPE_QUESTION)([
+        ProjectType.React,
+        ProjectType.Vue,
+        ProjectType.Taro,
+        ProjectType.UniApp,
+        ProjectType['NestJS-Prisma-RESTful'],
+        ProjectType['NestJS-Prisma-GraphQL']
+      ])
+    ]
     const answers: Answers = await prompt(questions as ReadonlyArray<Question>)
+    if (answers.type) {
+      answers.type = answers.type.toLowerCase()
+    }
     replaceInputMissingInformation(inputs, answers)
   }
 }
@@ -161,6 +176,26 @@ const installPackages = async (
   }
 }
 
+const selectProjectType = async (): Promise<string> => {
+  const answers: Answers = await askForProjectType()
+  return answers['project-type']
+}
+
+const askForProjectType = async (): Promise<Answers> => {
+  const questions: Question[] = [
+    generateSelect('project-type')(MESSAGES.PROJECT_TYPE_QUESTION)([
+      ProjectType.React,
+      ProjectType.Vue,
+      ProjectType.Taro,
+      ProjectType.UniApp,
+      ProjectType['NestJS-Prisma-RESTful'],
+      ProjectType['NestJS-Prisma-GraphQL']
+    ])
+  ]
+  const prompt = inquirer.createPromptModule()
+  return await prompt(questions)
+}
+
 const selectPackageManager = async (): Promise<AbstractPackageManager> => {
   const answers: Answers = await askForPackageManager()
   return PackageManagerFactory.create(answers['package-manager'])
@@ -202,21 +237,21 @@ const createGitIgnoreFile = (dir: string, content?: string) => {
 }
 
 const printCollective = () => {
-  const dim = print('dim')
+  // const dim = print('dim')
   const yellow = print('yellow')
   const emptyLine = print()
 
   emptyLine()
   yellow(`Thanks for installing Kunlun ${EMOJIS.PRAY}`)
-  dim('Please consider donating to our open collective')
-  dim('to help us maintain this package.')
-  emptyLine()
-  emptyLine()
-  print()(
-    `${chalk.bold(`${EMOJIS.WINE}  Donate:`)} ${chalk.underline(
-      'https://opencollective.com/kunlun'
-    )}`
-  )
+  // dim('Please consider donating to our open collective')
+  // dim('to help us maintain this package.')
+  // emptyLine()
+  // emptyLine()
+  // print()(
+  //   `${chalk.bold(`${EMOJIS.WINE}  Donate:`)} ${chalk.underline(
+  //     'https://opencollective.com/kunlun'
+  //   )}`
+  // )
   emptyLine()
 }
 

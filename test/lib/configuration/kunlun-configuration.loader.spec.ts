@@ -14,7 +14,8 @@ describe('Kunlun Configuration Loader', () => {
         readAnyOf: jest.fn(() =>
           Promise.resolve(
             JSON.stringify({
-              language: 'ts',
+              // language: 'ts',
+              type: 'react',
               collection: '@kunlunjs/schematics'
             })
           )
