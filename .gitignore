@@ -102,3 +102,38 @@ dist
 
 # TernJS port file
 .tern-port
+
+.idea/
+.envrc
+node_modules/
+.DS_Store
+*.map
+
+# output
+actions/**/*.d.ts
+actions/**/*.js
+bin/**/*.d.ts
+bin/**/*.js
+commands/**/*.js
+commands/**/*.d.ts
+configs/**/*.d.ts
+configs/**/*.js
+examples/**/*.d.ts
+examples/**/*.js
+lib/**/*.d.ts
+lib/**/*.js
+scripts/**/*.d.ts
+scripts/**/*.js
+tools/**/*.d.ts
+tools/**/*.js
+
+# configuration
+# renovate.json
+# gulpfile.js
+# /.vscode
+
+# sample
+# /sample
+
+yarn.lock
+dist*
