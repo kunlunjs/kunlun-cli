@@ -1,5 +1,11 @@
 .idea/
 .gitignore
+.commitlintrc.js
+.editorconfig
+.eslintignore
+.eslintrc.cjs
+.lintstagedrc.js
+.prettierignore
 .prettierrc
 .travis.yml
 Makefile
@@ -20,9 +26,12 @@ CONTRIBUTE.md
 renovate.json
 gulpfile.js
 tsconfig.json
+tsconfig.build.json
 tools
 /test/jest-config.json
 /.vscode
 
 # sample
-/sample
+/examples
+
+pnpm-lock.yaml
