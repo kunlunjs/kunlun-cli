@@ -33,6 +33,7 @@ specifiers:
   '@vitejs/plugin-legacy': ^1.7.0
   autoprefixer: ^10.4.2
   babel-loader: ^8.2.3
+  babel-plugin-import: ^1.13.3
   babel-plugin-transform-remove-console: ^6.9.4
   chalk: 3.0.0
   chokidar: 3.5.2
@@ -41,6 +42,7 @@ specifiers:
   commander: 4.1.1
   compression-webpack-plugin: ^9.2.0
   copy-webpack-plugin: ^10.2.4
+  core-js: ^3.21.0
   css-loader: ^6.6.0
   delete-empty: 3.0.0
   devmoji: ^2.3.0
@@ -112,6 +114,7 @@ dependencies:
   '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_2a370f004a3cb37e88fbfd149ff0781e
   '@vitejs/plugin-legacy': 1.7.1_vite@2.8.1
   babel-loader: 8.2.3_900eac683bef8a6b239b47efcf24e8a9
+  babel-plugin-import: 1.13.3
   babel-plugin-transform-remove-console: 6.9.4
   chalk: 3.0.0
   chokidar: 3.5.2
@@ -120,6 +123,7 @@ dependencies:
   commander: 4.1.1
   compression-webpack-plugin: 9.2.0_webpack@5.68.0
   copy-webpack-plugin: 10.2.4_webpack@5.68.0
+  core-js: 3.21.0
   fork-ts-checker-webpack-plugin: 7.2.0_typescript@4.5.5+webpack@5.68.0
   glob: 7.2.0
   html-webpack-plugin: 5.5.0_webpack@5.68.0
@@ -3517,6 +3521,13 @@ packages:
     resolution: {integrity: sha512-jZVI+s9Zg3IqA/kdi0i6UDCybUI3aSBLnglhYbSSjKlV7yF1F/5LWv8MakQmvYpnbJDS6fcBL2KzHSxNCMtWSQ==}
     dependencies:
       object.assign: 4.1.2
+    dev: false
+
+  /babel-plugin-import/1.13.3:
+    resolution: {integrity: sha512-1qCWdljJOrDRH/ybaCZuDgySii4yYrtQ8OJQwrcDqdt0y67N30ng3X3nABg6j7gR7qUJgcMa9OMhc4AGViDwWw==}
+    dependencies:
+      '@babel/helper-module-imports': 7.16.7
+      '@babel/runtime': 7.17.2
     dev: false
 
   /babel-plugin-istanbul/6.1.1:

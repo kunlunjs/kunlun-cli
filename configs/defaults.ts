@@ -2,7 +2,8 @@ import * as glob from 'glob'
 import type { BabelPresetEnvOptions, DefinePluginOptions } from './types'
 
 export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
-  useBuiltIns: 'usage'
+  useBuiltIns: 'usage',
+  corejs: '3.21.0'
 }
 
 export const isDefaultDevelopment = process.env.NODE_ENV !== 'production'

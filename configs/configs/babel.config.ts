@@ -1,3 +1,4 @@
+import * as path from 'path'
 import {
   defaultBabelPresetEnvOptions,
   isDefaultDevelopment,
@@ -5,6 +6,10 @@ import {
   isDefaultTypeScriptReactProject
 } from '../defaults'
 import type { BabelPresetEnvOptions } from '../types'
+const dependencies = require(path.resolve(
+  process.cwd(),
+  'package.json'
+)).dependencies
 
 export const getBabelConfig = (
   args: {
@@ -36,6 +41,24 @@ export const getBabelConfig = (
     ].filter(Boolean),
 
     plugins: [
+      !!dependencies.antd && [
+        'import',
+        {
+          libraryName: 'antd',
+          libraryDirectory: 'lib',
+          style: true
+        },
+        'antd'
+      ],
+      !!dependencies.lodash && [
+        'import',
+        {
+          libraryName: 'antd',
+          libraryDirectory: 'lib',
+          style: true
+        },
+        'antd'
+      ],
       // Applies the react-refresh Babel plugin on non-production modes only
       isDevelopment && isReactProject && 'react-refresh/babel',
       consoleRemove === false
