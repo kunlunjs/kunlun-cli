@@ -1,7 +1,8 @@
 import type { Configuration } from './configuration'
 
 export const defaultConfiguration: Required<Configuration> = {
-  language: 'ts',
+  // language: 'ts',
+  type: 'react',
   sourceRoot: 'src',
   collection: '@kunlunjs/schematics',
   entryFile: 'main',

@@ -4,11 +4,12 @@ import type { Configuration } from '../../../../lib/configuration'
 describe('Get Value or Default', () => {
   it('should return assigned configuration value', async () => {
     let configuration: Required<Configuration> = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
       projects: {},
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {},
       generateOptions: {}
@@ -17,11 +18,12 @@ describe('Get Value or Default', () => {
     expect(value).toEqual(true)
 
     configuration = {
+      type: '',
       monorepo: false,
       sourceRoot: '',
       entryFile: '',
       projects: {},
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {},
       generateOptions: {}
@@ -35,6 +37,7 @@ describe('Get Value or Default', () => {
 
   it('should return assigned project configuration value', async () => {
     let configuration: Required<Configuration> = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -45,7 +48,7 @@ describe('Get Value or Default', () => {
           }
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {},
       generateOptions: {}
@@ -58,6 +61,7 @@ describe('Get Value or Default', () => {
     expect(value).toEqual(true)
 
     configuration = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -68,7 +72,7 @@ describe('Get Value or Default', () => {
           }
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {},
       generateOptions: {}
@@ -81,6 +85,7 @@ describe('Get Value or Default', () => {
     expect(value).toEqual(false)
 
     configuration = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -89,7 +94,7 @@ describe('Get Value or Default', () => {
           compilerOptions: {}
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {},
       generateOptions: {}
@@ -104,6 +109,7 @@ describe('Get Value or Default', () => {
 
   it('should return default configuration value when project value not found', async () => {
     let configuration: Required<Configuration> = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -112,7 +118,7 @@ describe('Get Value or Default', () => {
           compilerOptions: {}
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {
         webpack: true
@@ -127,6 +133,7 @@ describe('Get Value or Default', () => {
     expect(value).toEqual(true)
 
     configuration = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -135,7 +142,7 @@ describe('Get Value or Default', () => {
           compilerOptions: {}
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {
         webpack: false
@@ -150,6 +157,7 @@ describe('Get Value or Default', () => {
     expect(value).toEqual(false)
 
     configuration = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -158,7 +166,7 @@ describe('Get Value or Default', () => {
           compilerOptions: {}
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {},
       generateOptions: {}
@@ -173,6 +181,7 @@ describe('Get Value or Default', () => {
 
   it('should concatenate property path when app name contains dots', async () => {
     const configuration: Required<Configuration> = {
+      type: '',
       monorepo: true,
       sourceRoot: '',
       entryFile: '',
@@ -184,7 +193,7 @@ describe('Get Value or Default', () => {
           }
         }
       },
-      language: '',
+      // language: '',
       collection: '',
       compilerOptions: {
         webpack: true

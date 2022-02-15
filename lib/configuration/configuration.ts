@@ -44,7 +44,8 @@ export interface ProjectConfiguration {
 
 export interface Configuration {
   [key: string]: any
-  language?: string
+  // language?: string
+  type: string
   collection?: string
   sourceRoot?: string
   entryFile?: string

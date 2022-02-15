@@ -52,8 +52,8 @@ export class NewAction extends AbstractAction {
     }
     if (!isDryRunEnabled) {
       if (!shouldSkipGit) {
-        await initializeGitRepository(projectDirectory)
-        await createGitIgnoreFile(projectDirectory)
+        // await initializeGitRepository(projectDirectory)
+        // await createGitIgnoreFile(projectDirectory)
       }
 
       printCollective()
@@ -91,13 +91,15 @@ const askForMissingInformation = async (inputs: Input[]) => {
         ProjectType.Taro,
         ProjectType.UniApp,
         ProjectType['NestJS-Prisma-RESTful'],
-        ProjectType['NestJS-Prisma-GraphQL']
+        ProjectType['NestJS-Prisma-GraphQL'],
+        ProjectType['React+NestJS-Prisma-RESTful'],
+        ProjectType['React+NestJS-Prisma-GraphQL']
       ])
     ]
     const answers: Answers = await prompt(questions as ReadonlyArray<Question>)
-    if (answers.type) {
-      answers.type = answers.type.toLowerCase()
-    }
+    // if (answers.type) {
+    //   answers.type = answers.type.toLowerCase()
+    // }
     replaceInputMissingInformation(inputs, answers)
   }
 }

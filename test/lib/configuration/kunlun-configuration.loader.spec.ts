@@ -15,16 +15,17 @@ describe('Kunlun Configuration Loader', () => {
           Promise.resolve(
             JSON.stringify({
               // language: 'ts',
-              type: 'react',
-              collection: '@kunlunjs/schematics'
+              collection: '@kunlunjs/schematics',
+              type: 'react'
             })
           )
         ),
         read: jest.fn(() =>
           Promise.resolve(
             JSON.stringify({
-              language: 'ts',
+              // language: 'ts',
               collection: '@kunlunjs/schematics',
+              type: 'react',
               entryFile: 'secondary'
             })
           )
@@ -38,8 +39,9 @@ describe('Kunlun Configuration Loader', () => {
     const configuration: Configuration = await loader.load()
     expect(reader.readAnyOf).toHaveBeenCalledWith(['kunlun.config.ts'])
     expect(configuration).toEqual({
-      language: 'ts',
+      // language: 'ts',
       collection: '@kunlunjs/schematics',
+      type: 'react',
       sourceRoot: 'src',
       entryFile: 'main',
       monorepo: false,
@@ -61,8 +63,9 @@ describe('Kunlun Configuration Loader', () => {
     )
     expect(reader.read).toHaveBeenCalledWith('nest-cli.secondary.config.json')
     expect(configuration).toEqual({
-      language: 'ts',
+      // language: 'ts',
       collection: '@kunlunjs/schematics',
+      type: 'react',
       sourceRoot: 'src',
       entryFile: 'secondary',
       monorepo: false,
