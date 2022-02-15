@@ -53,11 +53,11 @@ export const getBabelConfig = (
       !!dependencies.lodash && [
         'import',
         {
-          libraryName: 'antd',
-          libraryDirectory: 'lib',
-          style: true
+          libraryName: 'lodash',
+          libraryDirectory: '',
+          camel2DashComponentName: false
         },
-        'antd'
+        'lodash'
       ],
       // Applies the react-refresh Babel plugin on non-production modes only
       isDevelopment && isReactProject && 'react-refresh/babel',
