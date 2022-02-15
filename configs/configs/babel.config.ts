@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as path from 'path'
 import {
   defaultBabelPresetEnvOptions,
@@ -6,10 +7,11 @@ import {
   isDefaultTypeScriptReactProject
 } from '../defaults'
 import type { BabelPresetEnvOptions } from '../types'
-const dependencies = require(path.resolve(
-  process.cwd(),
-  'package.json'
-)).dependencies
+
+const pkg = path.resolve(process.cwd(), 'package.json')
+const dependencies = fs.existsSync(pkg)
+  ? require(pkg).dependencies
+  : { antd: false, lodash: false }
 
 export const getBabelConfig = (
   args: {
