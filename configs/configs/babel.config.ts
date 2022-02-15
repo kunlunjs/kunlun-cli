@@ -1,5 +1,4 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import { isExistPackageJson } from '../../lib/utils/packagejson-exist'
 import {
   defaultBabelPresetEnvOptions,
   isDefaultDevelopment,
@@ -8,10 +7,7 @@ import {
 } from '../defaults'
 import type { BabelPresetEnvOptions } from '../types'
 
-const pkg = path.resolve(process.cwd(), 'package.json')
-const dependencies = fs.existsSync(pkg)
-  ? require(pkg).dependencies
-  : { antd: false, lodash: false }
+const dependencies = isExistPackageJson('dependencies')
 
 export const getBabelConfig = (
   args: {
@@ -43,7 +39,7 @@ export const getBabelConfig = (
     ].filter(Boolean),
 
     plugins: [
-      !!dependencies.antd && [
+      !!dependencies?.antd && [
         'import',
         {
           libraryName: 'antd',
@@ -52,7 +48,7 @@ export const getBabelConfig = (
         },
         'antd'
       ],
-      !!dependencies.lodash && [
+      !!dependencies?.lodash && [
         'import',
         {
           libraryName: 'lodash',
