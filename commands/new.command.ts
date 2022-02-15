@@ -22,7 +22,7 @@ export class NewCommand extends AbstractCommand {
       )
       .option(
         '-t, --type [project type]',
-        'Project type(React/Vue/Taro/UniApp/Nest-Prisma-RESTfull/Nest-Prisma-GraphQL).'
+        'Project type(React/Vue/Taro/UniApp/Nest-Prisma-RESTfull/Nest-Prisma-GraphQL/React+Nest-Prisma-RESTfull/React+Nest-Prisma-GraphQL).'
       )
       // .option(
       //   '-l, --language [language]',
@@ -63,7 +63,7 @@ export class NewCommand extends AbstractCommand {
           const projectTypeMatch = availableProjectTypes.includes(projectType)
           if (!projectTypeMatch) {
             throw new Error(
-              `Invalid type "${command.type}" selected. Available type are "react" or "taro" or "uniapp" or "vue" or "nest-prisma-restful" or "nest-prisma-graphql" or "react + nest-prisma-restful" or "react + nest-prisma-graphql"`
+              `Invalid type "${command.type}" selected. Available type are "React" or "Vue" or "Taro" or "UniApp" or "NestJS-Prisma-RESTful" or "NestJS-Prisma-GraphQL" or "react + NestJS-Prisma-RESTful" or "react + NestJS-Prisma-GraphQL"`
             )
           }
           command.type = projectType

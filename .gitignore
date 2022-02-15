@@ -136,4 +136,5 @@ tools/**/*.js
 # /sample
 
 yarn.lock
+pnpm-lock.yaml
 dist*

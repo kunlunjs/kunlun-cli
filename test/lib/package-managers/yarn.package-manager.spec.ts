@@ -36,7 +36,11 @@ describe('YarnPackageManager', () => {
       const dirName = '/tmp'
       const testDir = join(process.cwd(), dirName)
       packageManager.install(dirName, 'yarn')
-      expect(spy).toBeCalledWith('install --silent', true, testDir)
+      expect(spy).toBeCalledWith(
+        'install --silent --registry=https://registry.npmmirror.com',
+        true,
+        testDir
+      )
     })
   })
   describe('addProduction', () => {

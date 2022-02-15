@@ -10,7 +10,6 @@ import type { Input } from '../commands'
 import { defaultGitIgnore } from '../lib/configuration/defaults'
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManager, PackageManagerFactory } from '../lib/package-managers'
-
 import { ProjectType } from '../lib/project-types'
 import { generateInput, generateSelect } from '../lib/questions/questions'
 import { GitRunner } from '../lib/runners/git.runner'
@@ -52,8 +51,8 @@ export class NewAction extends AbstractAction {
     }
     if (!isDryRunEnabled) {
       if (!shouldSkipGit) {
-        // await initializeGitRepository(projectDirectory)
-        // await createGitIgnoreFile(projectDirectory)
+        await initializeGitRepository(projectDirectory)
+        await createGitIgnoreFile(projectDirectory)
       }
 
       printCollective()
@@ -84,17 +83,17 @@ const askForMissingInformation = async (inputs: Input[]) => {
   if (!nameInput!.value) {
     const message = 'What name would you like to use for the new project?'
     const questions = [
-      generateInput('name', message)('kunlun-app'),
-      generateSelect('type')(MESSAGES.PROJECT_TYPE_QUESTION)([
-        ProjectType.React,
-        ProjectType.Vue,
-        ProjectType.Taro,
-        ProjectType.UniApp,
-        ProjectType['NestJS-Prisma-RESTful'],
-        ProjectType['NestJS-Prisma-GraphQL'],
-        ProjectType['React+NestJS-Prisma-RESTful'],
-        ProjectType['React+NestJS-Prisma-GraphQL']
-      ])
+      generateInput('name', message)('kunlun-app')
+      // generateSelect('type')(MESSAGES.PROJECT_TYPE_QUESTION)([
+      //   ProjectType.React,
+      //   ProjectType.Vue,
+      //   ProjectType.Taro,
+      //   ProjectType.UniApp,
+      //   ProjectType['NestJS-Prisma-RESTful'],
+      //   ProjectType['NestJS-Prisma-GraphQL'],
+      //   ProjectType['React+NestJS-Prisma-RESTful'],
+      //   ProjectType['React+NestJS-Prisma-GraphQL']
+      // ])
     ]
     const answers: Answers = await prompt(questions as ReadonlyArray<Question>)
     // if (answers.type) {

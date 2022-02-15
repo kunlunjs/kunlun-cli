@@ -36,7 +36,11 @@ describe('NpmPackageManager', () => {
       const dirName = '/tmp'
       const testDir = join(process.cwd(), dirName)
       packageManager.install(dirName, 'pnpm')
-      expect(spy).toBeCalledWith('install --silent', true, testDir)
+      expect(spy).toBeCalledWith(
+        'install --silent --registry=https://registry.npmmirror.com',
+        true,
+        testDir
+      )
     })
   })
   describe('addProduction', () => {
@@ -44,7 +48,7 @@ describe('NpmPackageManager', () => {
       const spy = jest.spyOn((packageManager as any).runner, 'run')
       const dependencies = ['lodash']
       const tag = '4.0.0'
-      const command = `install --save ${dependencies
+      const command = `install --registry=https://registry.npmmirror.com --save ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
       packageManager.addProduction(dependencies, tag)
@@ -56,7 +60,7 @@ describe('NpmPackageManager', () => {
       const spy = jest.spyOn((packageManager as any).runner, 'run')
       const dependencies = ['lodash']
       const tag = '4.0.0'
-      const command = `install --save-dev ${dependencies
+      const command = `install --registry=https://registry.npmmirror.com --save-dev ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
       packageManager.addDevelopment(dependencies, tag)
@@ -88,7 +92,7 @@ describe('NpmPackageManager', () => {
       const tag = '4.0.0'
       const uninstallCommand = `uninstall --save ${dependencies.join(' ')}`
 
-      const installCommand = `install --save ${dependencies
+      const installCommand = `install --registry=https://registry.npmmirror.com --save ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
 
@@ -107,7 +111,7 @@ describe('NpmPackageManager', () => {
       const tag = '4.0.0'
       const uninstallCommand = `uninstall --save-dev ${dependencies.join(' ')}`
 
-      const installCommand = `install --save-dev ${dependencies
+      const installCommand = `install --registry=https://registry.npmmirror.com --save-dev ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
 

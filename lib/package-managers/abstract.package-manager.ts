@@ -21,7 +21,7 @@ export abstract class AbstractPackageManager {
     })
     spinner.start()
     try {
-      const commandArguments = `${this.cli.install} --silent`
+      const commandArguments = `${this.cli.install} --silent --registry=https://registry.npmmirror.com`
       const collect = true
       const dasherizedDirectory: string = dasherize(directory)
       await this.runner.run(
