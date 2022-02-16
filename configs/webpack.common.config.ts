@@ -6,7 +6,7 @@ import ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 import HtmlWebpackPlugin = require('html-webpack-plugin')
 import type { Configuration } from 'webpack'
 import webpack = require('webpack')
-import { isExistPackageJson } from '../lib/utils/packagejson-exist'
+import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
   isDefaultDevelopment,
@@ -24,7 +24,7 @@ import type { WebpackPlugins } from './types'
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const WebpackBar = require('webpackbar')
 
-const pkg = isExistPackageJson()
+const pkg = getPackageJson()
 
 export const getCommonConfig = (
   args: Configuration & {

@@ -1,4 +1,4 @@
-import { isExistPackageJson } from '../../lib/utils/packagejson-exist'
+import { getPackageJson } from '../../lib/utils/package'
 import {
   defaultBabelPresetEnvOptions,
   isDefaultDevelopment,
@@ -7,7 +7,7 @@ import {
 } from '../defaults'
 import type { BabelPresetEnvOptions } from '../types'
 
-const dependencies = isExistPackageJson('dependencies')
+const dependencies = getPackageJson('dependencies')
 
 export const getBabelConfig = (
   args: {

@@ -22,7 +22,7 @@ export class NewCommand extends AbstractCommand {
       )
       .option(
         '-t, --type [project type]',
-        'Project type(React/Vue/Taro/UniApp/Nest-Prisma-RESTfull/Nest-Prisma-GraphQL/React+Nest-Prisma-RESTfull/React+Nest-Prisma-GraphQL).'
+        'Project type(react/vue/taro/uniapp/nest-prisma-restful/nest-prisma-graphql/react+nest-prisma-restfull/react+nest-prisma-graphql).'
       )
       // .option(
       //   '-l, --language [language]',

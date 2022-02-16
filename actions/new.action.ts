@@ -85,14 +85,14 @@ const askForMissingInformation = async (inputs: Input[]) => {
     const questions = [
       generateInput('name', message)('kunlun-app')
       // generateSelect('type')(MESSAGES.PROJECT_TYPE_QUESTION)([
-      //   ProjectType.React,
-      //   ProjectType.Vue,
-      //   ProjectType.Taro,
-      //   ProjectType.UniApp,
-      //   ProjectType['NestJS-Prisma-RESTful'],
-      //   ProjectType['NestJS-Prisma-GraphQL'],
-      //   ProjectType['React+NestJS-Prisma-RESTful'],
-      //   ProjectType['React+NestJS-Prisma-GraphQL']
+      //   ProjectType.react,
+      //   ProjectType.vue,
+      //   ProjectType.taro,
+      //   ProjectType.uniapp,
+      //   ProjectType['nest-prisma-restful'],
+      //   ProjectType['nest-prisma-graphql'],
+      //   ProjectType['react+nest-prisma-restful'],
+      //   ProjectType['react+nest-prisma-graphql']
       // ])
     ]
     const answers: Answers = await prompt(questions as ReadonlyArray<Question>)

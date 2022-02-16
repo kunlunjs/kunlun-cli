@@ -1,4 +1,7 @@
-import * as glob from 'glob'
+import { existsSync } from 'fs'
+import * as path from 'path'
+import { getPackageJson } from '../lib/utils/package'
+// import * as glob from 'glob'
 import type { BabelPresetEnvOptions, DefinePluginOptions } from './types'
 
 export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
@@ -8,15 +11,20 @@ export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
 
 export const isDefaultDevelopment = process.env.NODE_ENV !== 'production'
 
-export const isDefaultTypeScriptProject = !!glob.sync(
-  `${process.cwd()}/**/*.ts`,
-  {}
-).length
+// export const isDefaultTypeScriptProject = !!glob.sync(
+//   `${process.cwd()}/**/*.ts`,
+//   {}
+// ).length
+export const isDefaultTypeScriptProject = existsSync(
+  path.resolve(process.cwd(), 'tsconfig.json')
+)
 
-export const isDefaultTypeScriptReactProject = !!glob.sync(
-  `${process.cwd()}/**/*.tsx`,
-  {}
-).length
+// export const isDefaultTypeScriptReactProject = !!glob.sync(
+//   `${process.cwd()}/**/*.tsx`,
+//   {}
+// ).length
+export const isDefaultTypeScriptReactProject =
+  getPackageJson('dependencies')?.react && isDefaultTypeScriptProject
 
 export const defaultDefinePluginOption: DefinePluginOptions = {
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

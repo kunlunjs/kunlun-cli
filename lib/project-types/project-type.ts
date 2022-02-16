@@ -1,10 +1,10 @@
 export enum ProjectType {
-  'React' = 'React',
-  'Vue' = 'Vue',
-  'Taro' = 'Taro',
-  'UniApp' = 'UniApp',
-  'NestJS-Prisma-RESTful' = 'NestJS-Prisma-RESTful',
-  'NestJS-Prisma-GraphQL' = 'NestJS-Prisma-GraphQL',
-  'React+NestJS-Prisma-RESTful' = 'React + NestJS-Prisma-RESTful (monorepo)',
-  'React+NestJS-Prisma-GraphQL' = 'React + NestJS-Prisma-GraphQL (monorepo)'
+  'react' = 'react',
+  'vue' = 'vue',
+  'taro' = 'taro',
+  'uniapp' = 'uniapp',
+  'nestjs-prisma-restful' = 'nestjs-prisma-restful',
+  'nestjs-prisma-graphql' = 'nestjs-prisma-graphql',
+  'react+nestjs-prisma-restful' = 'react + nestjs-prisma-restful (monorepo)',
+  'react+nestjs-prisma-graphql' = 'react + nestjs-prisma-graphql (monorepo)'
 }
