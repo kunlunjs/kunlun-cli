@@ -7,7 +7,8 @@
 <a href="https://www.npmjs.com/org/kunlunjs"><img src="https://img.shields.io/npm/v/@kunlunjs/cli.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/org/kunlunjs"><img src="https://img.shields.io/npm/l/@kunlunjs/cli.svg" alt="Package License" /></a>
 <a href="https://www.npmjs.com/org/kunlunjs"><img src="https://img.shields.io/npm/dm/@kunlunjs/cli.svg" alt="NPM Downloads" /></a>
-  <a href="https://coveralls.io/github/turing-fe/kunlun-cli?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/turing-fe/kunlun-cli/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://coveralls.io/github/turing-fe/kunlun-cli?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/turing-fe/kunlun-cli/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://circleci.com/gh/turing-fe/kunlun-cli" target="_blank"><img src="https://circleci.com/gh/turing-fe/kunlun-cli.svg?style=svg" alt="CircleCI" /></a>
 
 ## Description
 
