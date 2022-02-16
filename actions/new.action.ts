@@ -185,12 +185,14 @@ const selectProjectType = async (): Promise<string> => {
 const askForProjectType = async (): Promise<Answers> => {
   const questions: Question[] = [
     generateSelect('project-type')(MESSAGES.PROJECT_TYPE_QUESTION)([
-      ProjectType.React,
-      ProjectType.Vue,
-      ProjectType.Taro,
-      ProjectType.UniApp,
-      ProjectType['NestJS-Prisma-RESTful'],
-      ProjectType['NestJS-Prisma-GraphQL']
+      ProjectType.react,
+      ProjectType.vue,
+      ProjectType.taro,
+      ProjectType.uniapp,
+      ProjectType['nestjs-prisma-restful'],
+      ProjectType['nestjs-prisma-graphql'],
+      ProjectType['react+nestjs-prisma-restful'],
+      ProjectType['react+nestjs-prisma-graphql']
     ])
   ]
   const prompt = inquirer.createPromptModule()

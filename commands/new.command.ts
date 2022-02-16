@@ -63,7 +63,7 @@ export class NewCommand extends AbstractCommand {
           const projectTypeMatch = availableProjectTypes.includes(projectType)
           if (!projectTypeMatch) {
             throw new Error(
-              `Invalid type "${command.type}" selected. Available type are "React" or "Vue" or "Taro" or "UniApp" or "NestJS-Prisma-RESTful" or "NestJS-Prisma-GraphQL" or "react + NestJS-Prisma-RESTful" or "react + NestJS-Prisma-GraphQL"`
+              `Invalid type "${command.type}" selected. Available type are "react" or "vue" or "taro" or "uniapp" or "nestjs-prisma-restful" or "nestjs-Prisma-graphql" or "react + nestjs-prisma-restful" or "react + nestjs-prisma-graphql"`
             )
           }
           command.type = projectType
