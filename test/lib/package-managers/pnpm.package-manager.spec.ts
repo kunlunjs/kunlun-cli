@@ -48,7 +48,7 @@ describe('NpmPackageManager', () => {
       const spy = jest.spyOn((packageManager as any).runner, 'run')
       const dependencies = ['lodash']
       const tag = '4.0.0'
-      const command = `install --registry=https://registry.npmmirror.com --save ${dependencies
+      const command = `install --save ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
       packageManager.addProduction(dependencies, tag)
@@ -60,7 +60,7 @@ describe('NpmPackageManager', () => {
       const spy = jest.spyOn((packageManager as any).runner, 'run')
       const dependencies = ['lodash']
       const tag = '4.0.0'
-      const command = `install --registry=https://registry.npmmirror.com --save-dev ${dependencies
+      const command = `install --save-dev ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
       packageManager.addDevelopment(dependencies, tag)
@@ -92,7 +92,7 @@ describe('NpmPackageManager', () => {
       const tag = '4.0.0'
       const uninstallCommand = `uninstall --save ${dependencies.join(' ')}`
 
-      const installCommand = `install --registry=https://registry.npmmirror.com --save ${dependencies
+      const installCommand = `install --save ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
 
@@ -111,7 +111,7 @@ describe('NpmPackageManager', () => {
       const tag = '4.0.0'
       const uninstallCommand = `uninstall --save-dev ${dependencies.join(' ')}`
 
-      const installCommand = `install --registry=https://registry.npmmirror.com --save-dev ${dependencies
+      const installCommand = `install --save-dev ${dependencies
         .map(dependency => `${dependency}@${tag}`)
         .join(' ')}`
 
