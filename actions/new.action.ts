@@ -7,6 +7,7 @@ import * as chalk from 'chalk'
 import * as inquirer from 'inquirer'
 import type { Answers, Question } from 'inquirer'
 import type { Input } from '../commands'
+import type { NewOptions } from '../commands/new.command'
 import { defaultGitIgnore } from '../lib/configuration/defaults'
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManager, PackageManagerFactory } from '../lib/package-managers'
@@ -22,42 +23,38 @@ import {
 import { EMOJIS, MESSAGES } from '../lib/ui'
 import { AbstractAction } from './abstract.action'
 
-export class NewAction extends AbstractAction {
-  public async handle(inputs: Input[], options: Input[]) {
-    const directoryOption = options.find(option => option.name === 'directory')
-    const dryRunOption = options.find(option => option.name === 'dry-run')
-    const isDryRunEnabled = dryRunOption && dryRunOption.value
-
-    await askForMissingInformation(inputs)
-    await generateApplicationFiles(inputs, options).catch(exit)
-
-    const shouldSkipInstall = options.some(
-      option => option.name === 'skip-install' && option.value === true
-    )
-    const shouldSkipGit = options.some(
-      option => option.name === 'skip-git' && option.value === true
-    )
-    const projectDirectory = getProjectDirectory(
-      getApplicationNameInput(inputs)!,
-      directoryOption
-    )
-
-    if (!shouldSkipInstall) {
-      await installPackages(
-        options,
-        isDryRunEnabled as boolean,
-        projectDirectory
-      )
-    }
-    if (!isDryRunEnabled) {
-      if (!shouldSkipGit) {
-        await initializeGitRepository(projectDirectory)
-        await createGitIgnoreFile(projectDirectory)
-      }
-
-      printCollective()
-    }
-    process.exit(0)
+export class NewAction extends AbstractAction<NewOptions> {
+  public async handle(options: NewOptions) {
+    // const directoryOption = options.find(option => option.name === 'directory')
+    // const dryRunOption = options.find(option => option.name === 'dry-run')
+    // const isDryRunEnabled = dryRunOption && dryRunOption.value
+    // await askForMissingInformation(inputs)
+    // await generateApplicationFiles(inputs, options).catch(exit)
+    // const shouldSkipInstall = options.some(
+    //   option => option.name === 'skip-install' && option.value === true
+    // )
+    // const shouldSkipGit = options.some(
+    //   option => option.name === 'skip-git' && option.value === true
+    // )
+    // const projectDirectory = getProjectDirectory(
+    //   getApplicationNameInput(inputs)!,
+    //   directoryOption
+    // )
+    // if (!shouldSkipInstall) {
+    //   await installPackages(
+    //     options,
+    //     isDryRunEnabled as boolean,
+    //     projectDirectory
+    //   )
+    // }
+    // if (!isDryRunEnabled) {
+    //   if (!shouldSkipGit) {
+    //     await initializeGitRepository(projectDirectory)
+    //     await createGitIgnoreFile(projectDirectory)
+    //   }
+    //   printCollective()
+    // }
+    // process.exit(0)
   }
 }
 

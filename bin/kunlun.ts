@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as commander from 'commander'
-import type { CommanderStatic } from 'commander'
+import { program } from 'commander'
 import { CommandLoader } from '../commands'
 import {
   loadLocalBinCommandLoader,
@@ -9,7 +8,6 @@ import {
 } from '../lib/utils/local-binaries'
 
 const bootstrap = () => {
-  const program: CommanderStatic = commander
   program
     .version(
       require('../package.json').version,
@@ -25,7 +23,7 @@ const bootstrap = () => {
   } else {
     CommandLoader.load(program)
   }
-  commander.parse(process.argv)
+  program.parse()
 
   if (!process.argv.slice(2).length) {
     program.outputHelp()

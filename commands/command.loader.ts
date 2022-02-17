@@ -1,20 +1,20 @@
 import * as chalk from 'chalk'
-import type { CommanderStatic } from 'commander'
-import { BuildAction, NewAction, StartAction } from '../actions'
+import type { Command } from 'commander'
+import { BuildAction, StartAction } from '../actions'
 import { ERROR_PREFIX } from '../lib/ui'
 import { BuildCommand } from './build.command'
-import { NewCommand } from './new.command'
+// import { NewCommand } from './new.command'
 import { StartCommand } from './start.command'
 export class CommandLoader {
-  public static load(program: CommanderStatic): void {
-    new NewCommand(new NewAction()).load(program)
+  public static load(program: Command): void {
+    // new NewCommand(new NewAction()).load(program)
     new BuildCommand(new BuildAction()).load(program)
     new StartCommand(new StartAction()).load(program)
 
     this.handleInvalidCommand(program)
   }
 
-  private static handleInvalidCommand(program: CommanderStatic) {
+  private static handleInvalidCommand(program: Command) {
     program.on('command:*', () => {
       console.error(
         `\n${ERROR_PREFIX} Invalid command: ${chalk.red('%s')}`,

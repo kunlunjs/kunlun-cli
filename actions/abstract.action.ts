@@ -1,9 +1,5 @@
-import type { Input } from '../commands'
-
-export abstract class AbstractAction {
-  public abstract handle(
-    inputs?: Input[],
-    options?: Input[],
-    extraFlags?: string[]
-  ): Promise<void>
+export abstract class AbstractAction<T extends Record<string, any>> {
+  public abstract handle(options?: T, extraFlags?: string[]): Promise<void>
+  // inputs?: Input[],
+  // options?: Input[],
 }

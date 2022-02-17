@@ -1,9 +1,11 @@
-import type { Command, CommanderStatic } from 'commander'
+import type { Command } from 'commander'
 import { AbstractCommand } from './abstract.command'
-import type { Input } from './command.input'
+import type { StartOptions } from './start.command'
 
-export class BuildCommand extends AbstractCommand {
-  public load(program: CommanderStatic): void {
+export interface BuildOptions extends StartOptions {}
+
+export class BuildCommand extends AbstractCommand<BuildOptions> {
+  public load(program: Command): void {
     program
       .command('build [app]')
       .option('-c, --config [path]', 'Path to kunlun-cli configuration file.')
@@ -12,15 +14,11 @@ export class BuildCommand extends AbstractCommand {
       .option('--webpack', 'Use webpack for compilation.')
       .option('--vite', 'Use vite for compilation.')
       .description('Build Kunlun application.')
-      .action(async (app: string, command: Command) => {
-        const options: Input[] = []
-
-        const inputs: Input[] = []
-        inputs.push({
-          name: 'mode',
-          value: 'production'
+      .action(async (app: string, options: Omit<BuildOptions, 'app'>) => {
+        await this.action.handle({
+          app,
+          ...options
         })
-        await this.action.handle(inputs, options)
       })
   }
 }
