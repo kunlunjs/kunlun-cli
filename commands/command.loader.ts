@@ -1,8 +1,9 @@
 import * as chalk from 'chalk'
 import type { Command } from 'commander'
-import { BuildAction, NewAction, StartAction } from '../actions'
+import { BuildAction, NewAction, StartAction, InfoAction } from '../actions'
 import { ERROR_PREFIX } from '../lib/ui'
 import { BuildCommand } from './build.command'
+import { InfoCommand } from './info.command'
 import { NewCommand } from './new.command'
 import { StartCommand } from './start.command'
 export class CommandLoader {
@@ -10,6 +11,7 @@ export class CommandLoader {
     new NewCommand(new NewAction()).load(program)
     new BuildCommand(new BuildAction()).load(program)
     new StartCommand(new StartAction()).load(program)
+    new InfoCommand(new InfoAction()).load(program)
 
     this.handleInvalidCommand(program)
   }
