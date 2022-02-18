@@ -1,6 +1,10 @@
 version: 2
 
 aliases:
+  - &install-pnpm
+    run:
+      name: Install pnpm
+      command: sudo npm install --global pnpm
   - &restore-cache
     restore_cache:
       key: dependency-cache-{{ checksum "package.json" }}
@@ -29,9 +33,7 @@ jobs:
       - image: circleci/node:17
     steps:
       - checkout
-      - run:
-          name: Install pnpm
-          command: sudo npm install --global pnpm
+      - *install-pnpm
       - *restore-cache
       - *install-deps
       - *save-cache
@@ -43,6 +45,7 @@ jobs:
       - image: circleci/node:17
     steps:
       - checkout
+      - *install-pnpm
       - *restore-cache
       - *install-deps
       - *build-packages
