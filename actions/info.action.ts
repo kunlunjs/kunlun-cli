@@ -5,7 +5,7 @@ import * as chalk from 'chalk'
 import osName = require('os-name')
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManagerFactory } from '../lib/package-managers'
-import { BANNER } from '../lib/ui'
+import { BANNER, MESSAGES } from '../lib/ui'
 import { AbstractAction } from './abstract.action'
 
 interface LockfileDependency {
@@ -69,7 +69,9 @@ export class InfoAction extends AbstractAction {
         this.readProjectPackageDependencies()
       this.displayKunlunVersions(dependencies)
     } catch (err) {
-      console.error(chalk.red(err))
+      console.error(
+        chalk.red(MESSAGES.KUNLUN_INFORMATION_PACKAGE_MANAGER_FAILED)
+      )
     }
   }
 
