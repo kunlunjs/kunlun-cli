@@ -1,13 +1,13 @@
 import * as chalk from 'chalk'
 import type { Command } from 'commander'
-import { BuildAction, StartAction } from '../actions'
+import { BuildAction, NewAction, StartAction } from '../actions'
 import { ERROR_PREFIX } from '../lib/ui'
 import { BuildCommand } from './build.command'
-// import { NewCommand } from './new.command'
+import { NewCommand } from './new.command'
 import { StartCommand } from './start.command'
 export class CommandLoader {
   public static load(program: Command): void {
-    // new NewCommand(new NewAction()).load(program)
+    new NewCommand(new NewAction()).load(program)
     new BuildCommand(new BuildAction()).load(program)
     new StartCommand(new StartAction()).load(program)
 
