@@ -4,7 +4,7 @@ aliases:
   - &restore-cache
     restore_cache:
       key: dependency-cache-{{ checksum "package.json" }}
-  - &save_cache:
+  - &save-cache
     save_cache:
       key: dependency-cache-{{ checksum "package.json" }}
       paths:
@@ -34,7 +34,7 @@ jobs:
           command: sudo npm install --global pnpm
       - *restore-cache
       - *install-deps
-      - *save_cache
+      - *save-cache
       - *build-packages
 
   unit_tests:
