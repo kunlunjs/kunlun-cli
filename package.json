@@ -61,7 +61,7 @@
     "chokidar": "3.5.2",
     "clean-webpack-plugin": "^4.0.0",
     "cli-table3": "0.6.1",
-    "commander": "4.1.1",
+    "commander": "9.0.0",
     "compression-webpack-plugin": "^9.2.0",
     "copy-webpack-plugin": "^10.2.4",
     "core-js": "^3.21.0",

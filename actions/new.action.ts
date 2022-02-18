@@ -4,53 +4,30 @@ import { join } from 'path'
 import { promisify } from 'util'
 import { dasherize } from '@angular-devkit/core/src/utils/strings'
 import * as chalk from 'chalk'
-import * as inquirer from 'inquirer'
-import type { Answers, Question } from 'inquirer'
-import type { Input } from '../commands'
+import type { NewOptions } from '../commands/new.command'
 import { defaultGitIgnore } from '../lib/configuration/defaults'
 import type { AbstractPackageManager } from '../lib/package-managers'
-import { PackageManager, PackageManagerFactory } from '../lib/package-managers'
-import { ProjectType } from '../lib/project-types'
-import { generateInput, generateSelect } from '../lib/questions/questions'
+import { PackageManagerFactory } from '../lib/package-managers'
 import { GitRunner } from '../lib/runners/git.runner'
-import type { AbstractCollection } from '../lib/schematics'
-import {
-  Collection,
-  CollectionFactory,
-  SchematicOption
-} from '../lib/schematics'
+import type { AbstractCollection, Collection } from '../lib/schematics'
+import { CollectionFactory, SchematicOption } from '../lib/schematics'
 import { EMOJIS, MESSAGES } from '../lib/ui'
 import { AbstractAction } from './abstract.action'
 
-export class NewAction extends AbstractAction {
-  public async handle(inputs: Input[], options: Input[]) {
-    const directoryOption = options.find(option => option.name === 'directory')
-    const dryRunOption = options.find(option => option.name === 'dry-run')
-    const isDryRunEnabled = dryRunOption && dryRunOption.value
+export class NewAction extends AbstractAction<NewOptions> {
+  public async handle(options: NewOptions) {
+    await generateApplicationFiles(options).catch(exit)
 
-    await askForMissingInformation(inputs)
-    await generateApplicationFiles(inputs, options).catch(exit)
-
-    const shouldSkipInstall = options.some(
-      option => option.name === 'skip-install' && option.value === true
-    )
-    const shouldSkipGit = options.some(
-      option => option.name === 'skip-git' && option.value === true
-    )
     const projectDirectory = getProjectDirectory(
-      getApplicationNameInput(inputs)!,
-      directoryOption
+      options.name,
+      options.directory
     )
 
-    if (!shouldSkipInstall) {
-      await installPackages(
-        options,
-        isDryRunEnabled as boolean,
-        projectDirectory
-      )
+    if (!options.skipInstall) {
+      await installPackages(options, projectDirectory)
     }
-    if (!isDryRunEnabled) {
-      if (!shouldSkipGit) {
+    if (!options.directory) {
+      if (!options.skipGit) {
         await initializeGitRepository(projectDirectory)
         await createGitIgnoreFile(projectDirectory)
       }
@@ -61,159 +38,45 @@ export class NewAction extends AbstractAction {
   }
 }
 
-const getApplicationNameInput = (inputs: Input[]) =>
-  inputs.find(input => input.name === 'name')
-
 const getProjectDirectory = (
-  applicationName: Input,
-  directoryOption?: Input
+  applicationName: string,
+  directoryOption?: string
 ): string => {
-  return (
-    (directoryOption && (directoryOption.value as string)) ||
-    dasherize(applicationName.value as string)
-  )
+  return (directoryOption && directoryOption) || dasherize(applicationName)
 }
 
-const askForMissingInformation = async (inputs: Input[]) => {
-  console.info(MESSAGES.PROJECT_INFORMATION_START)
-  console.info()
-
-  const prompt: inquirer.PromptModule = inquirer.createPromptModule()
-  const nameInput = getApplicationNameInput(inputs)
-  if (!nameInput!.value) {
-    const message = 'What name would you like to use for the new project?'
-    const questions = [
-      generateInput('name', message)('kunlun-app')
-      // generateSelect('type')(MESSAGES.PROJECT_TYPE_QUESTION)([
-      //   ProjectType.react,
-      //   ProjectType.vue,
-      //   ProjectType.taro,
-      //   ProjectType.uniapp,
-      //   ProjectType['nest-prisma-restful'],
-      //   ProjectType['nest-prisma-graphql'],
-      //   ProjectType['react+nest-prisma-restful'],
-      //   ProjectType['react+nest-prisma-graphql']
-      // ])
-    ]
-    const answers: Answers = await prompt(questions as ReadonlyArray<Question>)
-    // if (answers.type) {
-    //   answers.type = answers.type.toLowerCase()
-    // }
-    replaceInputMissingInformation(inputs, answers)
-  }
-}
-
-const replaceInputMissingInformation = (
-  inputs: Input[],
-  answers: Answers
-): Input[] => {
-  return inputs.map(
-    input =>
-      (input.value =
-        input.value !== undefined ? input.value : answers[input.name])
-  )
-}
-
-const generateApplicationFiles = async (args: Input[], options: Input[]) => {
-  const collectionName = options.find(
-    option => option.name === 'collection' && option.value != null
-  )!.value
+const generateApplicationFiles = async (options: NewOptions) => {
   const collection: AbstractCollection = CollectionFactory.create(
-    (collectionName as Collection) || Collection.KUNLUNJS
+    options.collection as Collection
   )
-  const schematicOptions: SchematicOption[] = mapSchematicOptions(
-    args.concat(options)
+  const { skipInstall, packageManager, ...restOptions } = options
+  const schematicOptions: SchematicOption[] = Object.keys(restOptions).map(
+    key =>
+      new SchematicOption(key, restOptions[key as keyof typeof restOptions])
   )
   await collection.execute('application', schematicOptions)
   console.info()
 }
 
-const mapSchematicOptions = (options: Input[]): SchematicOption[] => {
-  return options.reduce(
-    (schematicOptions: SchematicOption[], option: Input) => {
-      if (
-        option.name !== 'skip-install' &&
-        option.value !== 'package-manager'
-      ) {
-        schematicOptions.push(new SchematicOption(option.name, option.value))
-      }
-      return schematicOptions
-    },
-    []
-  )
-}
-
 const installPackages = async (
-  options: Input[],
-  dryRunMode: boolean,
+  options: NewOptions,
   installDirectory: string
 ) => {
-  const inputPackageManager: string = options.find(
-    option => option.name === 'package-manager'
-  )!.value as string
-
   let packageManager: AbstractPackageManager
-  if (dryRunMode) {
+  if (options.dryRun) {
     console.info()
     console.info(chalk.green(MESSAGES.DRY_RUN_MODE))
     console.info()
     return
   }
-  if (inputPackageManager !== undefined) {
-    try {
-      packageManager = PackageManagerFactory.create(inputPackageManager)
-      await packageManager.install(installDirectory, inputPackageManager)
-    } catch (error) {
-      if (error && error.message) {
-        console.error(chalk.red(error.message))
-      }
+  try {
+    packageManager = PackageManagerFactory.create(options.packageManager)
+    await packageManager.install(installDirectory, options.packageManager)
+  } catch (error) {
+    if (error && error.message) {
+      console.error(chalk.red(error.message))
     }
-  } else {
-    packageManager = await selectPackageManager()
-    await packageManager.install(
-      installDirectory,
-      packageManager.name.toLowerCase()
-    )
   }
-}
-
-const selectProjectType = async (): Promise<string> => {
-  const answers: Answers = await askForProjectType()
-  return answers['project-type']
-}
-
-const askForProjectType = async (): Promise<Answers> => {
-  const questions: Question[] = [
-    generateSelect('project-type')(MESSAGES.PROJECT_TYPE_QUESTION)([
-      ProjectType.react,
-      ProjectType.vue,
-      ProjectType.taro,
-      ProjectType.uniapp,
-      ProjectType['nestjs-prisma-restful'],
-      ProjectType['nestjs-prisma-graphql'],
-      ProjectType['react+nestjs-prisma-restful'],
-      ProjectType['react+nestjs-prisma-graphql']
-    ])
-  ]
-  const prompt = inquirer.createPromptModule()
-  return await prompt(questions)
-}
-
-const selectPackageManager = async (): Promise<AbstractPackageManager> => {
-  const answers: Answers = await askForPackageManager()
-  return PackageManagerFactory.create(answers['package-manager'])
-}
-
-const askForPackageManager = async (): Promise<Answers> => {
-  const questions: Question[] = [
-    generateSelect('package-manager')(MESSAGES.PACKAGE_MANAGER_QUESTION)([
-      PackageManager.PNPM,
-      PackageManager.YARN,
-      PackageManager.NPM
-    ])
-  ]
-  const prompt = inquirer.createPromptModule()
-  return await prompt(questions)
 }
 
 const initializeGitRepository = async (dir: string) => {

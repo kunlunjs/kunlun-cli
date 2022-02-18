@@ -3,6 +3,7 @@ import { platform, release } from 'os'
 import { join } from 'path'
 import * as chalk from 'chalk'
 import osName = require('os-name')
+import type { InfoOptions } from '../commands/info.command'
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManagerFactory } from '../lib/package-managers'
 import { BANNER, MESSAGES } from '../lib/ui'
@@ -19,7 +20,7 @@ interface KunlunDependency {
   value: string
 }
 
-export class InfoAction extends AbstractAction {
+export class InfoAction extends AbstractAction<InfoOptions> {
   private manager!: AbstractPackageManager
 
   public async handle() {

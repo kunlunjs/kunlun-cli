@@ -1,8 +1,12 @@
-import type { CommanderStatic } from 'commander'
+import type { Command } from 'commander'
 import { AbstractCommand } from './abstract.command'
 
-export class InfoCommand extends AbstractCommand {
-  public load(program: CommanderStatic) {
+export interface InfoOptions {
+  //
+}
+
+export class InfoCommand extends AbstractCommand<InfoOptions> {
+  public load(program: Command) {
     program
       .command('info')
       .alias('i')

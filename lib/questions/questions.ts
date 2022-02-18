@@ -1,5 +1,7 @@
+import type { Answers, Question } from 'inquirer'
+
 export const generateInput = (name: string, message: string) => {
-  return (defaultAnswer: string): any => ({
+  return (defaultAnswer: string): Question<Answers> => ({
     type: 'input',
     name,
     message,
@@ -9,7 +11,7 @@ export const generateInput = (name: string, message: string) => {
 
 export const generateSelect = (
   name: string
-): ((message: string) => (choices: string[]) => any) => {
+): ((message: string) => (choices: string[]) => Question<Answers>) => {
   return (message: string) => {
     return (choices: string[]) => ({
       type: 'list',
