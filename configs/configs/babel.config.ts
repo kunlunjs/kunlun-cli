@@ -3,7 +3,8 @@ import {
   defaultBabelPresetEnvOptions,
   isDefaultDevelopment,
   isDefaultTypeScriptProject,
-  isDefaultTypeScriptReactProject
+  isDefaultVueProject,
+  isDefaultReactProject
 } from '../defaults'
 import type { BabelPresetEnvOptions } from '../types'
 
@@ -12,6 +13,7 @@ const dependencies = getPackageJson('dependencies')
 export const getBabelConfig = (
   args: {
     isDevelopment?: boolean
+    isVueProject?: boolean
     isReactProject?: boolean
     isTypeScriptProject?: boolean
     // @babel/preset-env 配置项
@@ -22,23 +24,25 @@ export const getBabelConfig = (
 ) => {
   const {
     isDevelopment = isDefaultDevelopment,
-    isReactProject = isDefaultTypeScriptReactProject,
+    isReactProject = isDefaultReactProject,
+    isVueProject = isDefaultVueProject,
     isTypeScriptProject = isDefaultTypeScriptProject,
     env = defaultBabelPresetEnvOptions,
     consoleRemove = false // { exclude: ['warn', 'error'] }
   } = args
   return {
     presets: [
-      ['@babel/preset-env', env],
+      ['@babel/preset-env', {}],
       // Enable development transform of React with new automatic runtime
       isReactProject && [
         '@babel/preset-react',
-        { development: isDevelopment, runtime: 'automatic' }
+        { development: isDevelopment, useBuiltIns: true, runtime: 'automatic' }
       ],
       isTypeScriptProject && '@babel/preset-typescript'
     ].filter(Boolean),
 
     plugins: [
+      isVueProject && '@vue/babel-plugin-jsx',
       !!dependencies?.antd && [
         'import',
         {

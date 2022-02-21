@@ -6,15 +6,15 @@ import { ERROR_PREFIX } from '../lib/ui'
 import { AbstractAction } from './abstract.action'
 
 export class StartAction extends AbstractAction<StartOptions> {
-  protected readonly webpackCompiler = new WebpackCompiler()
-  protected readonly viteCompiler = new ViteCompiler()
-
   public async handle(options: StartOptions) {
+    process.env.NODE_ENV = 'development'
     try {
       if (options.vite) {
-        await this.viteCompiler.run({}, true)
+        const viteCompiler = new ViteCompiler()
+        await viteCompiler.run({}, true)
       } else {
-        this.webpackCompiler.run({
+        const webpackCompiler = new WebpackCompiler()
+        webpackCompiler.run({
           mode: 'development'
         })
       }

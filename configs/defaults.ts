@@ -23,8 +23,11 @@ export const isDefaultTypeScriptProject = existsSync(
 //   `${process.cwd()}/**/*.tsx`,
 //   {}
 // ).length
-export const isDefaultTypeScriptReactProject =
-  getPackageJson('dependencies')?.react && isDefaultTypeScriptProject
+const dependencies = getPackageJson('dependencies')
+export const isDefaultReactProject = !!dependencies?.react
+export const isDefaultVueProject = !!dependencies?.vue
+export const isDefaultTypeScriptFrontProject =
+  (isDefaultReactProject || isDefaultVueProject) && isDefaultTypeScriptProject
 
 export const defaultDefinePluginOption: DefinePluginOptions = {
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

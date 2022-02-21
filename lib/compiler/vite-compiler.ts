@@ -5,6 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { mergeWith } from 'lodash'
 import type { InlineConfig, UserConfig } from 'vite'
 import { createServer, build } from 'vite'
+import { isDefaultVueProject } from '../../configs/defaults'
 
 export class ViteCompiler {
   constructor() {}
@@ -12,15 +13,8 @@ export class ViteCompiler {
   private getCommonConfig(config?: UserConfig): InlineConfig {
     const root = process.cwd()
     const plugins: InlineConfig['plugins'] = []
-    // 读取配置
-    const projectPkg = require(resolve(root, 'package.json'))
     // vue 项目
-    if (
-      [
-        ...Object.keys(projectPkg.dependencies ?? {}),
-        ...Object.keys(projectPkg.devDependencies ?? {})
-      ].includes('vue')
-    ) {
+    if (isDefaultVueProject) {
       plugins.push(vue(), vueJsx())
     } else {
       // 默认 react 项目
@@ -28,7 +22,7 @@ export class ViteCompiler {
     }
     const defaultConfig: InlineConfig = {
       root,
-      // base: '',
+      base: '',
       resolve: {
         alias: {
           '@': resolve(root, 'src')
@@ -40,7 +34,7 @@ export class ViteCompiler {
           // TODO
         }
       },
-      plugins: []
+      plugins
     }
     return mergeWith(defaultConfig, config, (oldValue, newValue) => {
       if (Array.isArray(oldValue)) {

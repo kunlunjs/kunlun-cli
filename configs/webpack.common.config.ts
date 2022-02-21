@@ -11,7 +11,7 @@ import {
   defaultDefinePluginOption,
   isDefaultDevelopment,
   isDefaultTypeScriptProject,
-  isDefaultTypeScriptReactProject
+  isDefaultTypeScriptFrontProject
 } from './defaults'
 import {
   getCSSRule,
@@ -42,7 +42,7 @@ export const getCommonConfig = (
     plugins
   } = args
 
-  const html = isDefaultTypeScriptReactProject
+  const html = isDefaultTypeScriptFrontProject
 
   return {
     mode,

@@ -1,12 +1,12 @@
 import type { Configuration } from 'webpack-dev-server'
-import { isDefaultTypeScriptReactProject } from './defaults'
+import { isDefaultTypeScriptFrontProject } from './defaults'
 
 export const getDevServerConfig = (args: Configuration = {}): Configuration => {
   const {
     port = process.env.PORT || 8000,
-    hot = isDefaultTypeScriptReactProject,
-    open = isDefaultTypeScriptReactProject,
-    historyApiFallback = isDefaultTypeScriptReactProject,
+    hot = isDefaultTypeScriptFrontProject,
+    open = isDefaultTypeScriptFrontProject,
+    historyApiFallback = isDefaultTypeScriptFrontProject,
     proxy = {},
     compress = false
   } = args
@@ -65,7 +65,7 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
       *   errors-only
       *   errors-warnings
       *   none
-      *   
+      *
       */
       stats: {
         modules: true,
