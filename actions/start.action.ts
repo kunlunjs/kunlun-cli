@@ -1,15 +1,23 @@
 import * as chalk from 'chalk'
 import type { StartOptions } from '../commands/start.command'
+import { ViteCompiler } from '../lib/compiler/vite-compiler'
 import { WebpackCompiler } from '../lib/compiler/webpack-compiler'
 import { ERROR_PREFIX } from '../lib/ui'
 import { AbstractAction } from './abstract.action'
 
 export class StartAction extends AbstractAction<StartOptions> {
-  protected readonly compiler = new WebpackCompiler()
+  protected readonly webpackCompiler = new WebpackCompiler()
+  protected readonly viteCompiler = new ViteCompiler()
 
   public async handle(options: StartOptions) {
     try {
-      await this.runBuild()
+      if (options.vite) {
+        await this.viteCompiler.run({}, true)
+      } else {
+        this.webpackCompiler.run({
+          mode: 'development'
+        })
+      }
     } catch (err) {
       if (err instanceof Error) {
         console.log(`\n${ERROR_PREFIX} ${err.message}\n`)
@@ -17,11 +25,5 @@ export class StartAction extends AbstractAction<StartOptions> {
         console.error(`\n${chalk.red(err)}\n`)
       }
     }
-  }
-
-  public async runBuild() {
-    this.compiler.run({
-      mode: 'development'
-    })
   }
 }

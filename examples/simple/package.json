@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "ts-node ../../bin/kunlun.ts start hello -c p --webpack --vite",
+    "start": "ts-node ../../bin/kunlun.ts start --vite",
     "build": "ts-node ../../bin/kunlun.ts build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "vue": "^3.2.31"
   },
   "devDependencies": {
     "@types/react": "^17.0.39",
