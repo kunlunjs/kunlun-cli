@@ -1,4 +1,5 @@
 import * as MiniCSSExtractPlugin from 'mini-css-extract-plugin'
+import { getPostCSSConfig } from '../configs/postcss.config'
 import { isDefaultDevelopment } from '../defaults'
 import type { Rule } from '../types'
 
@@ -18,7 +19,10 @@ export const getSassRule = (args: { isDevelopment?: true } = {}): Rule => {
       {
         loader: 'postcss-loader',
         options: {
-          sourceMap: isDevelopment
+          sourceMap: isDevelopment,
+          postcssOptions: {
+            plugins: getPostCSSConfig({ isDevelopment })
+          }
         }
       },
       {
