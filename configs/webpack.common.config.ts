@@ -1,3 +1,4 @@
+import { existsSync } from 'fs'
 import * as path from 'path'
 import ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 import CompressionWebpackPlugin = require('compression-webpack-plugin')
@@ -9,7 +10,6 @@ import webpack = require('webpack')
 import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
-  isDefaultDevelopment,
   isDefaultTypeScriptProject,
   isDefaultTypeScriptFrontProject
 } from './defaults'
@@ -28,13 +28,11 @@ const pkg = getPackageJson()
 
 export const getCommonConfig = (
   args: Configuration & {
-    isDevelopment?: boolean
     name?: string
     plugins?: WebpackPlugins
   } = {}
 ): Configuration => {
   const {
-    isDevelopment = isDefaultDevelopment,
     name = pkg?.name || 'Webpack',
     mode = 'development',
     entry = path.resolve(process.cwd(), 'src/index'),
@@ -42,7 +40,26 @@ export const getCommonConfig = (
     plugins
   } = args
 
+  const isDevelopment = mode === 'development'
+
   const html = isDefaultTypeScriptFrontProject
+
+  const projectDevelopmentTypescriptFile = path.resolve(
+    process.cwd(),
+    'tsconfig.development.json'
+  )
+  const projectProductionTypescriptFile = path.resolve(
+    process.cwd(),
+    'tsconfig.json'
+  )
+  const defaultDevelopmentTypescriptFile = path.resolve(
+    __dirname,
+    'tsconfig.development.json'
+  )
+  const defaultProductionTypescriptFile = path.resolve(
+    __dirname,
+    'tsconfig.json'
+  )
 
   return {
     mode,
@@ -51,9 +68,10 @@ export const getCommonConfig = (
       path:
         output?.path ||
         path.resolve(process.cwd(), name ? `dist-${name}` : 'dist'),
-      filename: isDevelopment
-        ? 'js/[name].bundle.js'
-        : 'js/[name].[contenthash:8].bundle.js',
+      filename:
+        mode === 'development'
+          ? 'js/[name].bundle.js'
+          : 'js/[name].[contenthash:8].bundle.js',
       chunkFilename: isDevelopment
         ? 'js/[name].chunk.js'
         : 'js/[name].[contenthash:8].chunk.js',
@@ -66,9 +84,9 @@ export const getCommonConfig = (
     },
     module: {
       rules: [
-        getScriptRule(),
-        getLessRule(),
-        getCSSRule(),
+        getScriptRule({ isDevelopment }),
+        getLessRule({ isDevelopment }),
+        getCSSRule({ isDevelopment }),
         getSVGRule(),
         getImageRule(),
         ...(args?.module?.rules || [])
@@ -84,8 +102,12 @@ export const getCommonConfig = (
           logger: 'webpack-infrastructure',
           typescript: {
             configFile: isDevelopment
-              ? path.resolve(process.cwd(), 'tsconfig.json')
-              : path.resolve(process.cwd(), 'tsconfig.development.json')
+              ? existsSync(projectDevelopmentTypescriptFile)
+                ? projectDevelopmentTypescriptFile
+                : defaultDevelopmentTypescriptFile
+              : existsSync(projectProductionTypescriptFile)
+              ? projectProductionTypescriptFile
+              : defaultProductionTypescriptFile
           }
         }),
       isDevelopment && isDefaultTypeScriptProject && new ReactRefreshPlugin(),

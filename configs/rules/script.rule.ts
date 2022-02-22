@@ -1,7 +1,11 @@
 import { getBabelConfig } from '../configs/babel.config'
 import type { Rule } from '../types'
 
-export const getScriptRule = (): Rule => {
+export const getScriptRule = ({
+  isDevelopment = true
+}: {
+  isDevelopment: boolean
+}): Rule => {
   //TODO find process.cwd() root dir babel config file
   const babel = {}
   return {
@@ -11,7 +15,9 @@ export const getScriptRule = (): Rule => {
       loader: 'babel-loader',
       options: {
         cacheDirectory: true,
-        ...getBabelConfig(),
+        ...getBabelConfig({
+          isDevelopment
+        }),
         ...babel
       }
     }

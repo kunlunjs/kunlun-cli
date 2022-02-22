@@ -4,7 +4,7 @@ import type { Rule } from '../types'
 
 export const getLessRule = (
   args: {
-    isDevelopment?: true
+    isDevelopment?: boolean
     globalVars?: Record<string, string>
     modifyVars?: Record<string, string>
   } = {}
