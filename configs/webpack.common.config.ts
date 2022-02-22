@@ -61,6 +61,16 @@ export const getCommonConfig = (
     'tsconfig.json'
   )
 
+  const tsconfigFile = isDevelopment
+    ? existsSync(projectDevelopmentTypescriptFile)
+      ? projectDevelopmentTypescriptFile
+      : existsSync(projectProductionTypescriptFile)
+      ? projectProductionTypescriptFile
+      : defaultDevelopmentTypescriptFile
+    : existsSync(projectProductionTypescriptFile)
+    ? projectProductionTypescriptFile
+    : defaultProductionTypescriptFile
+
   return {
     mode,
     entry,
@@ -101,13 +111,8 @@ export const getCommonConfig = (
         new ForkTSCheckerWebpackPlugin({
           logger: 'webpack-infrastructure',
           typescript: {
-            configFile: isDevelopment
-              ? existsSync(projectDevelopmentTypescriptFile)
-                ? projectDevelopmentTypescriptFile
-                : defaultDevelopmentTypescriptFile
-              : existsSync(projectProductionTypescriptFile)
-              ? projectProductionTypescriptFile
-              : defaultProductionTypescriptFile
+            context: process.cwd(),
+            configFile: tsconfigFile
           }
         }),
       isDevelopment && isDefaultTypeScriptProject && new ReactRefreshPlugin(),
