@@ -5,12 +5,16 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { mergeWith } from 'lodash'
 import type { InlineConfig, UserConfig } from 'vite'
 import { createServer, build } from 'vite'
+import { getPostCSSConfig } from '../../configs/configs/postcss.config'
 import { isDefaultVueProject } from '../../configs/defaults'
 
 export class ViteCompiler {
   constructor() {}
 
-  private getCommonConfig(config?: UserConfig): InlineConfig {
+  private getCommonConfig(
+    config: UserConfig | undefined,
+    isDevelopment: boolean
+  ): InlineConfig {
     const root = process.cwd()
     const plugins: InlineConfig['plugins'] = []
     // vue 项目
@@ -31,7 +35,9 @@ export class ViteCompiler {
       configFile: false,
       css: {
         postcss: {
-          // TODO
+          plugins: getPostCSSConfig({
+            isDevelopment
+          })
         }
       },
       plugins
@@ -81,7 +87,7 @@ export class ViteCompiler {
     watch = false,
     onSuccess?: () => void
   ) {
-    const mergedConfigs = this.getCommonConfig(configuration)
+    const mergedConfigs = this.getCommonConfig(configuration, !!watch)
     if (watch) {
       return this.serve(mergedConfigs)
     } else {

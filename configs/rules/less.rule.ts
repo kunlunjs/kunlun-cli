@@ -1,3 +1,4 @@
+import { getPostCSSConfig } from 'configs/postcss.config'
 import * as MiniCSSExtractPlugin from 'mini-css-extract-plugin'
 import { isDefaultDevelopment } from '../defaults'
 import type { Rule } from '../types'
@@ -28,7 +29,10 @@ export const getLessRule = (
       {
         loader: 'postcss-loader',
         options: {
-          sourceMap: isDevelopment
+          sourceMap: isDevelopment,
+          postcssOptions: {
+            plugins: getPostCSSConfig({ isDevelopment })
+          }
           // TODO load postcss.config.js
         }
       },
