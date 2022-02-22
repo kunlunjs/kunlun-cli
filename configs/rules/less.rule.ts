@@ -1,5 +1,5 @@
-import { getPostCSSConfig } from 'configs/postcss.config'
 import * as MiniCSSExtractPlugin from 'mini-css-extract-plugin'
+import { getPostCSSConfig } from '../configs/postcss.config'
 import { isDefaultDevelopment } from '../defaults'
 import type { Rule } from '../types'
 
