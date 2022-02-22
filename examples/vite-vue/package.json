@@ -1,0 +1,19 @@
+{
+  "name": "vite-vue-example",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "ts-node ../../bin/kunlun.ts start --vite",
+    "build": "ts-node ../../bin/kunlun.ts build --vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
+}
