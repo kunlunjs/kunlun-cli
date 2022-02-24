@@ -1,6 +1,6 @@
 {
   "name": "@kunlunjs/cli",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "publishConfig": {
     "access": "public"
@@ -10,8 +10,9 @@
     "npm": ">= 8.0.0"
   },
   "bin": {
-    "kunlun": "bin/kunlun.js"
+    "kunlun": "dist/bin/kunlun.js"
   },
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
     "clean": "gulp clean:bundle",
