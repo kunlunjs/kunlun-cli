@@ -272,12 +272,6 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /magic-string/0.25.7:
-    resolution: {integrity: sha1-P0l9b9NMZpxnmNy4IfLvMfVEUFE=, tarball: magic-string/download/magic-string-0.25.7.tgz}
-    dependencies:
-      sourcemap-codec: registry.npmmirror.com/sourcemap-codec/1.4.8
-    dev: false
-
   /media-typer/0.3.0:
     resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=, tarball: media-typer/download/media-typer-0.3.0.tgz}
     engines: {node: '>= 0.6'}
@@ -353,7 +347,7 @@ packages:
       ajv-formats: registry.npmmirror.com/ajv-formats/2.1.1
       chokidar: registry.npmmirror.com/chokidar/3.5.2
       fast-json-stable-stringify: registry.npmmirror.com/fast-json-stable-stringify/2.1.0
-      magic-string: 0.25.7
+      magic-string: registry.npmmirror.com/magic-string/0.25.7
       rxjs: registry.npmmirror.com/rxjs/6.6.7
       source-map: registry.npmmirror.com/source-map/0.7.3
     dev: false
@@ -385,7 +379,7 @@ packages:
     dependencies:
       '@angular-devkit/core': registry.npmmirror.com/@angular-devkit/core/13.2.3_chokidar@3.5.2
       jsonc-parser: registry.npmmirror.com/jsonc-parser/3.0.0
-      magic-string: 0.25.7
+      magic-string: registry.npmmirror.com/magic-string/0.25.7
       ora: registry.npmmirror.com/ora/5.4.1
       rxjs: registry.npmmirror.com/rxjs/6.6.7
     transitivePeerDependencies:
