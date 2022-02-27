@@ -25,7 +25,7 @@ export class ModelAction extends AbstractAction<ModelOptions> {
   }
   public async handle() {
     // 判断当前是单项目还是多项目来获得项目路径
-    let projectRoot: string
+    let projectRoot: string | null = null
     const subPackages = glob.sync(
       resolve(process.cwd(), 'packages/*/package.json')
     )
@@ -36,7 +36,9 @@ export class ModelAction extends AbstractAction<ModelOptions> {
           break
         }
       }
-      return unsupport()
+      if (!projectRoot) {
+        return unsupport()
+      }
     } else {
       if (hasNestJs(resolve(process.cwd(), 'package.json'))) {
         projectRoot = process.cwd()
