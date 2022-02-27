@@ -1,6 +1,7 @@
+import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import type { Configuration } from 'webpack'
 import { merge } from 'webpack-merge'
-import type { BabelPresetEnvOptions, WebpackPlugins } from './types'
+import type { WebpackPlugins } from './types'
 import { getCommonConfig } from './webpack.common.config'
 import { getProductionConfig } from './webpack.production.config'
 

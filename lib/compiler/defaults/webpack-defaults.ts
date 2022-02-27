@@ -30,7 +30,7 @@ export const webpackDefaultsFactory = (
         test: /.tsx?$/,
         use: [
           {
-            loader: 'ts-loader',
+            loader: require.resolve('ts-loader'),
             options: {
               transpileOnly: !isAnyPluginRegistered(plugins),
               configFile: tsConfigFile,
@@ -53,7 +53,7 @@ export const webpackDefaultsFactory = (
     plugins: [
       new TsconfigPathsPlugin({
         configFile: tsConfigFile
-      }) as any
+      })
     ]
   },
   mode: 'none',

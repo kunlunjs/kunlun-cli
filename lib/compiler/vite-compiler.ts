@@ -13,7 +13,7 @@ export class ViteCompiler {
 
   private getCommonConfig(
     config: UserConfig | undefined,
-    isDevelopment: boolean
+    isEnvDevelopment: boolean
   ): InlineConfig {
     const root = process.cwd()
     const plugins: InlineConfig['plugins'] = []
@@ -36,7 +36,7 @@ export class ViteCompiler {
       css: {
         postcss: {
           plugins: getPostCSSConfig({
-            isDevelopment
+            isEnvDevelopment
           })
         }
       },

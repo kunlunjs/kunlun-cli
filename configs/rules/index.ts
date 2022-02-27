@@ -1,6 +1,0 @@
-export * from './css.rule'
-export * from './font.rule'
-export * from './image.rule'
-export * from './less.rule'
-export * from './script.rule'
-export * from './svg.rule'

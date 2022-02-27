@@ -1,12 +1,6 @@
 import { existsSync } from 'fs'
 import * as path from 'path'
-import ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-import CompressionWebpackPlugin = require('compression-webpack-plugin')
-import CopyWebpackPlugin = require('copy-webpack-plugin')
-import ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-import HtmlWebpackPlugin = require('html-webpack-plugin')
 import type { Configuration } from 'webpack'
-import webpack = require('webpack')
 import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
@@ -14,14 +8,23 @@ import {
   isDefaultTypeScriptFrontProject
 } from './defaults'
 import {
-  getCSSRule,
-  getImageRule,
-  getLessRule,
-  getScriptRule,
-  getSVGRule
-} from './rules'
+  getCSSLoader,
+  getLessLoader,
+  getImageLoader,
+  getBabelLoader,
+  getSVGLoader,
+  getLessModuleLoader,
+  getCSSModuleLoader
+} from './loaders'
+// import { getSassLoader, getSassModuleLoader } from './loaders/sass.loader'
 import type { WebpackPlugins } from './types'
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
 const WebpackBar = require('webpackbar')
 
 const pkg = getPackageJson()
@@ -40,7 +43,7 @@ export const getCommonConfig = (
     plugins
   } = args
 
-  const isDevelopment = mode === 'development'
+  const isEnvDevelopment = mode === 'development'
 
   const html = isDefaultTypeScriptFrontProject
 
@@ -58,10 +61,10 @@ export const getCommonConfig = (
   )
   const defaultProductionTypescriptFile = path.resolve(
     __dirname,
-    'tsconfig.json'
+    'tsconfig.production.json'
   )
 
-  const tsconfigFile = isDevelopment
+  const tsconfigFile = isEnvDevelopment
     ? existsSync(projectDevelopmentTypescriptFile)
       ? projectDevelopmentTypescriptFile
       : existsSync(projectProductionTypescriptFile)
@@ -72,9 +75,12 @@ export const getCommonConfig = (
     : defaultProductionTypescriptFile
 
   return {
+    // target: ['browserlist'],
+    bail: !isEnvDevelopment,
     mode,
     entry,
     output: {
+      pathinfo: isEnvDevelopment,
       path:
         output?.path ||
         path.resolve(process.cwd(), name ? `dist-${name}` : 'dist'),
@@ -82,7 +88,7 @@ export const getCommonConfig = (
         mode === 'development'
           ? 'js/[name].bundle.js'
           : 'js/[name].[contenthash:8].bundle.js',
-      chunkFilename: isDevelopment
+      chunkFilename: isEnvDevelopment
         ? 'js/[name].chunk.js'
         : 'js/[name].[contenthash:8].chunk.js',
       assetModuleFilename: 'images/[hash][ext][query]',
@@ -90,15 +96,23 @@ export const getCommonConfig = (
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      alias: {
+        '@': path.resolve(process.cwd(), 'src'),
+        'src': path.resolve(process.cwd(), 'src')
+      },
       ...args?.resolve
     },
     module: {
       rules: [
-        getScriptRule({ isDevelopment }),
-        getLessRule({ isDevelopment }),
-        getCSSRule({ isDevelopment }),
-        getSVGRule(),
-        getImageRule(),
+        getBabelLoader({ isEnvDevelopment }),
+        getCSSLoader({ isEnvDevelopment }),
+        getCSSModuleLoader({ isEnvDevelopment }),
+        getLessLoader({ isEnvDevelopment }),
+        getLessModuleLoader({ isEnvDevelopment }),
+        // getSassLoader({ isEnvDevelopment }),
+        // getSassModuleLoader({ isEnvDevelopment }),
+        getSVGLoader(),
+        getImageLoader(),
         ...(args?.module?.rules || [])
       ]
     },
@@ -115,7 +129,9 @@ export const getCommonConfig = (
             configFile: tsconfigFile
           }
         }),
-      isDevelopment && isDefaultTypeScriptProject && new ReactRefreshPlugin(),
+      isEnvDevelopment &&
+        isDefaultTypeScriptProject &&
+        new ReactRefreshPlugin(),
       /*----------------------------------------------------------------*/
       plugins?.banner &&
         new webpack.BannerPlugin(
