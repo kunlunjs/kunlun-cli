@@ -1,0 +1,227 @@
+{
+  "database": {
+    "develop": "postgresql://admin:dr1eyoOZ4aAna1Nt@47.111.100.233:5433/nanjing-high-tech-zone.dev"
+  },
+  "models": [
+    {
+      "name": "UserModel",
+      "backupStrategy": "none",
+      "canCreate": true,
+      "canUpdate": true,
+      "canDelete": true,
+      "generatedApis": [
+        "list",
+        "get",
+        "create",
+        "update",
+        "delete"
+      ],
+      "primaryKey": [
+        "id"
+      ],
+      "ignore": false,
+      "id": "8cb8e55b-2623-43af-9fa5-d356f00d21e1",
+      "fields": [
+        {
+          "id": "00d5dc83-5ec6-493f-9bd3-9aa650545246",
+          "db": {
+            "title": "ID",
+            "name": "id",
+            "type": "String",
+            "isPrimaryKey": true,
+            "primaryKeyStrategy": "uuid"
+          }
+        },
+        {
+          "id": "b2caff00-6ca7-48bc-f669-a209ab197961",
+          "db": {
+            "title": "创建人",
+            "name": "createdBy",
+            "type": "String"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "326f6552-c03f-415a-90bc-1d9dd7a8d7d3",
+          "db": {
+            "title": "创建时间",
+            "name": "createdAt",
+            "type": "DateTime",
+            "defaultValue": "now()"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "3a606dee-ced2-483c-89b7-f56a4d9b8775",
+          "db": {
+            "title": "更新人",
+            "name": "updatedBy",
+            "type": "String"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "68411ca4-f7e9-4cb3-f401-cac0a80a4f04",
+          "db": {
+            "title": "更新时间",
+            "name": "updatedAt",
+            "type": "DateTime",
+            "defaultValue": "now()"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "480837c4-7285-407c-b176-62c37c59b800",
+          "db": {
+            "title": "删除人",
+            "name": "deletedBy",
+            "type": "String"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "a4f0f492-029c-4b62-e47f-8430e7ba9c38",
+          "db": {
+            "title": "删除时间",
+            "name": "deletedAt",
+            "type": "DateTime",
+            "defaultValue": "now()"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "2f55d470-ddc9-4020-c651-48dd79e5a908",
+          "db": {
+            "title": "排序",
+            "name": "sort",
+            "type": "Int",
+            "nullable": true,
+            "defaultValue": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProfileModel",
+      "backupStrategy": "none",
+      "canCreate": true,
+      "canUpdate": true,
+      "canDelete": true,
+      "generatedApis": [
+        "list",
+        "get",
+        "create",
+        "update",
+        "delete"
+      ],
+      "primaryKey": [
+        "id"
+      ],
+      "ignore": false,
+      "id": "b5c7c434-e26a-4377-b859-8802f6c6045e",
+      "fields": [
+        {
+          "id": "4f8533d9-a759-4567-a679-f88143061f20",
+          "db": {
+            "title": "ID",
+            "name": "id",
+            "type": "String",
+            "isPrimaryKey": true,
+            "primaryKeyStrategy": "uuid"
+          }
+        },
+        {
+          "id": "6540d3bc-f39a-477f-cb2b-48c31c8fece1",
+          "db": {
+            "title": "创建人",
+            "name": "createdBy",
+            "type": "String"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "e03352e5-d6bf-4f17-f592-32be1c296310",
+          "db": {
+            "title": "创建时间",
+            "name": "createdAt",
+            "type": "DateTime",
+            "defaultValue": "now()"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "f31daeed-445f-4597-91ba-2c3c43850ce2",
+          "db": {
+            "title": "更新人",
+            "name": "updatedBy",
+            "type": "String"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "7e5739b5-18b9-4bfb-f7f3-0f60dd4d4633",
+          "db": {
+            "title": "更新时间",
+            "name": "updatedAt",
+            "type": "DateTime",
+            "defaultValue": "now()"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "ca0fbed0-56e4-40ff-c0c2-22b3dcc80d81",
+          "db": {
+            "title": "删除人",
+            "name": "deletedBy",
+            "type": "String"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "e39d06eb-9364-4627-81ed-bdba765f9020",
+          "db": {
+            "title": "删除时间",
+            "name": "deletedAt",
+            "type": "DateTime",
+            "defaultValue": "now()"
+          },
+          "display": {
+            "readonly": true
+          }
+        },
+        {
+          "id": "057f25e6-66f6-43ae-bf76-6beb78712d89",
+          "db": {
+            "title": "排序",
+            "name": "sort",
+            "type": "Int",
+            "nullable": true,
+            "defaultValue": 0
+          }
+        }
+      ]
+    }
+  ]
+}
