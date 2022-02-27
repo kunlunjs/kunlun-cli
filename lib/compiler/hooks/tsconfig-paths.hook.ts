@@ -3,12 +3,12 @@ import { dirname, posix } from 'path'
 import tsPaths = require('tsconfig-paths')
 import type * as ts from 'typescript'
 import { paths } from '../../../configs/defaults'
-import { TypeScriptBinaryLoader } from '../typescript-loader'
+import { TSBinaryLoader } from '../typescript-loader'
 
 export function tsconfigPathsBeforeHookFactory(
   compilerOptions: ts.CompilerOptions
 ) {
-  const tsBinary = new TypeScriptBinaryLoader().load()
+  const tsBinary = new TSBinaryLoader().load()
   const { paths = {}, baseUrl = './' } = compilerOptions
   const matcher = tsPaths.createMatchPath(baseUrl!, paths, ['main'])
 

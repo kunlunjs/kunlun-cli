@@ -4,8 +4,8 @@ import type { Configuration } from 'webpack'
 import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
-  isDefaultTypeScriptProject,
-  isDefaultTypeScriptFrontProject,
+  isDefaultTSProject,
+  isDefaultTSFrontProject,
   paths,
   isDefaultEnvDevelopment,
   isDefaultUseSourceMap
@@ -53,37 +53,33 @@ export const getCommonConfig = (
   const isEnvDevelopment = isDefaultEnvDevelopment
   const useSourceMap = isDefaultUseSourceMap
 
-  const html = isDefaultTypeScriptFrontProject
+  const html = isDefaultTSFrontProject
 
-  const projectDevelopmentTypescriptFile = path.resolve(
+  const projectDevelopmentTSFile = path.resolve(
     paths.root,
     'tsconfig.development.json'
   )
-  const projectProductionTypescriptFile = path.resolve(
-    paths.root,
-    'tsconfig.json'
-  )
-  const defaultDevelopmentTypescriptFile = path.resolve(
+  const projectProductionTSFile = path.resolve(paths.root, 'tsconfig.json')
+  const defaultDevelopmentTSFile = path.resolve(
     __dirname,
     'tsconfig.development.json'
   )
-  const defaultProductionTypescriptFile = path.resolve(
+  const defaultProductionTSFile = path.resolve(
     __dirname,
     'tsconfig.production.json'
   )
 
   const tsconfigFile = isEnvDevelopment
-    ? existsSync(projectDevelopmentTypescriptFile)
-      ? projectDevelopmentTypescriptFile
-      : existsSync(projectProductionTypescriptFile)
-      ? projectProductionTypescriptFile
-      : defaultDevelopmentTypescriptFile
-    : existsSync(projectProductionTypescriptFile)
-    ? projectProductionTypescriptFile
-    : defaultProductionTypescriptFile
+    ? existsSync(projectDevelopmentTSFile)
+      ? projectDevelopmentTSFile
+      : existsSync(projectProductionTSFile)
+      ? projectProductionTSFile
+      : defaultDevelopmentTSFile
+    : existsSync(projectProductionTSFile)
+    ? projectProductionTSFile
+    : defaultProductionTSFile
 
   return {
-    // target: ['browserlist'],
     bail: !isEnvDevelopment,
     mode,
     entry,
@@ -97,7 +93,7 @@ export const getCommonConfig = (
       chunkFilename: isEnvDevelopment
         ? 'js/[name].chunk.js'
         : 'js/[name].[contenthash:8].chunk.js',
-      assetModuleFilename: 'images/[hash][ext][query]',
+      // assetModuleFilename: 'images/[hash][ext][query]',
       publicPath: output?.publicPath || '/'
     },
     resolve: {
@@ -128,7 +124,7 @@ export const getCommonConfig = (
       new WebpackBar({
         name
       }),
-      isDefaultTypeScriptProject &&
+      isDefaultTSProject &&
         new ForkTSCheckerWebpackPlugin({
           logger: 'webpack-infrastructure',
           typescript: {
@@ -136,9 +132,7 @@ export const getCommonConfig = (
             configFile: tsconfigFile
           }
         }),
-      isEnvDevelopment &&
-        isDefaultTypeScriptProject &&
-        new ReactRefreshPlugin(),
+      isEnvDevelopment && isDefaultTSProject && new ReactRefreshPlugin(),
       /*----------------------------------------------------------------*/
       plugins?.case &&
         CaseSensitivePathsPlugin(

@@ -1,12 +1,12 @@
 import type { Configuration } from 'webpack-dev-server'
-import { isDefaultTypeScriptFrontProject } from './defaults'
+import { isDefaultTSFrontProject } from './defaults'
 
 export const getDevServerConfig = (args: Configuration = {}): Configuration => {
   const {
     port = process.env.PORT || 8000,
-    hot = isDefaultTypeScriptFrontProject,
-    open = isDefaultTypeScriptFrontProject,
-    historyApiFallback = isDefaultTypeScriptFrontProject,
+    hot = isDefaultTSFrontProject,
+    open = isDefaultTSFrontProject,
+    historyApiFallback = isDefaultTSFrontProject,
     proxy = {},
     compress = false
   } = args

@@ -20,7 +20,7 @@ export const getSVGLoader = (): Rule => {
       {
         loader: require.resolve('file-loader'),
         options: {
-          name: 'static/media/[name].[hash].[ext]'
+          name: 'static/media/[name].[hash:8].[ext]'
         }
       }
     ],

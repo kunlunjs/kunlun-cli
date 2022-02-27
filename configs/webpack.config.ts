@@ -12,7 +12,6 @@ export const getWebpackConfig = (
   } = {}
 ): Configuration => {
   const { mode, plugins } = args
-
   return merge<Configuration>(
     getCommonConfig({ mode, plugins }),
     mode === 'production'

@@ -1,7 +1,7 @@
 import type * as ts from 'typescript'
 import { paths } from '../../configs/defaults'
 
-export class TypeScriptBinaryLoader {
+export class TSBinaryLoader {
   private tsBinary?: typeof ts
 
   public load(): typeof ts {

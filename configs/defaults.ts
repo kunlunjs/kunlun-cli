@@ -21,7 +21,7 @@ export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
 export const isDefaultEnvDevelopment = process.env.NODE_ENV !== 'production'
 export const isDefaultUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'true'
 
-export const isDefaultTypeScriptProject = existsSync(
+export const isDefaultTSProject = existsSync(
   path.resolve(paths.root, 'tsconfig.json')
 )
 
@@ -31,8 +31,8 @@ export const isExistTailwindCSS =
 
 export const isDefaultReactProject = !!dependencies?.react
 export const isDefaultVueProject = !!dependencies?.vue
-export const isDefaultTypeScriptFrontProject =
-  (isDefaultReactProject || isDefaultVueProject) && isDefaultTypeScriptProject
+export const isDefaultTSFrontProject =
+  (isDefaultReactProject || isDefaultVueProject) && isDefaultTSProject
 
 export const defaultDefinePluginOption: DefinePluginOptions = {
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

@@ -12,13 +12,7 @@
   "bin": {
     "kunlun": "bin/kunlun.js"
   },
-  "files": [
-    "actions",
-    "bin",
-    "commands",
-    "configs",
-    "lib"
-  ],
+  "files": ["actions", "bin", "commands", "configs", "lib"],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
     "clean": "gulp clean:bundle",
@@ -43,9 +37,7 @@
     "type": "git",
     "url": "git+https://github.com/turing-fe/kunlun-cli.git"
   },
-  "contributors": [
-    "Yudong Zhu <zhuyudong@aliyun.com>"
-  ],
+  "contributors": ["Yudong Zhu <zhuyudong@aliyun.com>"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/turing-fe/kunlun-cli/issues"
@@ -93,8 +85,10 @@
     "compression-webpack-plugin": "^9.2.0",
     "copy-webpack-plugin": "^10.2.4",
     "core-js": "^3.21.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.6.0",
     "cssnano": "^5.0.17",
+    "dotenv": "^16.0.0",
     "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "7.2.1",
     "glob": "^7.2.0",
@@ -116,6 +110,8 @@
     "react-refresh": "^0.11.0",
     "resolve-url-loader": "^5.0.0",
     "rimraf": "3.0.2",
+    "sass": "^1.49.9",
+    "sass-loader": "^12.6.0",
     "shelljs": "0.8.5",
     "source-map-support": "0.5.21",
     "style-loader": "^3.3.1",

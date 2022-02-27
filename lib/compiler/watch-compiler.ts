@@ -6,13 +6,13 @@ import { getValueOrDefault } from './helpers/get-value-or-default'
 import type { TsConfigProvider } from './helpers/tsconfig-provider'
 import { tsconfigPathsBeforeHookFactory } from './hooks/tsconfig-paths.hook'
 import type { PluginsLoader } from './plugins-loader'
-import type { TypeScriptBinaryLoader } from './typescript-loader'
+import type { TSBinaryLoader } from './typescript-loader'
 
 export class WatchCompiler {
   constructor(
     private readonly pluginsLoader: PluginsLoader,
     private readonly tsConfigProvider: TsConfigProvider,
-    private readonly typescriptLoader: TypeScriptBinaryLoader
+    private readonly typescriptLoader: TSBinaryLoader
   ) {}
 
   public run(

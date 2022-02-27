@@ -3,7 +3,7 @@ import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import { getPackageJson } from '../../lib/utils/package'
 import {
   defaultBabelPresetEnvOptions,
-  isDefaultTypeScriptProject,
+  isDefaultTSProject,
   isDefaultVueProject,
   isDefaultReactProject,
   isDefaultEnvDevelopment
@@ -16,7 +16,7 @@ export const getBabelConfig = (
     isEnvDevelopment: boolean
     isVueProject?: boolean
     isReactProject?: boolean
-    isTypeScriptProject?: boolean
+    isTSProject?: boolean
     env?: BabelPresetEnvOptions
     // babel-plugin-transform-remove-console 配置项
     consoleRemove?: false | { exclude: ('warn' | 'error')[] }
@@ -26,7 +26,7 @@ export const getBabelConfig = (
     isEnvDevelopment,
     isReactProject = isDefaultReactProject,
     isVueProject = isDefaultVueProject,
-    isTypeScriptProject = isDefaultTypeScriptProject,
+    isTSProject = isDefaultTSProject,
     env = defaultBabelPresetEnvOptions,
     consoleRemove = false // { exclude: ['warn', 'error'] }
   } = args
@@ -42,7 +42,7 @@ export const getBabelConfig = (
           runtime: 'automatic'
         }
       ],
-      isTypeScriptProject && require('@babel/preset-typescript').default
+      isTSProject && require('@babel/preset-typescript').default
     ].filter(Boolean),
 
     plugins: [

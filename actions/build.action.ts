@@ -1,3 +1,7 @@
+import * as path from 'path'
+require('dotenv').config({
+  path: path.resolve(__dirname, '../.env.production')
+})
 import * as chalk from 'chalk'
 import type { BuildOptions } from '../commands/build.command'
 import { ViteCompiler } from '../lib/compiler/vite-compiler'
@@ -7,7 +11,6 @@ import { AbstractAction } from './abstract.action'
 
 export class BuildAction extends AbstractAction<BuildOptions> {
   public async handle(options: BuildOptions) {
-    process.env.NODE_ENV = 'production'
     try {
       if (options.vite) {
         const viteCompiler = new ViteCompiler()
