@@ -1,6 +1,7 @@
 import { dirname, join, sep } from 'path'
 import * as chokidar from 'chokidar'
 import * as shell from 'shelljs'
+import { paths } from '../../configs/defaults'
 import type {
   ActionOnFile,
   Asset,
@@ -55,7 +56,7 @@ export class AssetsManager {
 
     try {
       let sourceRoot = getValueOrDefault(configuration, 'sourceRoot', appName)
-      sourceRoot = join(process.cwd(), sourceRoot)
+      sourceRoot = join(paths.root, sourceRoot)
 
       const filesToCopy = assets.map<AssetEntry>(item => {
         if (typeof item === 'string') {

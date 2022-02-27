@@ -7,20 +7,22 @@ export const getLessLoader = (
     isEnvDevelopment?: boolean
     useSourceMap?: boolean
     strictMath?: boolean
-    noIeCompat?: boolean
+    ieCompat?: boolean
     javascriptEnabled?: boolean
     globalVars?: Record<string, string>
     modifyVars?: Record<string, string>
+    urlArgs?: string
   } = {}
 ): Rule => {
   const {
     isEnvDevelopment,
     useSourceMap,
-    strictMath,
-    noIeCompat,
-    javascriptEnabled,
+    strictMath = false,
+    ieCompat = false,
+    javascriptEnabled = true,
     globalVars = {},
-    modifyVars = {}
+    modifyVars = {},
+    urlArgs = ''
   } = args
 
   return {
@@ -41,11 +43,15 @@ export const getLessLoader = (
       {
         loader: 'less-loader',
         options: {
-          strictMath,
-          noIeCompat,
-          javascriptEnabled,
-          globalVars,
-          modifyVars
+          sourceMap: useSourceMap,
+          lessOptions: {
+            strictMath,
+            ieCompat,
+            javascriptEnabled,
+            globalVars,
+            modifyVars
+            // urlArgs: ''
+          }
         }
       }
     ),
@@ -58,7 +64,7 @@ export const getLessModuleLoader = (
     isEnvDevelopment?: boolean
     useSourceMap?: boolean
     strictMath?: boolean
-    noIeCompat?: boolean
+    ieCompat?: boolean
     javascriptEnabled?: boolean
     globalVars?: Record<string, string>
     modifyVars?: Record<string, string>
@@ -68,14 +74,14 @@ export const getLessModuleLoader = (
     isEnvDevelopment,
     useSourceMap,
     strictMath,
-    noIeCompat,
+    ieCompat,
     javascriptEnabled,
     globalVars = {},
     modifyVars = {}
   } = args
 
   return {
-    test: /\.less$/,
+    test: /\.module\.less$/,
     use: getStyleLoaders(
       {
         isEnvDevelopment,
@@ -92,11 +98,13 @@ export const getLessModuleLoader = (
       {
         loader: 'less-loader',
         options: {
-          strictMath,
-          noIeCompat,
-          javascriptEnabled,
-          globalVars,
-          modifyVars
+          lessOptions: {
+            strictMath,
+            ieCompat,
+            javascriptEnabled,
+            globalVars,
+            modifyVars
+          }
         }
       }
     )

@@ -3,14 +3,15 @@ import ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import webpack = require('webpack')
 import nodeExternals = require('webpack-node-externals')
+import { isDefaultEnvDevelopment, paths } from '../../../configs/defaults'
 import { defaultConfiguration } from '../../configuration/defaults'
 import { appendTsExtension } from '../helpers/append-extension'
 import type { MultiKunlunCompilerPlugins } from '../plugins-loader'
 
 export const webpackDefaultsFactory = (
   sourceRoot: string,
-  relativeSourceRoot: string,
   entryFilename: string,
+  relativeSourceRoot: string,
   isDebugEnabled = false,
   tsConfigFile = defaultConfiguration.compilerOptions.tsConfigPath,
   plugins: MultiKunlunCompilerPlugins
@@ -78,7 +79,7 @@ export const webpackDefaultsFactory = (
         }
         try {
           require.resolve(resource, {
-            paths: [process.cwd()]
+            paths: [paths.root]
           })
         } catch (err) {
           return true
@@ -87,9 +88,34 @@ export const webpackDefaultsFactory = (
       }
     }),
     new ForkTsCheckerWebpackPlugin({
+      async: isDefaultEnvDevelopment,
       typescript: {
-        configFile: tsConfigFile
-      }
+        context: paths.src,
+        configFile: tsConfigFile,
+        diagnosticOptions: {
+          syntactic: true
+        },
+        mode: 'write-references'
+        // profile: true
+        // configOverwrite: {},
+      },
+      issue: {
+        // This one is specifically to match during CI tests,
+        // as micromatch doesn't match
+        // '../cra-template-typescript/template/src/App.tsx'
+        // otherwise.
+        include: [
+          { file: '../**/src/**/*.{ts,tsx}' },
+          { file: '**/src/**/*.{ts,tsx}' }
+        ],
+        exclude: [
+          { file: '**/src/**/__tests__/**' },
+          { file: '**/src/**/?(*.){spec|test}.*' },
+          { file: '**/src/setupProxy.*' },
+          { file: '**/src/setupTests.*' }
+        ]
+      },
+      logger: 'webpack-infrastructure'
     })
   ]
 })

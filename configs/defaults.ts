@@ -4,6 +4,11 @@ import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import { getPackageJson } from '../lib/utils/package'
 import type { DefinePluginOptions } from './types'
 
+export const paths = {
+  root: process.cwd(),
+  src: path.resolve(process.cwd(), 'src')
+}
+
 const dependencies = getPackageJson('dependencies')
 const devDependencies = getPackageJson('devDependencies')
 
@@ -14,14 +19,14 @@ export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
 }
 
 export const isDefaultEnvDevelopment = process.env.NODE_ENV !== 'production'
-export const isDefaultUseSourceMap = process.env.SOURCE_MAP !== 'true'
+export const isDefaultUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'true'
 
 export const isDefaultTypeScriptProject = existsSync(
-  path.resolve(process.cwd(), 'tsconfig.json')
+  path.resolve(paths.root, 'tsconfig.json')
 )
 
 export const isExistTailwindCSS =
-  existsSync(path.resolve(process.cwd(), 'tailwind.config.js')) &&
+  existsSync(path.resolve(paths.root, 'tailwind.config.js')) &&
   devDependencies?.tailwindcss
 
 export const isDefaultReactProject = !!dependencies?.react

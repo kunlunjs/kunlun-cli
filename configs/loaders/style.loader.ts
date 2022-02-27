@@ -1,7 +1,7 @@
-import * as MiniCSSExtractPlugin from 'mini-css-extract-plugin'
 import type { RuleSetUseItem } from 'webpack'
 import { getPostCSSConfig } from '../configs/postcss.config'
-import { isDefaultEnvDevelopment, isDefaultUseSourceMap } from '../defaults'
+import { isDefaultEnvDevelopment, paths } from '../defaults'
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 
 export const getStyleLoaders = (
   options: {
@@ -10,22 +10,23 @@ export const getStyleLoaders = (
     cssOptions?: Record<string, any>
   } = {
     isEnvDevelopment: isDefaultEnvDevelopment,
-    useSourceMap: isDefaultUseSourceMap,
+    useSourceMap: isDefaultEnvDevelopment,
     cssOptions: {}
   },
   preProcessor?:
-    | 'less-loader'
     | {
         loader: 'less-loader'
         options?: {
-          strictMath?: boolean
-          noIeCompat?: boolean
-          javascriptEnabled?: boolean
-          globalVars?: Record<string, string>
-          modifyVars?: Record<string, string>
+          sourceMap?: boolean
+          lessOptions?: {
+            strictMath?: boolean
+            ieCompat?: boolean
+            javascriptEnabled?: boolean
+            globalVars?: Record<string, string>
+            modifyVars?: Record<string, string>
+          }
         }
       }
-    | 'sass-loader'
     | {
         loader: 'sass-loader'
         options?: {
@@ -36,9 +37,10 @@ export const getStyleLoaders = (
   const { isEnvDevelopment, useSourceMap, cssOptions } = options
 
   const loaders: RuleSetUseItem[] = [
-    isEnvDevelopment
-      ? require.resolve('style-loader')
-      : MiniCSSExtractPlugin.loader,
+    // isEnvDevelopment
+    //   ? require.resolve('style-loader')
+    //   : MiniCSSExtractPlugin.loader,
+    MiniCSSExtractPlugin.loader,
     {
       loader: require.resolve('css-loader'),
       options: cssOptions
@@ -61,35 +63,22 @@ export const getStyleLoaders = (
     loaders.push({
       loader: require.resolve('resolve-url-loader'),
       options: {
-        sourceMap: useSourceMap,
-        root: process.cwd()
+        sourceMap: true,
+        root: paths.root
       }
     })
   }
-  if (
-    preProcessor === 'less-loader' ||
-    (typeof preProcessor === 'object' && preProcessor?.loader === 'less-loader')
-  ) {
-    const isObj = typeof preProcessor === 'object'
-    const lessOptions = (isObj && preProcessor?.options) || {
-      strictMath: false,
-      noIeCompat: true,
-      javascriptEnabled: true,
-      globalVars: {},
-      modifyVars: {}
-    }
+  if (preProcessor?.loader === 'less-loader') {
+    const lessOptions = preProcessor?.options?.lessOptions || {}
     loaders.push({
       loader: require.resolve('less-loader'),
       options: {
-        sourceMap: options.useSourceMap,
+        sourceMap: useSourceMap,
         lessOptions
       }
     })
   }
-  if (
-    preProcessor === 'sass-loader' ||
-    (typeof preProcessor === 'object' && preProcessor?.loader === 'sass-loader')
-  ) {
+  if (preProcessor?.loader === 'sass-loader') {
     loaders.push({
       loader: require.resolve('sass-loader'),
       options: {

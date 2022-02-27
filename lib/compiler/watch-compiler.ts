@@ -1,4 +1,5 @@
 import type * as ts from 'typescript'
+import { paths } from '../../configs/defaults'
 import type { Configuration } from '../configuration'
 import { CLI_ERRORS } from '../ui/errors'
 import { getValueOrDefault } from './helpers/get-value-or-default'
@@ -23,7 +24,7 @@ export class WatchCompiler {
   ) {
     const tsBin = this.typescriptLoader.load()
     const configPath = tsBin.findConfigFile(
-      process.cwd(),
+      paths.root,
       tsBin.sys.fileExists,
       configFilename
     )

@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { paths } from '../../../configs/defaults'
 import type { Reader } from '../../../lib/readers'
 import { FileSystemReader } from '../../../lib/readers'
 
@@ -9,7 +10,7 @@ jest.mock('fs', () => {
   }
 })
 
-const dir: string = process.cwd()
+const dir: string = paths.root
 const reader: Reader = new FileSystemReader(dir)
 
 describe('File System Reader', () => {

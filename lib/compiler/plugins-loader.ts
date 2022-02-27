@@ -1,6 +1,7 @@
 import { join } from 'path'
-import { isObject } from 'util'
+import { isPlainObject } from 'lodash'
 import type * as ts from 'typescript'
+import { paths } from '../../configs/defaults'
 import { CLI_ERRORS } from '../ui'
 
 const PLUGIN_ENTRY_FILENAME = 'plugin'
@@ -31,12 +32,11 @@ export interface MultiKunlunCompilerPlugins {
 export class PluginsLoader {
   public load(plugins: PluginEntry[] = []): MultiKunlunCompilerPlugins {
     const pluginNames = plugins.map(entry =>
-      isObject(entry) ? (entry as PluginAndOptions).name : (entry as string)
+      isPlainObject(entry)
+        ? (entry as PluginAndOptions).name
+        : (entry as string)
     )
-    const nodeModulePaths = [
-      join(process.cwd(), 'node_modules'),
-      ...module.paths
-    ]
+    const nodeModulePaths = [join(paths.root, 'node_modules'), ...module.paths]
     const pluginRefs: KunlunCompilerPlugin[] = pluginNames.map(item => {
       try {
         try {
@@ -63,7 +63,7 @@ export class PluginsLoader {
       if (!plugin.before && !plugin.after && !plugin.afterDeclarations) {
         throw new Error(CLI_ERRORS.WRONG_PLUGIN(pluginNames[index]))
       }
-      const options = isObject(plugins[index])
+      const options = isPlainObject(plugins[index])
         ? (plugins[index] as PluginAndOptions).options || {}
         : {}
       plugin.before &&

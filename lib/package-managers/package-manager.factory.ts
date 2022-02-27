@@ -1,4 +1,5 @@
 import { readdir } from 'fs'
+import { paths } from '../../configs/defaults'
 import type { AbstractPackageManager } from './abstract.package-manager'
 import { NpmPackageManager } from './npm.package-manager'
 import { PackageManager } from './package-manager'
@@ -21,7 +22,7 @@ export class PackageManagerFactory {
 
   public static async find(): Promise<AbstractPackageManager> {
     return new Promise<AbstractPackageManager>(resolve => {
-      readdir(process.cwd(), (error, files) => {
+      readdir(paths.root, (error, files) => {
         if (error) {
           resolve(this.create(PackageManager.NPM))
         } else {

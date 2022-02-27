@@ -1,3 +1,4 @@
+import CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 import type { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CompressionWebpackPlugin = require('compression-webpack-plugin')
 import CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -22,12 +23,16 @@ export type HtmlPluginOptions = ConstructorParameters<
 export type CompressionPluginOptions = ConstructorParameters<
   typeof CompressionWebpackPlugin
 >[0]
+export type CaseSensitivePathsPluginOptions = ConstructorParameters<
+  typeof CaseSensitivePathsPlugin
+>[0]
 
 export type WebpackPlugins = {
   banner?: string // | BannerPluginOptions
   copy?: CopyPluginOptions
   define?: Record<string, string>
   clean?: true | CleanPluginOptions
+  case?: CaseSensitivePathsPluginOptions
   compression?: boolean | CompressionPluginOptions
   html?: boolean | HtmlPluginOptions | HtmlPluginOptions[]
 }

@@ -5,6 +5,7 @@ import { promisify } from 'util'
 import { dasherize } from '@angular-devkit/core/src/utils/strings'
 import * as chalk from 'chalk'
 import type { NewOptions } from '../commands/new.command'
+import { paths } from '../configs/defaults'
 import { defaultGitIgnore } from '../lib/configuration/defaults'
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManagerFactory } from '../lib/package-managers'
@@ -81,7 +82,7 @@ const installPackages = async (
 
 const initializeGitRepository = async (dir: string) => {
   const runner = new GitRunner()
-  await runner.run('init', true, join(process.cwd(), dir)).catch(() => {
+  await runner.run('init', true, join(paths.root, dir)).catch(() => {
     console.error(chalk.red(MESSAGES.GIT_INITIALIZATION_ERROR))
   })
 }
@@ -98,7 +99,7 @@ const initializeGitRepository = async (dir: string) => {
  */
 const createGitIgnoreFile = (dir: string, content?: string) => {
   const fileContent = content || defaultGitIgnore
-  const filePath = join(process.cwd(), dir, '.gitignore')
+  const filePath = join(paths.root, dir, '.gitignore')
   return promisify(fs.writeFile)(filePath, fileContent)
 }
 

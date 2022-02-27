@@ -4,6 +4,7 @@ import { join } from 'path'
 import * as chalk from 'chalk'
 import osName = require('os-name')
 import type { InfoOptions } from '../commands/info.command'
+import { paths } from '../configs/defaults'
 import type { AbstractPackageManager } from '../lib/package-managers'
 import { PackageManagerFactory } from '../lib/package-managers'
 import { BANNER, MESSAGES } from '../lib/ui'
@@ -89,7 +90,7 @@ export class InfoAction extends AbstractAction<InfoOptions> {
   }
 
   readProjectPackageDependencies(): PackageJsonDependencies {
-    const buffer = readFileSync(join(process.cwd(), 'package.json'))
+    const buffer = readFileSync(join(paths.root, 'package.json'))
     const pack = JSON.parse(buffer.toString())
     const dependencies = { ...pack.dependencies, ...pack.devDependencies }
     Object.keys(dependencies).forEach(key => {
@@ -120,7 +121,7 @@ export class InfoAction extends AbstractAction<InfoOptions> {
     Object.keys(dependencies).forEach(key => {
       if (key.indexOf('@kunlunjs') > -1) {
         const depPackagePath = require.resolve(key + '/package.json', {
-          paths: [process.cwd()]
+          paths: [paths.root]
         })
         const depPackage = readFileSync(depPackagePath).toString()
         const value = JSON.parse(depPackage).version

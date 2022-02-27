@@ -5,7 +5,10 @@ import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
   isDefaultTypeScriptProject,
-  isDefaultTypeScriptFrontProject
+  isDefaultTypeScriptFrontProject,
+  paths,
+  isDefaultEnvDevelopment,
+  isDefaultUseSourceMap
 } from './defaults'
 import {
   getCSSLoader,
@@ -16,14 +19,18 @@ import {
   getLessModuleLoader,
   getCSSModuleLoader
 } from './loaders'
+import { getAvifLoader } from './loaders/avif.loader'
+import { getSassLoader, getSassModuleLoader } from './loaders/sass.loader'
 // import { getSassLoader, getSassModuleLoader } from './loaders/sass.loader'
 import type { WebpackPlugins } from './types'
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack')
 const WebpackBar = require('webpackbar')
 
@@ -38,21 +45,22 @@ export const getCommonConfig = (
   const {
     name = pkg?.name || 'Webpack',
     mode = 'development',
-    entry = path.resolve(process.cwd(), 'src/index'),
+    entry = path.resolve(paths.root, 'src/index'),
     output,
     plugins
   } = args
 
-  const isEnvDevelopment = mode === 'development'
+  const isEnvDevelopment = isDefaultEnvDevelopment
+  const useSourceMap = isDefaultUseSourceMap
 
   const html = isDefaultTypeScriptFrontProject
 
   const projectDevelopmentTypescriptFile = path.resolve(
-    process.cwd(),
+    paths.root,
     'tsconfig.development.json'
   )
   const projectProductionTypescriptFile = path.resolve(
-    process.cwd(),
+    paths.root,
     'tsconfig.json'
   )
   const defaultDevelopmentTypescriptFile = path.resolve(
@@ -81,9 +89,7 @@ export const getCommonConfig = (
     entry,
     output: {
       pathinfo: isEnvDevelopment,
-      path:
-        output?.path ||
-        path.resolve(process.cwd(), name ? `dist-${name}` : 'dist'),
+      path: output?.path || path.resolve(paths.root, 'dist'), // path.resolve(paths.root, name ? `dist-${name}` : 'dist'),
       filename:
         mode === 'development'
           ? 'js/[name].bundle.js'
@@ -97,20 +103,21 @@ export const getCommonConfig = (
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
       alias: {
-        '@': path.resolve(process.cwd(), 'src'),
-        'src': path.resolve(process.cwd(), 'src')
+        '@': path.resolve(paths.root, 'src'),
+        'src': path.resolve(paths.root, 'src')
       },
       ...args?.resolve
     },
     module: {
       rules: [
         getBabelLoader({ isEnvDevelopment }),
-        getCSSLoader({ isEnvDevelopment }),
-        getCSSModuleLoader({ isEnvDevelopment }),
-        getLessLoader({ isEnvDevelopment }),
-        getLessModuleLoader({ isEnvDevelopment }),
-        // getSassLoader({ isEnvDevelopment }),
-        // getSassModuleLoader({ isEnvDevelopment }),
+        getAvifLoader(),
+        getCSSLoader({ isEnvDevelopment, useSourceMap }),
+        getCSSModuleLoader({ isEnvDevelopment, useSourceMap }),
+        getLessLoader({ isEnvDevelopment, useSourceMap }),
+        getLessModuleLoader({ isEnvDevelopment, useSourceMap }),
+        getSassLoader({ isEnvDevelopment, useSourceMap }),
+        getSassModuleLoader({ isEnvDevelopment, useSourceMap }),
         getSVGLoader(),
         getImageLoader(),
         ...(args?.module?.rules || [])
@@ -125,13 +132,18 @@ export const getCommonConfig = (
         new ForkTSCheckerWebpackPlugin({
           logger: 'webpack-infrastructure',
           typescript: {
-            context: process.cwd(),
+            context: paths.root,
             configFile: tsconfigFile
           }
         }),
       isEnvDevelopment &&
         isDefaultTypeScriptProject &&
         new ReactRefreshPlugin(),
+      /*----------------------------------------------------------------*/
+      plugins?.case &&
+        CaseSensitivePathsPlugin(
+          typeof plugins.case === 'object' ? plugins.case : undefined
+        ),
       /*----------------------------------------------------------------*/
       plugins?.banner &&
         new webpack.BannerPlugin(
@@ -156,6 +168,8 @@ export const getCommonConfig = (
       ...(Array.isArray(plugins?.html)
         ? plugins!.html.map(option => new HtmlWebpackPlugin(option))
         : []),
+      /*----------------------------------------------------------------*/
+      new MiniCssExtractPlugin(),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/define-plugin/
       plugins?.define &&
