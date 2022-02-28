@@ -12,13 +12,7 @@
   "bin": {
     "kunlun": "bin/kunlun.js"
   },
-  "files": [
-    "actions",
-    "bin",
-    "commands",
-    "configs",
-    "lib"
-  ],
+  "files": ["actions", "bin", "commands", "configs", "lib"],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
     "clean": "gulp clean:bundle",
@@ -43,9 +37,7 @@
     "type": "git",
     "url": "git+https://github.com/turing-fe/kunlun-cli.git"
   },
-  "contributors": [
-    "Yudong Zhu <zhuyudong@aliyun.com>"
-  ],
+  "contributors": ["Yudong Zhu <zhuyudong@aliyun.com>"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/turing-fe/kunlun-cli/issues"
@@ -69,7 +61,7 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/runtime": "^7.17.2",
-    "@kunlunjs/model-design": "^0.0.3",
+    "@kunlunjs/model-design": "0.0.4",
     "@kunlunjs/schematics": "^0.0.8",
     "@originjs/vite-plugin-commonjs": "^1.0.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
