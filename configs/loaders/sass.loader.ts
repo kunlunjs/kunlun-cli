@@ -1,11 +1,14 @@
-import type { Rule } from '../types'
+import type { RuleSetRule } from 'webpack'
 import { getStyleLoaders } from './style.loader'
 import { getCSSModuleLoader } from '.'
 
 export const getSassLoader = ({
   isEnvDevelopment,
   useSourceMap
-}: { isEnvDevelopment?: boolean; useSourceMap?: boolean } = {}): Rule => {
+}: {
+  isEnvDevelopment?: boolean
+  useSourceMap?: boolean
+} = {}): RuleSetRule => {
   return {
     test: /\.s[ac]ss$/,
     exclude: /\.module\.s[ac]ss$/,
@@ -31,7 +34,10 @@ export const getSassLoader = ({
 export const getSassModuleLoader = ({
   isEnvDevelopment,
   useSourceMap
-}: { isEnvDevelopment?: boolean; useSourceMap?: boolean } = {}): Rule => {
+}: {
+  isEnvDevelopment?: boolean
+  useSourceMap?: boolean
+} = {}): RuleSetRule => {
   return {
     test: /\.module\.s[ac]ss$/,
     use: getStyleLoaders(

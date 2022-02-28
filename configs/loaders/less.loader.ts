@@ -1,4 +1,4 @@
-import type { Rule } from '../types'
+import type { RuleSetRule } from 'webpack'
 import { getStyleLoaders } from './style.loader'
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 
@@ -13,7 +13,7 @@ export const getLessLoader = (
     modifyVars?: Record<string, string>
     urlArgs?: string
   } = {}
-): Rule => {
+): RuleSetRule => {
   const {
     isEnvDevelopment,
     useSourceMap,
@@ -68,7 +68,7 @@ export const getLessModuleLoader = (
     globalVars?: Record<string, string>
     modifyVars?: Record<string, string>
   } = {}
-): Rule => {
+): RuleSetRule => {
   const {
     isEnvDevelopment,
     useSourceMap,

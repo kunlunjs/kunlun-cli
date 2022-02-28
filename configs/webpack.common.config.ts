@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
 import * as path from 'path'
-import type { Configuration } from 'webpack'
+import type { Configuration, RuleSetRule } from 'webpack'
 import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
@@ -45,11 +45,20 @@ export const getCommonConfig = (
     output,
     plugins
   } = args
-
   const isEnvDevelopment = mode === 'development'
   const isEnvProduction = mode === 'production'
-  const useSourceMap = isEnvDevelopment
-  const html = isDefaultTSFrontProject
+  const isEnvProductionProfile =
+    isEnvProduction && process.argv.includes('--profile')
+
+  const caseSensitivePaths = plugins?.case || true
+  const copy = plugins?.copy
+  const banner = plugins?.banner
+  const clean = plugins?.define || true
+  const define = plugins?.define || true
+
+  const useSourceMap =
+    process.env.GENERATE_SOURCEMAP == 'true' || isEnvDevelopment
+  const html = plugins?.html || isDefaultTSFrontProject
 
   const projectDevelopmentTSFile = path.resolve(
     paths.root,
@@ -79,6 +88,11 @@ export const getCommonConfig = (
     bail: !isEnvDevelopment,
     mode,
     entry,
+    devtool: isEnvProduction
+      ? useSourceMap
+        ? 'source-map'
+        : false
+      : isEnvDevelopment && 'cheap-module-source-map',
     output: {
       pathinfo: isEnvDevelopment,
       path: output?.path || path.resolve(paths.root, 'dist'), // path.resolve(paths.root, name ? `dist-${name}` : 'dist'),
@@ -96,30 +110,52 @@ export const getCommonConfig = (
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
       alias: {
         '@': path.resolve(paths.root, 'src'),
-        'src': path.resolve(paths.root, 'src')
+        'src': path.resolve(paths.root, 'src'),
+        ...(isEnvProductionProfile && {
+          'react-dom$': 'react-dom/profiling',
+          'scheduler/tracing': 'scheduler/tracing-profiling'
+        })
       },
       ...args?.resolve
     },
     module: {
+      strictExportPresence: true,
       rules: [
-        getBabelLoader({ isEnvDevelopment }),
-        getAvifLoader(),
-        getCSSLoader({ isEnvDevelopment, useSourceMap }),
-        getCSSModuleLoader({ isEnvDevelopment, useSourceMap }),
-        getLessLoader({ isEnvDevelopment, useSourceMap }),
-        getLessModuleLoader({ isEnvDevelopment, useSourceMap }),
-        getSassLoader({ isEnvDevelopment, useSourceMap }),
-        getSassModuleLoader({ isEnvDevelopment, useSourceMap }),
-        getSVGLoader(),
-        getImageLoader(),
+        useSourceMap && {
+          enforce: 'pre',
+          exclude: /@babel(?:\/|\\{1,2})runtime/,
+          test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+          loader: require.resolve('source-map-loader')
+        },
+        {
+          // "oneOf" will traverse all following loaders until one will
+          // match the requirements. When no loader matches it will fall
+          // back to the "file" loader at the end of the loader list.
+          oneOf: [
+            getBabelLoader({ isEnvDevelopment }),
+            getAvifLoader(),
+            getCSSLoader({ isEnvDevelopment, useSourceMap }),
+            getCSSModuleLoader({ isEnvDevelopment, useSourceMap }),
+            getLessLoader({ isEnvDevelopment, useSourceMap }),
+            getLessModuleLoader({ isEnvDevelopment, useSourceMap }),
+            getSassLoader({ isEnvDevelopment, useSourceMap }),
+            getSassModuleLoader({ isEnvDevelopment, useSourceMap }),
+            getSVGLoader(),
+            getImageLoader()
+          ]
+        },
         ...(args?.module?.rules || [])
-      ]
+      ].filter(Boolean) as RuleSetRule[]
     },
     plugins: [
       // @see https://webpack.js.org/plugins/progress-plugin/
       new WebpackBar({
         name
       }),
+      /*----------------------------------------------------------------*/
+      // @see https://github.com/johnagan/clean-webpack-plugin
+      clean && new CleanWebpackPlugin(clean !== true ? clean : {}),
+      /*----------------------------------------------------------------*/
       isDefaultTSProject &&
         new ForkTSCheckerWebpackPlugin({
           logger: 'webpack-infrastructure',
@@ -130,33 +166,33 @@ export const getCommonConfig = (
         }),
       isEnvDevelopment && isDefaultTSProject && new ReactRefreshPlugin(),
       /*----------------------------------------------------------------*/
-      plugins?.case &&
-        CaseSensitivePathsPlugin(
-          typeof plugins.case === 'object' ? plugins.case : {}
+      caseSensitivePaths &&
+        new CaseSensitivePathsPlugin(
+          typeof caseSensitivePaths === 'object' ? caseSensitivePaths : {}
         ),
       /*----------------------------------------------------------------*/
-      plugins?.banner &&
+      banner &&
         new webpack.BannerPlugin(
-          typeof plugins.banner === 'string'
+          typeof banner === 'string'
             ? {
-                banner: plugins.banner
+                banner
               }
-            : plugins.banner
+            : banner
         ),
       /*----------------------------------------------------------------*/
-      (plugins?.html || html) &&
-        !Array.isArray(plugins?.html) &&
+      html &&
+        !Array.isArray(html) &&
         new HtmlWebpackPlugin(
-          typeof plugins?.html === 'object'
-            ? plugins.html
+          typeof html === 'object'
+            ? html
             : {
                 title: name,
                 inject: 'body',
                 template: path.resolve(__dirname, './template.html')
               }
         ),
-      ...(Array.isArray(plugins?.html)
-        ? plugins!.html.map(option => new HtmlWebpackPlugin(option))
+      ...(Array.isArray(html)
+        ? html.map(option => new HtmlWebpackPlugin(option))
         : []),
       /*----------------------------------------------------------------*/
       isEnvProduction &&
@@ -166,22 +202,18 @@ export const getCommonConfig = (
         }),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/define-plugin/
-      plugins?.define &&
+      define &&
         new webpack.DefinePlugin(
-          typeof plugins.define === 'boolean'
+          typeof define === 'boolean'
             ? defaultDefinePluginOption
             : {
                 defaultDefinePluginOption,
-                ...plugins.define
+                ...define
               }
         ),
       /*----------------------------------------------------------------*/
-      // @see https://github.com/johnagan/clean-webpack-plugin
-      plugins?.clean &&
-        new CleanWebpackPlugin(plugins.clean !== true ? plugins.clean : {}),
-      /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/copy-webpack-plugin/
-      plugins?.copy && new CopyWebpackPlugin(plugins.copy)
+      copy && new CopyWebpackPlugin(copy)
     ].filter(Boolean) as Configuration['plugins']
   }
 }

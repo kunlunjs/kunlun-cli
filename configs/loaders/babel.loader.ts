@@ -1,11 +1,11 @@
+import type { RuleSetRule } from 'webpack'
 import { getBabelConfig } from '../configs/babel.config'
-import type { Rule } from '../types'
 
 export const getBabelLoader = ({
   isEnvDevelopment
 }: {
   isEnvDevelopment?: boolean
-}): Rule => {
+}): RuleSetRule => {
   const babel = {}
   return {
     test: /\.(mjs|[jt]sx?)$/,

@@ -15,21 +15,34 @@ export const getBabelConfig = (args: {
   isVueProject?: boolean
   isReactProject?: boolean
   isTSProject?: boolean
-  env?: BabelPresetEnvOptions
+  presetEnv?: BabelPresetEnvOptions
   // babel-plugin-transform-remove-console 配置项
-  consoleRemove?: false | { exclude: ('warn' | 'error')[] }
+  transformConsoleRemove?: false | { exclude: ('warn' | 'error')[] }
 }) => {
   const {
     isEnvDevelopment,
     isReactProject = isDefaultReactProject,
     isVueProject = isDefaultVueProject,
     isTSProject = isDefaultTSProject,
-    env = defaultBabelPresetEnvOptions,
-    consoleRemove = false // { exclude: ['warn', 'error'] }
+    presetEnv = defaultBabelPresetEnvOptions,
+    transformConsoleRemove = false // { exclude: ['warn', 'error'] }
   } = args
+  const env = process.env.BABEL_ENV || process.env.NODE_ENV
+  const isEnvTest = env === 'test'
   return {
     presets: [
-      [require('@babel/preset-env').default, env],
+      [
+        require('@babel/preset-env').default,
+        isEnvTest
+          ? {
+              targets: {
+                node: 'current'
+              },
+              // Exclude transforms that make all code slower
+              exclude: ['transform-typeof-symbol']
+            }
+          : presetEnv
+      ],
       // Enable development transform of React with new automatic runtime
       isReactProject && [
         require('@babel/preset-react').default,
@@ -43,9 +56,9 @@ export const getBabelConfig = (args: {
     ].filter(Boolean),
 
     plugins: [
-      isVueProject && '@vue/babel-plugin-jsx',
+      isVueProject && require('@vue/babel-plugin-jsx').default,
       !!dependencies?.['antd-mobile'] && [
-        'import',
+        require('babel-plugin-import').default,
         {
           libraryName: 'antd-mobile',
           libraryDirectory: 'lib',
@@ -54,7 +67,7 @@ export const getBabelConfig = (args: {
         'antd-mobile'
       ],
       !!dependencies?.antd && [
-        'import',
+        require('babel-plugin-import').default,
         {
           libraryName: 'antd',
           libraryDirectory: 'lib',
@@ -63,7 +76,7 @@ export const getBabelConfig = (args: {
         'antd'
       ],
       !!dependencies?.lodash && [
-        'import',
+        require('babel-plugin-lodash').default,
         {
           libraryName: 'lodash',
           libraryDirectory: '',
@@ -72,12 +85,48 @@ export const getBabelConfig = (args: {
         'lodash'
       ],
       // Applies the react-refresh Babel plugin on non-production modes only
-      isEnvDevelopment && isReactProject && 'react-refresh/babel',
-      consoleRemove === false
-        ? 'transform-remove-console'
-        : typeof consoleRemove === 'object'
-        ? ['transform-remove-console', consoleRemove]
+      // isEnvDevelopment &&
+      //   isReactProject &&
+      //   require('react-refresh/babel').default,
+      transformConsoleRemove === false
+        ? require('babel-plugin-transform-remove-console').default
+        : typeof transformConsoleRemove === 'object'
+        ? [
+            require('babel-plugin-transform-remove-console').default,
+            transformConsoleRemove
+          ]
         : false,
+      // Experimental macros support. Will be documented after it's had some time
+      // in the wild.
+      require('babel-plugin-macros'),
+      // Disabled as it's handled automatically by preset-env, and `selectiveLoose` isn't
+      // yet merged into babel: https://github.com/babel/babel/pull/9486
+      // Related: https://github.com/facebook/create-react-app/pull/8215
+      // [
+      //   require('@babel/plugin-transform-destructuring').default,
+      //   {
+      //     // Use loose mode for performance:
+      //     // https://github.com/facebook/create-react-app/issues/5602
+      //     loose: false,
+      //     selectiveLoose: [
+      //       'useState',
+      //       'useEffect',
+      //       'useContext',
+      //       'useReducer',
+      //       'useCallback',
+      //       'useMemo',
+      //       'useRef',
+      //       'useImperativeHandle',
+      //       'useLayoutEffect',
+      //       'useDebugValue',
+      //     ],
+      //   },
+      // ],
+      // Turn on legacy decorators for TypeScript files
+      isTSProject && [
+        require('@babel/plugin-proposal-decorators').default,
+        false
+      ],
       // class { handleClick = () => { } }
       // Enable loose mode to use assignment instead of defineProperty
       // See discussion in https://github.com/facebook/create-react-app/issues/4263
@@ -107,6 +156,29 @@ export const getBabelConfig = (args: {
       ],
       // Adds Numeric Separators
       require('@babel/plugin-proposal-numeric-separator').default,
+      // Disabled as it's handled automatically by preset-env, and `selectiveLoose` isn't
+      // yet merged into babel: https://github.com/babel/babel/pull/9486
+      // Related: https://github.com/facebook/create-react-app/pull/8215
+      // [
+      //   require('@babel/plugin-transform-destructuring').default,
+      //   {
+      //     // Use loose mode for performance:
+      //     // https://github.com/facebook/create-react-app/issues/5602
+      //     loose: false,
+      //     selectiveLoose: [
+      //       'useState',
+      //       'useEffect',
+      //       'useContext',
+      //       'useReducer',
+      //       'useCallback',
+      //       'useMemo',
+      //       'useRef',
+      //       'useImperativeHandle',
+      //       'useLayoutEffect',
+      //       'useDebugValue',
+      //     ],
+      //   },
+      // ],
       // Polyfills the runtime needed for async/await, generators, and friends
       // https://babeljs.io/docs/en/babel-plugin-transform-runtime
       [

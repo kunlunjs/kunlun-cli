@@ -1,6 +1,6 @@
-import type { Rule } from '../types'
+import type { RuleSetRule } from 'webpack'
 
-export const getSVGLoader = (): Rule => {
+export const getSVGLoader = (): RuleSetRule => {
   return {
     test: /\.svg$/,
     // type: 'asset/source' // 'asset/inline'
