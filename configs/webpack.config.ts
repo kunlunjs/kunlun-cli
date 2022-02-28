@@ -8,7 +8,9 @@ import { getProductionConfig } from './webpack.production.config'
 export const getWebpackConfig = (
   args: Configuration & {
     plugins?: WebpackPlugins
-    babel?: BabelPresetEnvOptions
+    babel?: {
+      env?: BabelPresetEnvOptions
+    }
   } = {}
 ): Configuration => {
   const { mode, plugins } = args
@@ -16,7 +18,7 @@ export const getWebpackConfig = (
     getCommonConfig({ mode, plugins }),
     mode === 'production'
       ? getProductionConfig({
-          compression: plugins?.compression
+          plugins
         })
       : {}
   )

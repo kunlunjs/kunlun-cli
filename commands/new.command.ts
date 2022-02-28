@@ -11,14 +11,14 @@ import { AbstractCommand } from './abstract.command'
 
 export interface NewOptions {
   name: string
-  directory: string
+  type: string
+  strict: boolean
   dryRun: boolean
   skipGit: boolean
+  directory: string
+  collection: string
   skipInstall: boolean
   packageManager: string
-  type: string
-  collection: string
-  strict: boolean
 }
 
 const availableProjectTypes = Object.keys(ProjectType)

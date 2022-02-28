@@ -5,23 +5,20 @@ import {
   defaultBabelPresetEnvOptions,
   isDefaultTSProject,
   isDefaultVueProject,
-  isDefaultReactProject,
-  isDefaultEnvDevelopment
+  isDefaultReactProject
 } from '../defaults'
 
 const dependencies = getPackageJson('dependencies')
 
-export const getBabelConfig = (
-  args: {
-    isEnvDevelopment: boolean
-    isVueProject?: boolean
-    isReactProject?: boolean
-    isTSProject?: boolean
-    env?: BabelPresetEnvOptions
-    // babel-plugin-transform-remove-console 配置项
-    consoleRemove?: false | { exclude: ('warn' | 'error')[] }
-  } = { isEnvDevelopment: isDefaultEnvDevelopment }
-) => {
+export const getBabelConfig = (args: {
+  isEnvDevelopment?: boolean
+  isVueProject?: boolean
+  isReactProject?: boolean
+  isTSProject?: boolean
+  env?: BabelPresetEnvOptions
+  // babel-plugin-transform-remove-console 配置项
+  consoleRemove?: false | { exclude: ('warn' | 'error')[] }
+}) => {
   const {
     isEnvDevelopment,
     isReactProject = isDefaultReactProject,

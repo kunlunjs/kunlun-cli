@@ -12,7 +12,7 @@ function hasNestJs(pkgPath: string) {
 }
 
 function unsupport() {
-  console.error(red('This may not a KunlunJS project'))
+  console.error(red('This may not a KunlunJS application'))
   process.exit(-1)
 }
 

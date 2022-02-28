@@ -37,6 +37,7 @@ export const getSassModuleLoader = ({
     use: getStyleLoaders(
       {
         isEnvDevelopment,
+        useSourceMap,
         cssOptions: {
           useSourceMap,
           importLoaders: 3,

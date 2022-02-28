@@ -34,7 +34,6 @@ export const getLessLoader = (
         useSourceMap,
         cssOptions: {
           importLoaders: 3,
-          sourceMap: useSourceMap,
           modules: {
             mode: 'icss'
           }
@@ -88,7 +87,6 @@ export const getLessModuleLoader = (
         useSourceMap,
         cssOptions: {
           importLoaders: 3,
-          sourceMap: useSourceMap,
           modules: {
             mode: 'local',
             getLocalIdent: getCSSModuleLocalIdent
@@ -98,6 +96,7 @@ export const getLessModuleLoader = (
       {
         loader: 'less-loader',
         options: {
+          sourceMap: useSourceMap,
           lessOptions: {
             strictMath,
             ieCompat,

@@ -1,12 +1,12 @@
 // Refer to https://awesomejs.dev/for/postcss/
 import type { Plugin } from 'postcss'
-import { isDefaultEnvDevelopment, isExistTailwindCSS } from '../defaults'
+import { isExistTailwindCSS } from '../defaults'
 
 export const getPostCSSConfig: (args: {
   isEnvDevelopment?: boolean
   useTailwindCSS?: boolean
 }) => Plugin[] = ({
-  isEnvDevelopment = isDefaultEnvDevelopment,
+  isEnvDevelopment,
   useTailwindCSS = isExistTailwindCSS
 }) => {
   return !useTailwindCSS

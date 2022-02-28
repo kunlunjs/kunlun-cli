@@ -1,19 +1,21 @@
-import CompressionPlugin = require('compression-webpack-plugin')
 import type { Configuration } from 'webpack'
-import type { CompressionPluginOptions } from './types'
+import type { WebpackPlugins } from './types'
+const CompressionPlugin = require('compression-webpack-plugin')
 
 export const getProductionConfig = (
-  args: { compression?: boolean | CompressionPluginOptions } = {}
+  args: { plugins?: WebpackPlugins } = {}
 ): Configuration => {
-  const { compression } = args
+  const { plugins = { compression: true } } = args
 
   return {
     mode: 'production',
     plugins: [
-      compression &&
-        new CompressionPlugin(
-          typeof compression === 'boolean' ? undefined : compression
-        )
+      // @see https://www.npmjs.com/package/compression-webpack-plugin
+      typeof plugins?.compression === 'object'
+        ? new CompressionPlugin(plugins.compression)
+        : plugins?.compression
+        ? new CompressionPlugin()
+        : false
     ].filter(Boolean) as Configuration['plugins']
   }
 }

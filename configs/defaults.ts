@@ -1,12 +1,19 @@
 import { existsSync } from 'fs'
-import * as path from 'path'
+import { resolve } from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import { getPackageJson } from '../lib/utils/package'
 import type { DefinePluginOptions } from './types'
 
+const root = process.cwd()
+
 export const paths = {
-  root: process.cwd(),
-  src: path.resolve(process.cwd(), 'src')
+  root,
+  src: resolve(root, 'src'),
+  // html: resolve(root, 'index.html'),
+  public: resolve(root, 'public'),
+  package: resolve(root, 'package.json'),
+  tsconfig: resolve(root, 'tsconfig.json'),
+  nodeModules: resolve(root, 'node_modules')
 }
 
 const dependencies = getPackageJson('dependencies')
@@ -18,15 +25,21 @@ export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
   exclude: ['transform-typeof-symbol']
 }
 
-export const isDefaultEnvDevelopment = process.env.NODE_ENV !== 'production'
-export const isDefaultUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'true'
+export const getEnv = () => {
+  const env = process.env.NODE_ENV
+  return {
+    isEnvDevelopment: env === 'development',
+    isEnvProduction: env === 'production',
+    useSourceMap: process.env.GENERATE_SOURCEMAP !== 'true'
+  }
+}
 
 export const isDefaultTSProject = existsSync(
-  path.resolve(paths.root, 'tsconfig.json')
+  resolve(paths.root, 'tsconfig.json')
 )
 
 export const isExistTailwindCSS =
-  existsSync(path.resolve(paths.root, 'tailwind.config.js')) &&
+  existsSync(resolve(root, 'tailwind.config.js')) &&
   devDependencies?.tailwindcss
 
 export const isDefaultReactProject = !!dependencies?.react

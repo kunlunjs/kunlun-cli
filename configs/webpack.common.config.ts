@@ -6,9 +6,7 @@ import {
   defaultDefinePluginOption,
   isDefaultTSProject,
   isDefaultTSFrontProject,
-  paths,
-  isDefaultEnvDevelopment,
-  isDefaultUseSourceMap
+  paths
 } from './defaults'
 import {
   getCSSLoader,
@@ -21,12 +19,10 @@ import {
 } from './loaders'
 import { getAvifLoader } from './loaders/avif.loader'
 import { getSassLoader, getSassModuleLoader } from './loaders/sass.loader'
-// import { getSassLoader, getSassModuleLoader } from './loaders/sass.loader'
 import type { WebpackPlugins } from './types'
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -50,9 +46,9 @@ export const getCommonConfig = (
     plugins
   } = args
 
-  const isEnvDevelopment = isDefaultEnvDevelopment
-  const useSourceMap = isDefaultUseSourceMap
-
+  const isEnvDevelopment = mode === 'development'
+  const isEnvProduction = mode === 'production'
+  const useSourceMap = isEnvDevelopment
   const html = isDefaultTSFrontProject
 
   const projectDevelopmentTSFile = path.resolve(
@@ -88,11 +84,11 @@ export const getCommonConfig = (
       path: output?.path || path.resolve(paths.root, 'dist'), // path.resolve(paths.root, name ? `dist-${name}` : 'dist'),
       filename:
         mode === 'development'
-          ? 'js/[name].bundle.js'
-          : 'js/[name].[contenthash:8].bundle.js',
+          ? 'static/js/[name].bundle.js'
+          : 'static/js/[name].[contenthash:8].bundle.js',
       chunkFilename: isEnvDevelopment
-        ? 'js/[name].chunk.js'
-        : 'js/[name].[contenthash:8].chunk.js',
+        ? 'static/js/[name].chunk.js'
+        : 'static/js/[name].[contenthash:8].chunk.js',
       // assetModuleFilename: 'images/[hash][ext][query]',
       publicPath: output?.publicPath || '/'
     },
@@ -136,7 +132,7 @@ export const getCommonConfig = (
       /*----------------------------------------------------------------*/
       plugins?.case &&
         CaseSensitivePathsPlugin(
-          typeof plugins.case === 'object' ? plugins.case : undefined
+          typeof plugins.case === 'object' ? plugins.case : {}
         ),
       /*----------------------------------------------------------------*/
       plugins?.banner &&
@@ -163,7 +159,11 @@ export const getCommonConfig = (
         ? plugins!.html.map(option => new HtmlWebpackPlugin(option))
         : []),
       /*----------------------------------------------------------------*/
-      new MiniCssExtractPlugin(),
+      isEnvProduction &&
+        new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+        }),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/define-plugin/
       plugins?.define &&
@@ -181,15 +181,7 @@ export const getCommonConfig = (
         new CleanWebpackPlugin(plugins.clean !== true ? plugins.clean : {}),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/copy-webpack-plugin/
-      plugins?.copy && new CopyWebpackPlugin(plugins.copy),
-      /*----------------------------------------------------------------*/
-      // @see https://www.npmjs.com/package/compression-webpack-plugin
-      plugins?.compression &&
-        new CompressionWebpackPlugin(
-          typeof plugins.compression === 'object'
-            ? plugins.compression
-            : undefined
-        )
+      plugins?.copy && new CopyWebpackPlugin(plugins.copy)
     ].filter(Boolean) as Configuration['plugins']
   }
 }

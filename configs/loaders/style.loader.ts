@@ -1,6 +1,6 @@
 import type { RuleSetUseItem } from 'webpack'
 import { getPostCSSConfig } from '../configs/postcss.config'
-import { isDefaultEnvDevelopment, paths } from '../defaults'
+import { paths } from '../defaults'
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 
 export const getStyleLoaders = (
@@ -9,8 +9,6 @@ export const getStyleLoaders = (
     useSourceMap?: boolean
     cssOptions?: Record<string, any>
   } = {
-    isEnvDevelopment: isDefaultEnvDevelopment,
-    useSourceMap: isDefaultEnvDevelopment,
     cssOptions: {}
   },
   preProcessor?:
@@ -37,13 +35,15 @@ export const getStyleLoaders = (
   const { isEnvDevelopment, useSourceMap, cssOptions } = options
 
   const loaders: RuleSetUseItem[] = [
-    // isEnvDevelopment
-    //   ? require.resolve('style-loader')
-    //   : MiniCSSExtractPlugin.loader,
-    MiniCSSExtractPlugin.loader,
+    isEnvDevelopment
+      ? require.resolve('style-loader')
+      : MiniCSSExtractPlugin.loader,
     {
       loader: require.resolve('css-loader'),
-      options: cssOptions
+      options: {
+        sourceMap: useSourceMap,
+        ...cssOptions
+      }
     },
     {
       loader: require.resolve('postcss-loader'),
@@ -59,32 +59,36 @@ export const getStyleLoaders = (
       }
     }
   ]
+
   if (preProcessor) {
+    const sourceMap = true // preProcessor.options?.sourceMap || useSourceMap
     loaders.push({
       loader: require.resolve('resolve-url-loader'),
       options: {
-        sourceMap: true,
+        sourceMap,
         root: paths.root
       }
     })
+
+    if (preProcessor?.loader === 'less-loader') {
+      const lessOptions = preProcessor?.options?.lessOptions || {}
+      loaders.push({
+        loader: require.resolve('less-loader'),
+        options: {
+          sourceMap,
+          lessOptions
+        }
+      })
+    }
+    if (preProcessor?.loader === 'sass-loader') {
+      loaders.push({
+        loader: require.resolve('sass-loader'),
+        options: {
+          sourceMap
+        }
+      })
+    }
   }
-  if (preProcessor?.loader === 'less-loader') {
-    const lessOptions = preProcessor?.options?.lessOptions || {}
-    loaders.push({
-      loader: require.resolve('less-loader'),
-      options: {
-        sourceMap: useSourceMap,
-        lessOptions
-      }
-    })
-  }
-  if (preProcessor?.loader === 'sass-loader') {
-    loaders.push({
-      loader: require.resolve('sass-loader'),
-      options: {
-        sourceMap: useSourceMap
-      }
-    })
-  }
+
   return loaders
 }

@@ -1,16 +1,14 @@
-import * as path from 'path'
-require('dotenv').config({
-  path: path.resolve(__dirname, '../.env.development')
-})
 import * as chalk from 'chalk'
 import type { StartOptions } from '../commands/start.command'
 import { ViteCompiler } from '../lib/compiler/vite-compiler'
 import { WebpackCompiler } from '../lib/compiler/webpack-compiler'
 import { ERROR_PREFIX } from '../lib/ui'
+import { loadEnv } from '../lib/utils'
 import { AbstractAction } from './abstract.action'
 
 export class StartAction extends AbstractAction<StartOptions> {
   public async handle(options: StartOptions) {
+    loadEnv('development')
     try {
       if (options.vite) {
         const viteCompiler = new ViteCompiler()

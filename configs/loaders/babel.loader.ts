@@ -2,9 +2,9 @@ import { getBabelConfig } from '../configs/babel.config'
 import type { Rule } from '../types'
 
 export const getBabelLoader = ({
-  isEnvDevelopment = true
+  isEnvDevelopment
 }: {
-  isEnvDevelopment: boolean
+  isEnvDevelopment?: boolean
 }): Rule => {
   const babel = {}
   return {
