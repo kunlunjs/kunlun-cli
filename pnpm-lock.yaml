@@ -20,7 +20,7 @@ specifiers:
   '@babel/runtime': ^7.17.2
   '@commitlint/cli': 16.2.1
   '@commitlint/config-angular': 16.2.1
-  '@kunlunjs/model-design': ^0.0.3
+  '@kunlunjs/model-design': 0.0.4
   '@kunlunjs/schematics': ^0.0.8
   '@originjs/vite-plugin-commonjs': ^1.0.2
   '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
@@ -146,7 +146,7 @@ dependencies:
   '@babel/preset-react': 7.16.7_@babel+core@7.17.5
   '@babel/preset-typescript': 7.16.7_@babel+core@7.17.5
   '@babel/runtime': 7.17.2
-  '@kunlunjs/model-design': 0.0.3
+  '@kunlunjs/model-design': 0.0.4
   '@kunlunjs/schematics': 0.0.8_chokidar@3.5.2
   '@originjs/vite-plugin-commonjs': 1.0.3
   '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_2a370f004a3cb37e88fbfd149ff0781e
@@ -2158,8 +2158,9 @@ packages:
       '@jridgewell/resolve-uri': 3.0.5
       '@jridgewell/sourcemap-codec': 1.4.11
 
-  /@kunlunjs/model-design/0.0.3:
-    resolution: {integrity: sha512-ANkpDHovgoliOYnRwdhxtZzd5gsSGuBIUsEbryxQgie6KL4L8zYmYXcFPlwxPbpfhfrNLZfjHzFygBptPpRvCA==}
+  /@kunlunjs/model-design/0.0.4:
+    resolution: {integrity: sha512-9h1i9S58hEjyzArE7b7mnO6fSAAFa2UBBbhHG29XSdr/St6dRSrnEEFlbu+ascXQFeIM+nbUucZzK/y8pts84w==}
+    engines: {node: '>16.0.0'}
     dependencies:
       '@mrleebo/prisma-ast': 0.3.0
       '@prisma/client': 3.10.0_prisma@3.10.0
