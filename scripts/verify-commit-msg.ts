@@ -1,7 +1,7 @@
 // Invoked on the commit-msg git hook by yorkie.
 
 import { readFileSync } from 'fs'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 
 // process.argv: [ts-node, verify-commit-msg.ts, .git/COMMIT_EDITMSG]
 const msgPath = process.argv[2]

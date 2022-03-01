@@ -83,3 +83,8 @@ declare module '*.module.sass' {
   const classes: Readonly<Record<string, string>>;
   export default classes;
 }
+
+declare module 'antd-dayjs-webpack-plugin' {
+  import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
+  export default AntdDayjsWebpackPlugin
+}

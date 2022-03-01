@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import type { Command } from 'commander'
 import { BuildAction, NewAction, StartAction, InfoAction } from '../actions'
 import { ModelAction } from '../actions/model.action'
@@ -8,6 +8,7 @@ import { InfoCommand } from './info.command'
 import { ModelCommand } from './model.command'
 import { NewCommand } from './new.command'
 import { StartCommand } from './start.command'
+
 export class CommandLoader {
   public static load(program: Command): void {
     new NewCommand(new NewAction()).load(program)

@@ -1,20 +1,17 @@
-import * as path from 'path'
+import path from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import { getPackageJson } from '../../lib/utils/package'
 import {
   defaultBabelPresetEnvOptions,
-  isDefaultTSProject,
-  isDefaultVueProject,
-  isDefaultReactProject
+  isTypeScriptProject,
+  isVueProject,
+  isReactProject
 } from '../defaults'
 
 const dependencies = getPackageJson('dependencies')
 
 export const getBabelConfig = (args: {
   isEnvDevelopment?: boolean
-  isVueProject?: boolean
-  isReactProject?: boolean
-  isTSProject?: boolean
   // @babel/preset-env options
   presetEnv?: BabelPresetEnvOptions
   // babel-plugin-transform-remove-console options
@@ -22,9 +19,6 @@ export const getBabelConfig = (args: {
 }) => {
   const {
     isEnvDevelopment,
-    isReactProject = isDefaultReactProject,
-    isVueProject = isDefaultVueProject,
-    isTSProject = isDefaultTSProject,
     presetEnv = defaultBabelPresetEnvOptions,
     transformConsoleRemove = false // { exclude: ['warn', 'error'] }
   } = args
@@ -51,7 +45,7 @@ export const getBabelConfig = (args: {
           runtime: 'automatic'
         }
       ],
-      isTSProject && require('@babel/preset-typescript').default
+      isTypeScriptProject && require('@babel/preset-typescript').default
     ].filter(Boolean),
 
     plugins: [
@@ -95,7 +89,7 @@ export const getBabelConfig = (args: {
           ]
         : false,
       require('babel-plugin-macros'),
-      isTSProject && [
+      isTypeScriptProject && [
         require('@babel/plugin-proposal-decorators').default,
         false
       ],

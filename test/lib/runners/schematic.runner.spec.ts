@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'path'
 
 const withSep = (route: string) => path.resolve(route.split('/').join(path.sep))
 

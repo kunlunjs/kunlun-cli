@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import type { StartOptions } from '../commands/start.command'
 import { ViteCompiler } from '../lib/compiler/vite-compiler'
 import { WebpackCompiler } from '../lib/compiler/webpack-compiler'

@@ -6,7 +6,7 @@ import { mergeWith } from 'lodash'
 import type { InlineConfig, UserConfig } from 'vite'
 import { createServer, build } from 'vite'
 import { getPostCSSConfig } from '../../configs/configs/postcss.config'
-import { isDefaultVueProject, paths } from '../../configs/defaults'
+import { isVueProject, paths } from '../../configs/defaults'
 
 export class ViteCompiler {
   constructor() {}
@@ -18,7 +18,7 @@ export class ViteCompiler {
     const root = paths.root
     const plugins: InlineConfig['plugins'] = []
     // vue 项目
-    if (isDefaultVueProject) {
+    if (isVueProject) {
       plugins.push(vue(), vueJsx())
     } else {
       // 默认 react 项目

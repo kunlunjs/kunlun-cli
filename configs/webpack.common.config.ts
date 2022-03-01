@@ -1,13 +1,14 @@
 import { existsSync } from 'fs'
-import * as path from 'path'
+import path from 'path'
+// import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import type { Configuration, RuleSetRule } from 'webpack'
 import WindCSSPlugin from 'windicss-webpack-plugin'
 import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
-  isDefaultTSProject,
-  isDefaultTSFrontProject,
+  isTypeScriptProject,
+  isTypeScriptFrontProject,
   paths,
   isExistWindiCSS
 } from './defaults'
@@ -63,7 +64,7 @@ export const getCommonConfig = (
 
   const useSourceMap =
     process.env.GENERATE_SOURCEMAP == 'true' || isEnvDevelopment
-  const html = plugins?.html || isDefaultTSFrontProject
+  const html = plugins?.html || isTypeScriptFrontProject
 
   const projectDevelopmentTSFile = path.resolve(
     paths.root,
@@ -177,7 +178,7 @@ export const getCommonConfig = (
       // @see https://github.com/johnagan/clean-webpack-plugin
       clean && new CleanWebpackPlugin(clean !== true ? clean : {}),
       /*----------------------------------------------------------------*/
-      isDefaultTSProject &&
+      isTypeScriptProject &&
         new ForkTSCheckerWebpackPlugin({
           logger: 'webpack-infrastructure',
           typescript: {
@@ -185,7 +186,7 @@ export const getCommonConfig = (
             configFile: tsconfigFile
           }
         }),
-      isEnvDevelopment && isDefaultTSProject && new ReactRefreshPlugin(),
+      isEnvDevelopment && isTypeScriptProject && new ReactRefreshPlugin(),
       /*----------------------------------------------------------------*/
       caseSensitivePaths &&
         new CaseSensitivePathsPlugin(
@@ -200,6 +201,8 @@ export const getCommonConfig = (
               }
             : banner
         ),
+      /*----------------------------------------------------------------*/
+      // isExistAntd && new AntdDayjsWebpackPlugin(),
       /*----------------------------------------------------------------*/
       html &&
         !Array.isArray(html) &&

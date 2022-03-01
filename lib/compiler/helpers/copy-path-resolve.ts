@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'path'
 
 /**
  * Helper function for returning a copy destination filename

@@ -1,4 +1,4 @@
-import * as os from 'os'
+import os from 'os'
 import { dirname, posix } from 'path'
 import tsPaths = require('tsconfig-paths')
 import type * as ts from 'typescript'

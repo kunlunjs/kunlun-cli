@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 import type { Configuration } from '../configuration'
 import { getValueOrDefault } from './helpers/get-value-or-default'
 import type { TsConfigProvider } from './helpers/tsconfig-provider'

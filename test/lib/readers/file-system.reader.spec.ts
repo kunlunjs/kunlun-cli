@@ -1,10 +1,12 @@
-import * as fs from 'fs'
+import fs from 'fs'
 import { paths } from '../../../configs/defaults'
 import type { Reader } from '../../../lib/readers'
 import { FileSystemReader } from '../../../lib/readers'
 
 jest.mock('fs', () => {
   return {
+    existsSync: jest.fn(() => ''),
+    realpathSync: jest.fn(() => ''),
     readdir: jest.fn((dir, callback) => callback(null, [])),
     readFile: jest.fn((filename, callback) => callback(null, 'content'))
   }

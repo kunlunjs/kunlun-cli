@@ -1,6 +1,6 @@
 import type { ChildProcess, SpawnOptions } from 'child_process'
 import { spawn } from 'child_process'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import { paths } from '../../configs/defaults'
 import { MESSAGES } from '../ui'
 

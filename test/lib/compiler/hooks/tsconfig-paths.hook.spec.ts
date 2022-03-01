@@ -1,5 +1,5 @@
-import * as path from 'path'
-import * as ts from 'typescript'
+import path from 'path'
+import ts from 'typescript'
 import { tsconfigPathsBeforeHookFactory } from '../../../../lib/compiler/hooks/tsconfig-paths.hook'
 
 function createSpec(baseUrl: string, fileNames: string[]) {

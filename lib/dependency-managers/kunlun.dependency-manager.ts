@@ -1,4 +1,4 @@
-import * as ora from 'ora'
+import ora from 'ora'
 import type {
   AbstractPackageManager,
   ProjectDependency

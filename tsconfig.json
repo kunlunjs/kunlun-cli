@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "declaration": true,
-    "lib": ["es2017"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "commonjs",
     "target": "es6",
+    // "outDir": "./dist",
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
     "useUnknownInCatchVariables": false,
-    "types": ["node", "jest"]
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+    // "types": ["node", "jest"]
   },
   "include": [
     "actions",

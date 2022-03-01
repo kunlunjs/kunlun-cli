@@ -1,10 +1,10 @@
-import { existsSync } from 'fs'
+import { existsSync, realpathSync } from 'fs'
 import { resolve } from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import { getPackageJson } from '../lib/utils/package'
 import type { DefinePluginOptions } from './types'
 
-const root = process.cwd()
+const root = realpathSync(process.cwd())
 
 export const paths = {
   root,
@@ -33,7 +33,7 @@ export const getEnv = () => {
   }
 }
 
-export const isDefaultTSProject = existsSync(
+export const isTypeScriptProject = existsSync(
   resolve(paths.root, 'tsconfig.json')
 )
 
@@ -43,10 +43,11 @@ export const isExistTailwindCSS =
   existsSync(resolve(root, 'tailwind.config.js')) &&
   devDependencies?.tailwindcss
 
-export const isDefaultReactProject = !!dependencies?.react
-export const isDefaultVueProject = !!dependencies?.vue
-export const isDefaultTSFrontProject =
-  (isDefaultReactProject || isDefaultVueProject) && isDefaultTSProject
+export const isReactProject = !!dependencies?.react
+export const isVueProject = !!dependencies?.vue
+export const isExistAntd = !!dependencies?.antd
+export const isTypeScriptFrontProject =
+  (isReactProject || isVueProject) && isTypeScriptProject
 
 export const defaultDefinePluginOption: DefinePluginOptions = {
   ...Object.keys(process.env).reduce((acc, key) => {

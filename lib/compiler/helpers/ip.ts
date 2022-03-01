@@ -1,5 +1,5 @@
 // https://gist.github.com/sviatco/9054346
-import * as os from 'os'
+import os from 'os'
 
 export let ip: string
 const ifaces = os.networkInterfaces()

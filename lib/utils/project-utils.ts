@@ -1,4 +1,4 @@
-import * as inquirer from 'inquirer'
+import inquirer from 'inquirer'
 import type { Answers, Question } from 'inquirer'
 import { getValueOrDefault } from '../compiler/helpers/get-value-or-default'
 import type { Configuration, ProjectConfiguration } from '../configuration'

@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import { platform, release } from 'os'
 import { join } from 'path'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import osName = require('os-name')
 import type { InfoOptions } from '../commands/info.command'
 import { paths } from '../configs/defaults'
