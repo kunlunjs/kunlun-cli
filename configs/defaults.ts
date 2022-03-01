@@ -22,7 +22,6 @@ const devDependencies = getPackageJson('devDependencies')
 export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
   useBuiltIns: 'entry',
   corejs: 3
-  // exclude: [require('@babel/plugin-transform-typeof-symbol').default]
 }
 
 export const getEnv = () => {

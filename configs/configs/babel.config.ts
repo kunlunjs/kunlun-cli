@@ -39,14 +39,10 @@ export const getBabelConfig = (args: {
               targets: {
                 node: 'current'
               },
-              // Exclude transforms that make all code slower
-              exclude: [
-                require('@babel/plugin-transform-typeof-symbol').default
-              ]
+              exclude: []
             }
           : presetEnv
       ],
-      // Enable development transform of React with new automatic runtime
       isReactProject && [
         require('@babel/preset-react').default,
         {
@@ -87,10 +83,9 @@ export const getBabelConfig = (args: {
         },
         'lodash'
       ],
-      // Applies the react-refresh Babel plugin on non-production modes only
-      // isEnvDevelopment &&
-      //   isReactProject &&
-      //   require('react-refresh/babel').default,
+      isEnvDevelopment &&
+        isReactProject &&
+        require('react-refresh/babel').default,
       transformConsoleRemove === false
         ? require('babel-plugin-transform-remove-console').default
         : typeof transformConsoleRemove === 'object'
@@ -99,89 +94,11 @@ export const getBabelConfig = (args: {
             transformConsoleRemove
           ]
         : false,
-      // Experimental macros support. Will be documented after it's had some time
-      // in the wild.
       require('babel-plugin-macros'),
-      // Disabled as it's handled automatically by preset-env, and `selectiveLoose` isn't
-      // yet merged into babel: https://github.com/babel/babel/pull/9486
-      // Related: https://github.com/facebook/create-react-app/pull/8215
-      // [
-      //   require('@babel/plugin-transform-destructuring').default,
-      //   {
-      //     // Use loose mode for performance:
-      //     // https://github.com/facebook/create-react-app/issues/5602
-      //     loose: false,
-      //     selectiveLoose: [
-      //       'useState',
-      //       'useEffect',
-      //       'useContext',
-      //       'useReducer',
-      //       'useCallback',
-      //       'useMemo',
-      //       'useRef',
-      //       'useImperativeHandle',
-      //       'useLayoutEffect',
-      //       'useDebugValue',
-      //     ],
-      //   },
-      // ],
-      // Turn on legacy decorators for TypeScript files
       isTSProject && [
         require('@babel/plugin-proposal-decorators').default,
         false
       ],
-      // class { handleClick = () => { } }
-      // Enable loose mode to use assignment instead of defineProperty
-      // See discussion in https://github.com/facebook/create-react-app/issues/4263
-      // Note:
-      // 'loose' mode configuration must be the same for
-      // * @babel/plugin-proposal-class-properties
-      // * @babel/plugin-proposal-private-methods
-      // * @babel/plugin-proposal-private-property-in-object
-      // (when they are enabled)
-      [
-        require('@babel/plugin-proposal-class-properties').default,
-        {
-          loose: true
-        }
-      ],
-      [
-        require('@babel/plugin-proposal-private-methods').default,
-        {
-          loose: true
-        }
-      ],
-      [
-        require('@babel/plugin-proposal-private-property-in-object').default,
-        {
-          loose: true
-        }
-      ],
-      // Adds Numeric Separators
-      require('@babel/plugin-proposal-numeric-separator').default,
-      // Disabled as it's handled automatically by preset-env, and `selectiveLoose` isn't
-      // yet merged into babel: https://github.com/babel/babel/pull/9486
-      // Related: https://github.com/facebook/create-react-app/pull/8215
-      // [
-      //   require('@babel/plugin-transform-destructuring').default,
-      //   {
-      //     // Use loose mode for performance:
-      //     // https://github.com/facebook/create-react-app/issues/5602
-      //     loose: false,
-      //     selectiveLoose: [
-      //       'useState',
-      //       'useEffect',
-      //       'useContext',
-      //       'useReducer',
-      //       'useCallback',
-      //       'useMemo',
-      //       'useRef',
-      //       'useImperativeHandle',
-      //       'useLayoutEffect',
-      //       'useDebugValue',
-      //     ],
-      //   },
-      // ],
       // Polyfills the runtime needed for async/await, generators, and friends
       // https://babeljs.io/docs/en/babel-plugin-transform-runtime
       [
@@ -212,13 +129,7 @@ export const getBabelConfig = (args: {
         {
           removeImport: true
         }
-      ],
-      // Optional chaining and nullish coalescing are supported in @babel/preset-env,
-      // but not yet supported in webpack due to support missing from acorn.
-      // These can be removed once webpack has support.
-      // See https://github.com/facebook/create-react-app/issues/8445#issuecomment-588512250
-      require('@babel/plugin-proposal-optional-chaining').default,
-      require('@babel/plugin-proposal-nullish-coalescing-operator').default
+      ]
     ].filter(Boolean),
     overrides: [],
     sourceMaps: true
