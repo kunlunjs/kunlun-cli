@@ -80,10 +80,6 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
       index: paths.publicUrlOrPath,
       ...(typeof historyApiFallback === 'object' ? historyApiFallback : {})
     },
-    // 监听文件变化
-    // watchFiles: {
-    //   paths: ['src/**/*', 'public/**/*']
-    // },
     devMiddleware: {
       publicPath: paths.publicUrlOrPath.slice(0, 1),
       /**
@@ -120,7 +116,7 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
       *   none
       *
       */
-      // stats: {}, // 'errors-warnings',
+      // stats: 'none', //'errors-warnings',
       /**
        * filePath 生成文件完整路径
        * @default

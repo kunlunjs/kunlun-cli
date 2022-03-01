@@ -327,22 +327,9 @@ export const getCommonConfig = (
     experiments: {
       topLevelAwait: true
     },
-    stats: {
-      assets: false,
-      moduleAssets: false,
-      cachedModules: false,
-      runtimeModules: false,
-      cachedAssets: false,
-      children: false,
-      chunks: false,
-      chunkGroups: false,
-      chunkModules: false,
-      chunkOrigins: false,
-      entrypoints: false,
-      modules: false,
-      runtime: false,
-      reasons: false,
-      moduleTrace: false
+    stats: 'errors-warnings', // defaultStats,
+    infrastructureLogging: {
+      level: 'warn'
     }
   }
 }

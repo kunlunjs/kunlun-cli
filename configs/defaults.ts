@@ -1,6 +1,7 @@
 import { existsSync, realpathSync } from 'fs'
 import { resolve } from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
+import type { Configuration } from 'webpack'
 import { getPackageJson } from '../lib/utils/package'
 import { getPublicUrlOrPath } from './helpers'
 
@@ -68,3 +69,23 @@ export const extensions = [
   '.web.tsx',
   '.tsx'
 ]
+
+export const defaultStats: Configuration['stats'] = {
+  assets: false,
+  cachedAssets: false,
+  cachedModules: false,
+  runtimeModules: false,
+  children: false,
+  chunks: false,
+  chunkGroups: false,
+  chunkModules: false,
+  chunkOrigins: false,
+  entrypoints: false,
+  modules: false,
+  moduleTrace: false,
+  moduleAssets: false,
+  runtime: false,
+  reasons: false,
+  timings: false,
+  version: false
+}

@@ -1,7 +1,9 @@
+import chalk from 'chalk'
 import webpack = require('webpack')
 import WebpackDevServer = require('webpack-dev-server')
 import { getWebpackConfig } from '../../configs/webpack.config'
 import { getDevServerConfig } from '../../configs/webpack.dev-server.config'
+// import { ip } from './helpers/ip'
 // import { INFO_PREFIX } from '../ui'
 
 export class WebpackCompiler {
@@ -55,7 +57,16 @@ export class WebpackCompiler {
         getDevServerConfig(configuration.devServer),
         compiler
       )
-      server.start()
+      const localIPv4 = WebpackDevServer.internalIPSync('v4')
+      // const localIPv6 = WebpackDevServer.internalIPSync('v6')
+      // server.start()
+      server.startCallback(() => {
+        console.log(
+          chalk.green(`🚀 Application running at:
+    - Local:   ${chalk.underline(`http://localhost:${port}`)}
+    - Network: ${chalk.underline(`http://${localIPv4}:${port}`)}`)
+        )
+      })
     } else {
       compiler.run(afterCallback)
     }
