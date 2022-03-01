@@ -21,8 +21,8 @@ const devDependencies = getPackageJson('devDependencies')
 
 export const defaultBabelPresetEnvOptions: BabelPresetEnvOptions = {
   useBuiltIns: 'entry',
-  corejs: 3,
-  exclude: ['transform-typeof-symbol']
+  corejs: 3
+  // exclude: [require('@babel/plugin-transform-typeof-symbol').default]
 }
 
 export const getEnv = () => {
@@ -38,6 +38,8 @@ export const isDefaultTSProject = existsSync(
   resolve(paths.root, 'tsconfig.json')
 )
 
+export const isExistWindiCSS = existsSync(resolve(root, 'windi.config.js'))
+
 export const isExistTailwindCSS =
   existsSync(resolve(root, 'tailwind.config.js')) &&
   devDependencies?.tailwindcss
@@ -48,10 +50,11 @@ export const isDefaultTSFrontProject =
   (isDefaultReactProject || isDefaultVueProject) && isDefaultTSProject
 
 export const defaultDefinePluginOption: DefinePluginOptions = {
-  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   ...Object.keys(process.env).reduce((acc, key) => {
     if (key.startsWith('VITE_')) {
       acc[`import.meta.env.${key}`] = JSON.stringify(process.env[key])
+    } else {
+      acc[key] = JSON.stringify(process.env[key])
     }
     return acc
   }, {} as Record<string, any>)

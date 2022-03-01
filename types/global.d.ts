@@ -9,6 +9,7 @@ declare namespace NodeJS {
     readonly BUILD_PATH: string
     readonly FAST_REFRESH: string
     readonly WDS_SOCKET_HOST: string
+    readonly BUNDLE_ANALYZER: string
     readonly GENERATE_SOURCEMAP: string
     readonly INLINE_RUNTIME_CHUNK: string
     readonly TSC_COMPILE_ON_ERROR: string

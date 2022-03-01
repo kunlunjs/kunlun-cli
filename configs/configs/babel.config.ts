@@ -15,8 +15,9 @@ export const getBabelConfig = (args: {
   isVueProject?: boolean
   isReactProject?: boolean
   isTSProject?: boolean
+  // @babel/preset-env options
   presetEnv?: BabelPresetEnvOptions
-  // babel-plugin-transform-remove-console 配置项
+  // babel-plugin-transform-remove-console options
   transformConsoleRemove?: false | { exclude: ('warn' | 'error')[] }
 }) => {
   const {
@@ -39,7 +40,9 @@ export const getBabelConfig = (args: {
                 node: 'current'
               },
               // Exclude transforms that make all code slower
-              exclude: ['transform-typeof-symbol']
+              exclude: [
+                require('@babel/plugin-transform-typeof-symbol').default
+              ]
             }
           : presetEnv
       ],

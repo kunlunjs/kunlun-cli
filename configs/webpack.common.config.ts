@@ -1,12 +1,15 @@
 import { existsSync } from 'fs'
 import * as path from 'path'
+import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import type { Configuration, RuleSetRule } from 'webpack'
+import WindCSSPlugin from 'windicss-webpack-plugin'
 import { getPackageJson } from '../lib/utils/package'
 import {
   defaultDefinePluginOption,
   isDefaultTSProject,
   isDefaultTSFrontProject,
-  paths
+  paths,
+  isExistWindiCSS
 } from './defaults'
 import {
   getCSSLoader,
@@ -28,6 +31,7 @@ const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const WebpackBar = require('webpackbar')
 
 const pkg = getPackageJson()
@@ -45,6 +49,7 @@ export const getCommonConfig = (
     output,
     plugins
   } = args
+  const { BUNDLE_ANALYZER } = process.env
   const isEnvDevelopment = mode === 'development'
   const isEnvProduction = mode === 'production'
   const isEnvProductionProfile =
@@ -116,17 +121,33 @@ export const getCommonConfig = (
           'scheduler/tracing': 'scheduler/tracing-profiling'
         })
       },
+      plugins: [
+        new TsconfigPathsPlugin({
+          silent: true,
+          baseUrl: paths.root,
+          configFile: tsconfigFile,
+          extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
+        })
+      ],
+      fallback: {
+        fs: false,
+        path: false,
+        buffer: false,
+        assert: false
+      },
       ...args?.resolve
     },
+    // externalsPresets: { node: true },
+    // externals: [nodeExternals()],
     module: {
       strictExportPresence: true,
       rules: [
-        useSourceMap && {
-          enforce: 'pre',
-          exclude: /@babel(?:\/|\\{1,2})runtime/,
-          test: /\.(js|mjs|jsx|ts|tsx|css)$/,
-          loader: require.resolve('source-map-loader')
-        },
+        // useSourceMap && {
+        //   enforce: 'pre',
+        //   exclude: /@babel(?:\/|\\{1,2})runtime/,
+        //   test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+        //   loader: require.resolve('source-map-loader')
+        // },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -198,7 +219,8 @@ export const getCommonConfig = (
       isEnvProduction &&
         new MiniCssExtractPlugin({
           filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+          ignoreOrder: true
         }),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/define-plugin/
@@ -213,7 +235,39 @@ export const getCommonConfig = (
         ),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/copy-webpack-plugin/
-      copy && new CopyWebpackPlugin(copy)
-    ].filter(Boolean) as Configuration['plugins']
+      copy && new CopyWebpackPlugin(copy),
+      /*----------------------------------------------------------------*/
+      isExistWindiCSS && new WindCSSPlugin(),
+      /*----------------------------------------------------------------*/
+      BUNDLE_ANALYZER === 'true' && new BundleAnalyzerPlugin()
+    ].filter(Boolean) as Configuration['plugins'],
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        minSize: 20480,
+        maxInitialRequests: 10,
+        maxAsyncRequests: 10,
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            chunks: 'initial',
+            name: 'vendors',
+            priority: -10,
+            enforce: true,
+            reuseExistingChunk: true
+          }
+        }
+      },
+      runtimeChunk: {
+        name: (entryPoint: { name: string }) => `runtime-${entryPoint.name}`
+      }
+    },
+    performance: {
+      maxAssetSize: 650 * 1024,
+      maxEntrypointSize: 650 * 1024
+    },
+    experiments: {
+      topLevelAwait: true
+    }
   }
 }
