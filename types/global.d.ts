@@ -5,10 +5,14 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: 'development' | 'production' | string
-    readonly PUBLIC_PATH: string
+    readonly HOST: string
+    readonly PORT: string | number
+    readonly PUBLIC_URL: string
     readonly BUILD_PATH: string
     readonly FAST_REFRESH: string
     readonly WDS_SOCKET_HOST: string
+    readonly WDS_SOCKET_PORT: string | number
+    readonly WDS_SOCKET_PATH: string
     readonly BUNDLE_ANALYZER: string
     readonly GENERATE_SOURCEMAP: string
     readonly INLINE_RUNTIME_CHUNK: string

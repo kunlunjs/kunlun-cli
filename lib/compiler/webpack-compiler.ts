@@ -24,6 +24,9 @@ export class WebpackCompiler {
       stats: webpack.Stats | undefined
     ) => {
       const statsOutput = stats?.toString({
+        ...(typeof webpackConfiguration.stats === 'object'
+          ? webpackConfiguration.stats
+          : {}),
         colors: true
       })
       if (statsOutput) {

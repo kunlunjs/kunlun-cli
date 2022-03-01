@@ -1,38 +1,91 @@
 import type { Configuration } from 'webpack-dev-server'
-import { isTypeScriptFrontProject } from './defaults'
+import { isTypeScriptFrontProject, paths } from './defaults'
+import { ignoredFiles } from './helpers'
 
 export const getDevServerConfig = (args: Configuration = {}): Configuration => {
   const {
     port = process.env.PORT || 8000,
     hot = isTypeScriptFrontProject,
-    open = isTypeScriptFrontProject,
-    historyApiFallback = isTypeScriptFrontProject,
+    client,
+    headers,
     proxy = {},
-    compress = false
+    devMiddleware,
+    compress = true,
+    allowedHosts = 'all',
+    open = isTypeScriptFrontProject,
+    historyApiFallback = isTypeScriptFrontProject
   } = args
+
+  const {
+    WDS_SOCKET_HOST = process.env.HOST || '0.0.0.0',
+    WDS_SOCKET_PORT = port,
+    WDS_SOCKET_PATH = '/ws'
+  } = process.env
+
+  let wdsHostname = WDS_SOCKET_HOST
+  let wdsPort = WDS_SOCKET_PORT
+  let wdsPathname = WDS_SOCKET_PATH
+  if (typeof client === 'object' && typeof client.webSocketURL === 'object') {
+    if (client?.webSocketURL?.hostname) {
+      wdsHostname = client?.webSocketURL?.hostname
+    }
+    if (client?.webSocketURL?.port) {
+      wdsPort = client?.webSocketURL?.port
+    }
+    if (client?.webSocketURL?.pathname) {
+      wdsPathname = client?.webSocketURL?.pathname
+    }
+  }
+
   return {
     port,
     hot,
     open,
     proxy,
     compress,
+    allowedHosts,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': '*',
+      'Access-Control-Allow-Headers': '*',
+      ...headers
+    },
+    // TODO
+    // https: getHttsConfig(),
     /**
      * 可以额外指定静态文件目录
      * @relativePath
      * @optional
      * @default public
      */
-    // static: path.resolve(__dirname, 'dist'),
-    client: {
-      logging: 'verbose'
+    static: args.static || {
+      directory: paths.public,
+      publicPath: [paths.publicUrlOrPath],
+      watch: {
+        ignored: ignoredFiles()
+      },
+      ...(typeof args?.static === 'object' ? args.static : {})
     },
-    // 不存在路径重定向到 index.html
-    historyApiFallback,
+    client: client || {
+      logging: 'verbose',
+      webSocketURL: {
+        hostname: wdsHostname,
+        pathname: wdsPathname,
+        port: wdsPort
+      },
+      ...(typeof client === 'object' ? client : {})
+    },
+    historyApiFallback: historyApiFallback || {
+      disableDotRule: true,
+      index: paths.publicUrlOrPath,
+      ...(typeof historyApiFallback === 'object' ? historyApiFallback : {})
+    },
     // 监听文件变化
     // watchFiles: {
     //   paths: ['src/**/*', 'public/**/*']
     // },
     devMiddleware: {
+      publicPath: paths.publicUrlOrPath.slice(0, 1),
       /**
       * @example
       *   detailed 相比 verbose 在 LOG from webpack.Compiler 上面多了 runtime modules 26.2 KiB
@@ -67,11 +120,7 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
       *   none
       *
       */
-      stats: {
-        // modules: true,
-        // chunks: true
-        // chunkRelations: true
-      }, // 'errors-warnings',
+      // stats: {}, // 'errors-warnings',
       /**
        * filePath 生成文件完整路径
        * @default
@@ -82,7 +131,8 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
         return (
           !/hot-update\.js(on)?$/.test(filePath) && !/\.map$/.test(filePath)
         )
-      }
+      },
+      ...devMiddleware
     }
   }
 }

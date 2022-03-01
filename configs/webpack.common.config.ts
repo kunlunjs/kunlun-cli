@@ -1,39 +1,43 @@
 import { existsSync } from 'fs'
 import path from 'path'
+import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 // import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
+import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import ForkTSCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+// import InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import type { Configuration, RuleSetRule } from 'webpack'
+import webpack from 'webpack'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
+import WebpackBar from 'webpackbar'
 import WindCSSPlugin from 'windicss-webpack-plugin'
 import { getPackageJson } from '../lib/utils/package'
 import {
-  defaultDefinePluginOption,
   isTypeScriptProject,
   isTypeScriptFrontProject,
   paths,
-  isExistWindiCSS
+  isExistWindiCSS,
+  extensions
 } from './defaults'
+import { defaultDefinePluginOption } from './helpers'
 import {
+  getAvifLoader,
   getCSSLoader,
   getLessLoader,
   getImageLoader,
   getBabelLoader,
   getSVGLoader,
   getLessModuleLoader,
-  getCSSModuleLoader
+  getCSSModuleLoader,
+  getSassLoader,
+  getSassModuleLoader
 } from './loaders'
-import { getAvifLoader } from './loaders/avif.loader'
-import { getSassLoader, getSassModuleLoader } from './loaders/sass.loader'
 import type { WebpackPlugins } from './types'
-const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const webpack = require('webpack')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const WebpackBar = require('webpackbar')
 
 const pkg = getPackageJson()
 
@@ -56,11 +60,14 @@ export const getCommonConfig = (
   const isEnvProductionProfile =
     isEnvProduction && process.argv.includes('--profile')
 
-  const caseSensitivePaths = plugins?.case || true
   const copy = plugins?.copy
   const banner = plugins?.banner
-  const clean = plugins?.define || true
-  const define = plugins?.define || true
+  const clean = plugins?.define ?? true
+  const define = plugins?.define ?? true
+  const ignore = plugins?.ignore ?? true
+  const manifest = plugins?.manifest ?? true
+  const bundleAnalyzer = plugins?.bundleAnalyzer
+  const caseSensitivePaths = plugins?.caseSensitvePaths ?? true
 
   const useSourceMap =
     process.env.GENERATE_SOURCEMAP == 'true' || isEnvDevelopment
@@ -103,17 +110,27 @@ export const getCommonConfig = (
       pathinfo: isEnvDevelopment,
       path: output?.path || path.resolve(paths.root, 'dist'), // path.resolve(paths.root, name ? `dist-${name}` : 'dist'),
       filename:
-        mode === 'development'
+        output?.filename ||
+        (mode === 'development'
           ? 'static/js/[name].bundle.js'
-          : 'static/js/[name].[contenthash:8].bundle.js',
-      chunkFilename: isEnvDevelopment
-        ? 'static/js/[name].chunk.js'
-        : 'static/js/[name].[contenthash:8].chunk.js',
+          : 'static/js/[name].[contenthash:8].bundle.js'),
+      chunkFilename:
+        output?.chunkFilename ||
+        (isEnvDevelopment
+          ? 'static/js/[name].chunk.js'
+          : 'static/js/[name].[contenthash:8].chunk.js'),
       // assetModuleFilename: 'images/[hash][ext][query]',
-      publicPath: output?.publicPath || '/'
+      publicPath: output?.publicPath || paths.publicUrlOrPath,
+      devtoolFallbackModuleFilenameTemplate: isEnvProduction
+        ? (info: { absoluteResourcePath: string }) =>
+            path
+              .relative(paths.src, info.absoluteResourcePath)
+              .replace(/\\/g, '/')
+        : (info: { absoluteResourcePath: string }) =>
+            path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      extensions,
       alias: {
         '@': path.resolve(paths.root, 'src'),
         'src': path.resolve(paths.root, 'src'),
@@ -178,6 +195,16 @@ export const getCommonConfig = (
       // @see https://github.com/johnagan/clean-webpack-plugin
       clean && new CleanWebpackPlugin(clean !== true ? clean : {}),
       /*----------------------------------------------------------------*/
+      ignore &&
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^\.\/locale$/,
+          contextRegExp: /moment$/,
+          ...(typeof ignore === 'object' ? ignore : {})
+        }),
+      /*----------------------------------------------------------------*/
+      // [webpack-dev-server] "hot: true" automatically applies HMR plugin, you don't have to add it manually to your webpack configuration.
+      // isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
+      /*----------------------------------------------------------------*/
       isTypeScriptProject &&
         new ForkTSCheckerWebpackPlugin({
           logger: 'webpack-infrastructure',
@@ -186,6 +213,7 @@ export const getCommonConfig = (
             configFile: tsconfigFile
           }
         }),
+      /*----------------------------------------------------------------*/
       isEnvDevelopment && isTypeScriptProject && new ReactRefreshPlugin(),
       /*----------------------------------------------------------------*/
       caseSensitivePaths &&
@@ -212,12 +240,15 @@ export const getCommonConfig = (
             : {
                 title: name,
                 inject: 'body',
+                minify: false,
                 template: path.resolve(__dirname, './template.html')
               }
         ),
       ...(Array.isArray(html)
         ? html.map(option => new HtmlWebpackPlugin(option))
         : []),
+      // isEnvProduction &&
+      //   new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
       /*----------------------------------------------------------------*/
       isEnvProduction &&
         new MiniCssExtractPlugin({
@@ -238,11 +269,35 @@ export const getCommonConfig = (
         ),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/copy-webpack-plugin/
-      copy && new CopyWebpackPlugin(copy),
+      copy &&
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: paths.public,
+              filter: filename => {
+                return (
+                  filename !== path.resolve(paths.root, 'public/index.html')
+                )
+              }
+            },
+            ...copy.patterns
+          ],
+          options: {
+            ...copy.options
+          }
+        }),
       /*----------------------------------------------------------------*/
       isExistWindiCSS && new WindCSSPlugin(),
       /*----------------------------------------------------------------*/
-      BUNDLE_ANALYZER === 'true' && new BundleAnalyzerPlugin()
+      manifest &&
+        new WebpackManifestPlugin({
+          fileName: 'assets',
+          publicPath: paths.publicUrlOrPath,
+          ...(typeof manifest === 'object' ? manifest : {})
+        }),
+      /*----------------------------------------------------------------*/
+      BUNDLE_ANALYZER === 'true' &&
+        new BundleAnalyzerPlugin(bundleAnalyzer || {})
     ].filter(Boolean) as Configuration['plugins'],
     optimization: {
       splitChunks: {
@@ -271,6 +326,23 @@ export const getCommonConfig = (
     },
     experiments: {
       topLevelAwait: true
+    },
+    stats: {
+      assets: false,
+      moduleAssets: false,
+      cachedModules: false,
+      runtimeModules: false,
+      cachedAssets: false,
+      children: false,
+      chunks: false,
+      chunkGroups: false,
+      chunkModules: false,
+      chunkOrigins: false,
+      entrypoints: false,
+      modules: false,
+      runtime: false,
+      reasons: false,
+      moduleTrace: false
     }
   }
 }

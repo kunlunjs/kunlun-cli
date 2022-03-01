@@ -1,7 +1,7 @@
+import CompressionPlugin from 'compression-webpack-plugin'
+import CSSMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import type { Configuration } from 'webpack'
 import type { WebpackPlugins } from './types'
-const CompressionPlugin = require('compression-webpack-plugin')
-const CSSMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
 export const getProductionConfig = (
   args: { plugins?: WebpackPlugins } = {}
@@ -15,7 +15,9 @@ export const getProductionConfig = (
       typeof plugins?.compression === 'object'
         ? new CompressionPlugin(plugins.compression)
         : plugins?.compression
-        ? new CompressionPlugin()
+        ? new CompressionPlugin({
+            exclude: /index\.html/
+          })
         : false
     ].filter(Boolean) as Configuration['plugins'],
     optimization: {

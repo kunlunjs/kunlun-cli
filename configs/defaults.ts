@@ -2,15 +2,20 @@ import { existsSync, realpathSync } from 'fs'
 import { resolve } from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import { getPackageJson } from '../lib/utils/package'
-import type { DefinePluginOptions } from './types'
+import { getPublicUrlOrPath } from './helpers'
 
 const root = realpathSync(process.cwd())
 
 export const paths = {
   root,
   src: resolve(root, 'src'),
-  // html: resolve(root, 'index.html'),
   public: resolve(root, 'public'),
+  html: resolve(root, 'public/index.html'),
+  publicUrlOrPath: getPublicUrlOrPath(
+    process.env.NODE_ENV === 'development',
+    getPackageJson('homepage'),
+    process.env.PUBLIC_URL
+  ) as string,
   package: resolve(root, 'package.json'),
   tsconfig: resolve(root, 'tsconfig.json'),
   nodeModules: resolve(root, 'node_modules')
@@ -49,13 +54,17 @@ export const isExistAntd = !!dependencies?.antd
 export const isTypeScriptFrontProject =
   (isReactProject || isVueProject) && isTypeScriptProject
 
-export const defaultDefinePluginOption: DefinePluginOptions = {
-  ...Object.keys(process.env).reduce((acc, key) => {
-    if (key.startsWith('VITE_')) {
-      acc[`import.meta.env.${key}`] = JSON.stringify(process.env[key])
-    } else {
-      acc[key] = JSON.stringify(process.env[key])
-    }
-    return acc
-  }, {} as Record<string, any>)
-}
+export const extensions = [
+  '.wasm',
+  '.web.mjs',
+  '.mjs',
+  '.web.js',
+  '.js',
+  '.web.jsx',
+  '.jsx',
+  '.web.ts',
+  '.ts',
+  '.d.ts',
+  '.web.tsx',
+  '.tsx'
+]
