@@ -1,10 +1,7 @@
+import MiniCSSExtractPlugin from 'mini-css-extract-plugin'
 import type { RuleSetUseItem } from 'webpack'
 import { getPostCSSConfig } from '../configs/postcss.config'
 import { paths } from '../defaults'
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const resolveUrlLoader = require.resolve('resolve-url-loader')
-const lessLoader = require.resolve('less-loader')
-const sassLoader = require.resolve('sass-loader')
 
 export const getStyleLoaders = (
   options: {
@@ -66,7 +63,7 @@ export const getStyleLoaders = (
   if (preProcessor) {
     const sourceMap = true // preProcessor.options?.sourceMap || useSourceMap
     loaders.push({
-      loader: resolveUrlLoader, // require.resolve('resolve-url-loader'),
+      loader: require.resolve('resolve-url-loader'),
       options: {
         sourceMap,
         root: paths.root
@@ -76,7 +73,7 @@ export const getStyleLoaders = (
     if (preProcessor?.loader === 'less-loader') {
       const lessOptions = preProcessor?.options?.lessOptions || {}
       loaders.push({
-        loader: lessLoader, //require.resolve('less-loader'),
+        loader: require.resolve('less-loader'), // LessLoader,
         options: {
           sourceMap,
           lessOptions
@@ -85,7 +82,7 @@ export const getStyleLoaders = (
     }
     if (preProcessor?.loader === 'sass-loader') {
       loaders.push({
-        loader: sassLoader, // require.resolve('sass-loader'),
+        loader: require.resolve('sass-loader'),
         options: {
           sourceMap
         }

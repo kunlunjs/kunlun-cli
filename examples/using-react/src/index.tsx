@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { App } from './App'
-import './index.css'
+import './index.less'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(

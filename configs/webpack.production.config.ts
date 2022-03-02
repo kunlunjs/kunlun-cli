@@ -16,7 +16,7 @@ export const getProductionConfig = (
         ? new CompressionPlugin(plugins.compression)
         : plugins?.compression
         ? new CompressionPlugin({
-            exclude: /index\.html/
+            exclude: /index\.html|assets\.json/
           })
         : false
     ].filter(Boolean) as Configuration['plugins'],

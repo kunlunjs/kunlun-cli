@@ -7,7 +7,7 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import ForkTSCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-// import InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
+import InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import type { Configuration, RuleSetRule } from 'webpack'
@@ -68,10 +68,11 @@ export const getCommonConfig = (
   const manifest = plugins?.manifest ?? true
   const bundleAnalyzer = plugins?.bundleAnalyzer
   const caseSensitivePaths = plugins?.caseSensitvePaths ?? true
+  const inlineChunkHtml = plugins?.inlineChunkHtml ?? isEnvProduction
 
   const useSourceMap =
-    process.env.GENERATE_SOURCEMAP == 'true' || isEnvDevelopment
-  const html = plugins?.html || isTypeScriptFrontProject
+    process.env.GENERATE_SOURCEMAP == 'true' ?? isEnvDevelopment
+  const html = plugins?.html ?? isTypeScriptFrontProject
 
   const projectDevelopmentTSFile = path.resolve(
     paths.root,
@@ -247,8 +248,11 @@ export const getCommonConfig = (
       ...(Array.isArray(html)
         ? html.map(option => new HtmlWebpackPlugin(option))
         : []),
-      // isEnvProduction &&
-      //   new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
+      inlineChunkHtml &&
+        new InlineChunkHtmlPlugin(
+          HtmlWebpackPlugin,
+          Array.isArray(inlineChunkHtml) ? inlineChunkHtml : [/runtime-.+[.]js/]
+        ),
       /*----------------------------------------------------------------*/
       isEnvProduction &&
         new MiniCssExtractPlugin({
@@ -291,7 +295,7 @@ export const getCommonConfig = (
       /*----------------------------------------------------------------*/
       manifest &&
         new WebpackManifestPlugin({
-          fileName: 'assets',
+          fileName: 'assets.json',
           publicPath: paths.publicUrlOrPath,
           ...(typeof manifest === 'object' ? manifest : {})
         }),
