@@ -22,7 +22,8 @@ import {
   isTypeScriptFrontProject,
   paths,
   isExistWindiCSS,
-  extensions
+  extensions,
+  defaultStats
 } from './defaults'
 import { defaultDefinePluginOption } from './helpers'
 import {
@@ -196,69 +197,16 @@ export const getCommonConfig = (
       // @see https://github.com/johnagan/clean-webpack-plugin
       clean && new CleanWebpackPlugin(clean !== true ? clean : {}),
       /*----------------------------------------------------------------*/
-      ignore &&
-        new webpack.IgnorePlugin({
-          resourceRegExp: /^\.\/locale$/,
-          contextRegExp: /moment$/,
-          ...(typeof ignore === 'object' ? ignore : {})
-        }),
-      /*----------------------------------------------------------------*/
-      // [webpack-dev-server] "hot: true" automatically applies HMR plugin, you don't have to add it manually to your webpack configuration.
-      // isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
-      /*----------------------------------------------------------------*/
-      isTypeScriptProject &&
-        new ForkTSCheckerWebpackPlugin({
-          logger: 'webpack-infrastructure',
-          typescript: {
-            context: paths.root,
-            configFile: tsconfigFile
-          }
-        }),
-      /*----------------------------------------------------------------*/
-      isEnvDevelopment && isTypeScriptProject && new ReactRefreshPlugin(),
-      /*----------------------------------------------------------------*/
       caseSensitivePaths &&
         new CaseSensitivePathsPlugin(
           typeof caseSensitivePaths === 'object' ? caseSensitivePaths : {}
         ),
       /*----------------------------------------------------------------*/
-      banner &&
-        new webpack.BannerPlugin(
-          typeof banner === 'string'
-            ? {
-                banner
-              }
-            : banner
-        ),
-      /*----------------------------------------------------------------*/
-      // isExistAntd && new AntdDayjsWebpackPlugin(),
-      /*----------------------------------------------------------------*/
-      html &&
-        !Array.isArray(html) &&
-        new HtmlWebpackPlugin(
-          typeof html === 'object'
-            ? html
-            : {
-                title: name,
-                inject: 'body',
-                minify: false,
-                template: path.resolve(__dirname, './template.html')
-              }
-        ),
-      ...(Array.isArray(html)
-        ? html.map(option => new HtmlWebpackPlugin(option))
-        : []),
-      inlineChunkHtml &&
-        new InlineChunkHtmlPlugin(
-          HtmlWebpackPlugin,
-          Array.isArray(inlineChunkHtml) ? inlineChunkHtml : [/runtime-.+[.]js/]
-        ),
-      /*----------------------------------------------------------------*/
-      isEnvProduction &&
-        new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-          ignoreOrder: true
+      ignore &&
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^\.\/locale$/,
+          contextRegExp: /moment$/,
+          ...(typeof ignore === 'object' ? ignore : {})
         }),
       /*----------------------------------------------------------------*/
       // @see https://webpack.js.org/plugins/define-plugin/
@@ -292,6 +240,60 @@ export const getCommonConfig = (
         }),
       /*----------------------------------------------------------------*/
       isExistWindiCSS && new WindCSSPlugin(),
+      /*----------------------------------------------------------------*/
+      // [webpack-dev-server] "hot: true" automatically applies HMR plugin, you don't have to add it manually to your webpack configuration.
+      // isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
+      /*----------------------------------------------------------------*/
+      isTypeScriptProject &&
+        new ForkTSCheckerWebpackPlugin({
+          logger: 'webpack-infrastructure',
+          typescript: {
+            context: paths.root,
+            configFile: tsconfigFile
+          }
+        }),
+      /*----------------------------------------------------------------*/
+      isEnvDevelopment && isTypeScriptProject && new ReactRefreshPlugin(),
+      /*----------------------------------------------------------------*/
+      banner &&
+        new webpack.BannerPlugin(
+          typeof banner === 'string'
+            ? {
+                banner
+              }
+            : banner
+        ),
+      /*----------------------------------------------------------------*/
+      // isExistAntd && new AntdDayjsWebpackPlugin(),
+      /*----------------------------------------------------------------*/
+      html &&
+        !Array.isArray(html) &&
+        new HtmlWebpackPlugin(
+          typeof html === 'object'
+            ? html
+            : {
+                title: name,
+                inject: 'body',
+                minify: false,
+                template: path.resolve(__dirname, './template.html')
+              }
+        ),
+      ...(Array.isArray(html)
+        ? html.map(option => new HtmlWebpackPlugin(option))
+        : []),
+      /*----------------------------------------------------------------*/
+      inlineChunkHtml &&
+        new InlineChunkHtmlPlugin(
+          HtmlWebpackPlugin,
+          Array.isArray(inlineChunkHtml) ? inlineChunkHtml : [/runtime-.+[.]js/]
+        ),
+      /*----------------------------------------------------------------*/
+      isEnvProduction &&
+        new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+          ignoreOrder: true
+        }),
       /*----------------------------------------------------------------*/
       manifest &&
         new WebpackManifestPlugin({
@@ -331,7 +333,7 @@ export const getCommonConfig = (
     experiments: {
       topLevelAwait: true
     },
-    stats: 'errors-warnings', // defaultStats,
+    stats: defaultStats,
     infrastructureLogging: {
       level: 'warn'
     }

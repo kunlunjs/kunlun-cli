@@ -86,6 +86,6 @@ export const defaultStats: Configuration['stats'] = {
   moduleAssets: false,
   runtime: false,
   reasons: false,
-  timings: false,
-  version: false
+  timings: true,
+  version: true
 }

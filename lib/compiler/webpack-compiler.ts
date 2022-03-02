@@ -1,6 +1,7 @@
 import chalk from 'chalk'
-import webpack = require('webpack')
-import WebpackDevServer = require('webpack-dev-server')
+import webpack from 'webpack'
+import WebpackDevServer from 'webpack-dev-server'
+// import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import { getWebpackConfig } from '../../configs/webpack.config'
 import { getDevServerConfig } from '../../configs/webpack.dev-server.config'
 // import { ip } from './helpers/ip'
@@ -15,10 +16,15 @@ export class WebpackCompiler {
     onSuccess?: () => void
   ) {
     const port = process.env.PORT || 8000
+    const { SPEED_MEASURE } = process.env
     if (configuration.mode === 'development') {
       watch = true
     }
     const webpackConfiguration = getWebpackConfig(configuration)
+    // if (SPEED_MEASURE || SPEED_MEASURE === 'true') {
+    //   const smp = new SpeedMeasurePlugin()
+    //   webpackConfiguration = smp.wrap(webpackConfiguration)
+    // }
     const compiler = webpack(webpackConfiguration)
 
     const afterCallback = (
@@ -49,7 +55,7 @@ export class WebpackCompiler {
 
     if (configuration.watch || configuration.mode === 'development') {
       compiler.hooks.watchRun.tapAsync('Rebuid info', (params, callback) => {
-        // console.log(`\n${INFO_PREFIX} Webpack is building your  sources...\n`)
+        // console.log(`\n${INFO_PREFIX} Webpack is building your sources...\n`)
         callback()
       })
       // compiler.watch(configuration.watchOptions! || {}, afterCallback)
@@ -64,7 +70,7 @@ export class WebpackCompiler {
         console.log(
           chalk.green(`🚀 Application running at:
     - Local:   ${chalk.underline(`http://localhost:${port}`)}
-    - Network: ${chalk.underline(`http://${localIPv4}:${port}`)}`)
+    - Network: ${chalk.underline(`http://${localIPv4}:${port}`)}\n`)
         )
       })
     } else {

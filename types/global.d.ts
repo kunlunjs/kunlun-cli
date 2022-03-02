@@ -13,7 +13,8 @@ declare namespace NodeJS {
     readonly WDS_SOCKET_HOST: string
     readonly WDS_SOCKET_PORT: string | number
     readonly WDS_SOCKET_PATH: string
-    readonly BUNDLE_ANALYZER: string
+    readonly SPEED_MEASURE: string | boolean
+    readonly BUNDLE_ANALYZER: string | boolean
     readonly GENERATE_SOURCEMAP: string
     readonly INLINE_RUNTIME_CHUNK: string
     readonly TSC_COMPILE_ON_ERROR: string
