@@ -1,3 +1,4 @@
+import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 import type { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CompressionWebpackPlugin = require('compression-webpack-plugin')
@@ -52,4 +53,17 @@ export type WebpackPlugins = {
   compression?: boolean | CompressionPluginOptions
   caseSensitvePaths?: CaseSensitivePathsPluginOptions
   html?: boolean | HtmlPluginOptions | HtmlPluginOptions[]
+}
+
+export type WebpackLoaders = {
+  less?: {
+    strictMath?: boolean
+    ieCompat?: boolean
+    javascriptEnabled?: boolean
+    globalVars?: Record<string, string>
+    modifyVars?: Record<string, string>
+  }
+  babel?: {
+    presetEnv?: BabelPresetEnvOptions
+  }
 }

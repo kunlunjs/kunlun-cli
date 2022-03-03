@@ -1,7 +1,6 @@
 import { join } from 'path'
 import { isPlainObject } from 'lodash'
 import type * as ts from 'typescript'
-import { paths } from '../../configs/defaults'
 import { CLI_ERRORS } from '../ui'
 
 const PLUGIN_ENTRY_FILENAME = 'plugin'
@@ -36,7 +35,10 @@ export class PluginsLoader {
         ? (entry as PluginAndOptions).name
         : (entry as string)
     )
-    const nodeModulePaths = [join(paths.root, 'node_modules'), ...module.paths]
+    const nodeModulePaths = [
+      join(process.cwd(), 'node_modules'),
+      ...module.paths
+    ]
     const pluginRefs: KunlunCompilerPlugin[] = pluginNames.map(item => {
       try {
         try {

@@ -1,6 +1,6 @@
 import path from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
-import { getPackageJson } from '../../lib/utils/package'
+import { getPackageJson } from '../../utils/package'
 import {
   defaultBabelPresetEnvOptions,
   isTypeScriptProject,

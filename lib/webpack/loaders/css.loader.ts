@@ -1,6 +1,7 @@
 import type { RuleSetRule } from 'webpack'
+import { getCSSModuleLocalIdent } from '../helpers'
 import { getStyleLoaders } from './style.loader'
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
+// const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 
 export const getCSSLoader = ({
   isEnvDevelopment,

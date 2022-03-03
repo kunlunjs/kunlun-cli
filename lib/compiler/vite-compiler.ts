@@ -5,8 +5,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { mergeWith } from 'lodash'
 import type { InlineConfig, UserConfig } from 'vite'
 import { createServer, build } from 'vite'
-import { getPostCSSConfig } from '../../configs/configs/postcss.config'
-import { isVueProject, paths } from '../../configs/defaults'
+import { getPostCSSConfig } from '../webpack/configs/postcss.config'
+import { isVueProject } from '../webpack/defaults'
 
 export class ViteCompiler {
   constructor() {}
@@ -15,7 +15,7 @@ export class ViteCompiler {
     config: UserConfig | undefined,
     isEnvDevelopment: boolean
   ): InlineConfig {
-    const root = paths.root
+    const root = process.cwd()
     const plugins: InlineConfig['plugins'] = []
     // vue 项目
     if (isVueProject) {

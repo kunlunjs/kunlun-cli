@@ -3,7 +3,7 @@
 .commitlintrc.js
 .editorconfig
 .eslintignore
-.eslintrc.cjs
+.eslintrc.js
 .lintstagedrc.js
 .prettierignore
 .prettierrc

@@ -3,7 +3,6 @@ import { join } from 'path'
 import { dasherize } from '@angular-devkit/core/src/utils/strings'
 import chalk from 'chalk'
 import ora from 'ora'
-import { paths } from '../../configs/defaults'
 import type { AbstractRunner } from '../runners/abstract.runner'
 import { MESSAGES } from '../ui'
 import type { PackageManagerCommands } from './package-manager-commands'
@@ -28,7 +27,7 @@ export abstract class AbstractPackageManager {
       await this.runner.run(
         commandArguments,
         collect,
-        join(paths.root, dasherizedDirectory)
+        join(process.cwd(), dasherizedDirectory)
       )
       spinner.succeed()
       console.info()
@@ -118,7 +117,7 @@ export abstract class AbstractPackageManager {
   private async readPackageJson(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       readFile(
-        join(paths.root, 'package.json'),
+        join(process.cwd(), 'package.json'),
         (error: NodeJS.ErrnoException | null, buffer: Buffer) => {
           if (error !== undefined && error !== null) {
             reject(error)

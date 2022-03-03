@@ -17,7 +17,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import WebpackBar from 'webpackbar'
 import WindCSSPlugin from 'windicss-webpack-plugin'
-import { getPackageJson } from '../lib/utils/package'
+import { getPackageJson } from '../utils/package'
 import {
   isTypeScriptProject,
   isTypeScriptFrontProject,

@@ -1,5 +1,4 @@
 import type * as ts from 'typescript'
-import { paths } from '../../configs/defaults'
 
 export class TSBinaryLoader {
   private tsBinary?: typeof ts
@@ -11,7 +10,7 @@ export class TSBinaryLoader {
 
     try {
       const tsBinaryPath = require.resolve('typescript', {
-        paths: [paths.root, ...this.getModulePaths()]
+        paths: [process.cwd(), ...this.getModulePaths()]
       })
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const tsBinary = require(tsBinaryPath)

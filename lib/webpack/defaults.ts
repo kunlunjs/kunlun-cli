@@ -2,7 +2,7 @@ import { existsSync, realpathSync } from 'fs'
 import { resolve } from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import type { Configuration } from 'webpack'
-import { getPackageJson } from '../lib/utils/package'
+import { getPackageJson } from '../utils/package'
 import { getPublicUrlOrPath } from './helpers'
 
 const root = realpathSync(process.cwd())

@@ -139,3 +139,4 @@ yarn.lock
 pnpm-lock.yaml
 dist*
 kl.config.json
+!lib/configs/cli.d.ts

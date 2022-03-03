@@ -2,7 +2,6 @@ import os from 'os'
 import { dirname, posix } from 'path'
 import tsPaths = require('tsconfig-paths')
 import type * as ts from 'typescript'
-import { paths } from '../../../configs/defaults'
 import { TSBinaryLoader } from '../typescript-loader'
 
 export function tsconfigPathsBeforeHookFactory(
@@ -68,7 +67,7 @@ function getNotAliasedPath(
     // Installed packages (node modules) should take precedence over root files with the same name.
     // Ref: https://github.com/kunlunjs/kunlun-cli/issues/838
     const packagePath = require.resolve(text, {
-      paths: [paths.root, ...module.paths]
+      paths: [process.cwd(), ...module.paths]
     })
     if (packagePath) {
       return text
