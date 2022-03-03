@@ -70,22 +70,22 @@ export const extensions = [
   '.tsx'
 ]
 
+// @see https://webpack.js.org/configuration/stats/
 export const defaultStats: Configuration['stats'] = {
-  assets: false,
-  cachedAssets: false,
-  cachedModules: false,
-  runtimeModules: false,
-  children: false,
-  chunks: false,
-  chunkGroups: false,
-  chunkModules: false,
-  chunkOrigins: false,
-  entrypoints: false,
-  modules: false,
-  moduleTrace: false,
-  moduleAssets: false,
-  runtime: false,
-  reasons: false,
-  timings: true,
-  version: true
+  preset: 'none',
+  moduleTrace: true,
+  warnings: true,
+  errorDetails: true
+}
+
+export const defaultProductionStats: Configuration['stats'] = {
+  preset: 'none',
+  assets: true,
+  chunks: true,
+  modules: true,
+  moduleTrace: true,
+  runtimeModules: true,
+  warnings: true,
+  errorStack: true,
+  errorDetails: true
 }

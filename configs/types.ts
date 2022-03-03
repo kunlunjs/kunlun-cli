@@ -8,11 +8,13 @@ import type { Configuration } from 'webpack'
 import type { DefinePlugin, IgnorePlugin } from 'webpack'
 import type { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import type { ManifestPluginOptions } from 'webpack-manifest-plugin'
+import type WebpackBar from 'webpackbar'
 
 export type Rule = Required<
   Pick<Required<Pick<Configuration, 'module'>>['module'], 'rules'>
 >['rules'][number]
 
+export type BarPluginOptions = ConstructorParameters<typeof WebpackBar>[0]
 export type DefinePluginOptions = ConstructorParameters<typeof DefinePlugin>[0]
 export type IgnorePluginOptions = ConstructorParameters<typeof IgnorePlugin>[0]
 export type CleanPluginOptions = ConstructorParameters<
@@ -38,6 +40,7 @@ export type CaseSensitivePathsPluginOptions = ConstructorParameters<
 >[0]
 
 export type WebpackPlugins = {
+  bar?: boolean | BarPluginOptions
   banner?: string // | BannerPluginOptions
   copy?: CopyPluginOptions
   ignore?: IgnorePluginOptions

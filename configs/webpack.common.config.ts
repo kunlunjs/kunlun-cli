@@ -13,6 +13,7 @@ import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import type { Configuration, RuleSetRule } from 'webpack'
 import webpack from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+// import DashboardPlugin from 'webpack-dashboard/plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import WebpackBar from 'webpackbar'
 import WindCSSPlugin from 'windicss-webpack-plugin'
@@ -23,18 +24,19 @@ import {
   paths,
   isExistWindiCSS,
   extensions,
-  defaultStats
+  defaultStats,
+  defaultProductionStats
 } from './defaults'
 import { defaultDefinePluginOption } from './helpers'
 import {
+  getBabelLoader,
   getAvifLoader,
+  getSVGLoader,
+  getImageLoader,
   getCSSLoader,
   getLessLoader,
-  getImageLoader,
-  getBabelLoader,
-  getSVGLoader,
-  getLessModuleLoader,
   getCSSModuleLoader,
+  getLessModuleLoader,
   getSassLoader,
   getSassModuleLoader
 } from './loaders'
@@ -61,6 +63,7 @@ export const getCommonConfig = (
   const isEnvProductionProfile =
     isEnvProduction && process.argv.includes('--profile')
 
+  const bar = plugins?.bar ?? true
   const copy = plugins?.copy
   const banner = plugins?.banner
   const clean = plugins?.define ?? true
@@ -68,8 +71,8 @@ export const getCommonConfig = (
   const ignore = plugins?.ignore ?? true
   const manifest = plugins?.manifest ?? true
   const bundleAnalyzer = plugins?.bundleAnalyzer
+  const inlineChunkHtml = plugins?.inlineChunkHtml
   const caseSensitivePaths = plugins?.caseSensitvePaths ?? true
-  const inlineChunkHtml = plugins?.inlineChunkHtml ?? isEnvProduction
 
   const useSourceMap =
     process.env.GENERATE_SOURCEMAP == 'true' ?? isEnvDevelopment
@@ -157,8 +160,6 @@ export const getCommonConfig = (
       },
       ...args?.resolve
     },
-    // externalsPresets: { node: true },
-    // externals: [nodeExternals()],
     module: {
       strictExportPresence: true,
       rules: [
@@ -190,9 +191,16 @@ export const getCommonConfig = (
     },
     plugins: [
       // @see https://webpack.js.org/plugins/progress-plugin/
-      new WebpackBar({
-        name
-      }),
+      bar &&
+        new WebpackBar(
+          typeof bar === 'object'
+            ? bar
+            : {
+                name
+              }
+        ),
+      /*----------------------------------------------------------------*/
+      // new DashboardPlugin(),
       /*----------------------------------------------------------------*/
       // @see https://github.com/johnagan/clean-webpack-plugin
       clean && new CleanWebpackPlugin(clean !== true ? clean : {}),
@@ -333,7 +341,7 @@ export const getCommonConfig = (
     experiments: {
       topLevelAwait: true
     },
-    stats: defaultStats,
+    stats: isEnvProduction ? defaultProductionStats : defaultStats,
     infrastructureLogging: {
       level: 'warn'
     }

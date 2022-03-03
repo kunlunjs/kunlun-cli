@@ -29,7 +29,8 @@ export class ViteCompiler {
       base: '',
       resolve: {
         alias: {
-          '@': resolve(root, 'src')
+          '@': resolve(root, 'src'),
+          'src': resolve(root, 'src')
         }
       },
       configFile: false,

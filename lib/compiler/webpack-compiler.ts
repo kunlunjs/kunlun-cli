@@ -12,14 +12,9 @@ export class WebpackCompiler {
 
   public run(
     configuration: Parameters<typeof getWebpackConfig>[0] = {},
-    watch = false,
     onSuccess?: () => void
   ) {
-    const port = process.env.PORT || 8000
-    const { SPEED_MEASURE } = process.env
-    if (configuration.mode === 'development') {
-      watch = true
-    }
+    const { SPEED_MEASURE, PORT = 8000 } = process.env
     const webpackConfiguration = getWebpackConfig(configuration)
     // if (SPEED_MEASURE || SPEED_MEASURE === 'true') {
     //   const smp = new SpeedMeasurePlugin()
@@ -69,8 +64,8 @@ export class WebpackCompiler {
       server.startCallback(() => {
         console.log(
           chalk.green(`🚀 Application running at:
-    - Local:   ${chalk.underline(`http://localhost:${port}`)}
-    - Network: ${chalk.underline(`http://${localIPv4}:${port}`)}\n`)
+    - Local:   ${chalk.underline(`http://localhost:${PORT}`)}
+    - Network: ${chalk.underline(`http://${localIPv4}:${PORT}`)}\n`)
         )
       })
     } else {
