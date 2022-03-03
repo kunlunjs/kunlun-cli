@@ -1,5 +1,4 @@
 import { join } from 'path'
-import { paths } from '../../../configs/defaults'
 import type { PackageManagerCommands } from '../../../lib/package-managers'
 import { PnpmPackageManager } from '../../../lib/package-managers'
 import { PnpmRunner } from '../../../lib/runners/pnpm.runner'
@@ -35,7 +34,7 @@ describe('NpmPackageManager', () => {
     it('should use the proper command for installing', () => {
       const spy = jest.spyOn((packageManager as any).runner, 'run')
       const dirName = '/tmp'
-      const testDir = join(paths.root, dirName)
+      const testDir = join(process.cwd(), dirName)
       packageManager.install(dirName, 'pnpm')
       expect(spy).toBeCalledWith('install --silent', true, testDir)
     })
