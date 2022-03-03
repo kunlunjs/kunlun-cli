@@ -78,3 +78,7 @@ export type KunlunDefineConfig = {
   build?: Config
   preview?: Record<string, string>
 }
+
+export function defineConfig(config: KunlunDefineConfig) {
+  return config
+}

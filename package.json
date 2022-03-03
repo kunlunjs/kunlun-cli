@@ -12,7 +12,7 @@
   "bin": {
     "kunlun": "bin/kunlun.js"
   },
-  "typings": "index.d.ts",
+  "typings": "lib/index.d.ts",
   "files": ["actions", "bin", "commands", "configs", "lib"],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",

@@ -40,7 +40,7 @@ export class KunlunConfigLoader {
     const configFile = resolve(process.cwd(), 'kunlun.config.ts')
     if (existsSync(configFile)) {
       const getConfig = require(configFile)
-      return getConfig()
+      return getConfig && getConfig()
     }
     return
   }

@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "start": "ts-node ../../bin/kunlun.ts start",
-    "start:node": "node ../../bin/kunlun.js start",
+    "start:node": "kunlun start",
     "build": "ts-node ../../bin/kunlun.ts build",
-    "build:node": "node ../../bin/kunlun.js build",
+    "build:node": "kunlun build",
     "start:vite": "ts-node ../../bin/kunlun.ts start -- --vite",
     "build:vite": "ts-node ../../bin/kunlun.ts build -- --vite",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,7 +20,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@kunlunjs/cli": "^0.0.15",
+    "@kunlunjs/cli": "^0.0.16",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "ts-node": "^10.6.0",
