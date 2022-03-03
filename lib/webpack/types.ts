@@ -68,7 +68,7 @@ export type WebpackLoaders = {
   }
 }
 
-type Config = Exclude<Configuration, ['rules', 'plugin']> & {
+type Config = Omit<Configuration, 'rules' | 'plugin'> & {
   loaders?: WebpackLoaders
   plugins?: WebpackPlugins
 }
