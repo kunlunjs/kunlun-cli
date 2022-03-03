@@ -67,3 +67,14 @@ export type WebpackLoaders = {
     presetEnv?: BabelPresetEnvOptions
   }
 }
+
+type Config = Exclude<Configuration, ['rules', 'plugin']> & {
+  loaders?: WebpackLoaders
+  plugins?: WebpackPlugins
+}
+
+export type KunlunDefineConfig = {
+  start?: Config
+  build?: Config
+  preview?: Record<string, string>
+}

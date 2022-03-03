@@ -13,7 +13,8 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
     compress = true,
     allowedHosts = 'all',
     open = isTypeScriptFrontProject,
-    historyApiFallback = isTypeScriptFrontProject
+    historyApiFallback = isTypeScriptFrontProject,
+    ...rest
   } = args
 
   const {
@@ -38,6 +39,7 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
   }
 
   return {
+    ...rest,
     port,
     hot,
     open,

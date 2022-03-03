@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
+import { KunlunConfigLoader } from '../configuration'
 // import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import { getWebpackConfig } from '../webpack/webpack.config'
 import { getDevServerConfig } from '../webpack/webpack.dev-server.config'
@@ -8,6 +9,7 @@ import { getDevServerConfig } from '../webpack/webpack.dev-server.config'
 // import { INFO_PREFIX } from '../ui'
 
 export class WebpackCompiler {
+  private config = new KunlunConfigLoader()
   constructor() {}
 
   public run(
@@ -15,12 +17,17 @@ export class WebpackCompiler {
     onSuccess?: () => void
   ) {
     const { SPEED_MEASURE, PORT = 8000 } = process.env
+    const customConfig = this.config.load() || {}
+    console.log('kunlun.config.ts: ', customConfig)
     const webpackConfiguration = getWebpackConfig(configuration)
     // if (SPEED_MEASURE || SPEED_MEASURE === 'true') {
     //   const smp = new SpeedMeasurePlugin()
     //   webpackConfiguration = smp.wrap(webpackConfiguration)
     // }
-    const compiler = webpack(webpackConfiguration)
+    const compiler = webpack({
+      ...webpackConfiguration,
+      ...customConfig
+    })
 
     const afterCallback = (
       err: Error | null | undefined,

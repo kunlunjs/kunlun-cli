@@ -1,4 +1,7 @@
+import { existsSync } from 'fs'
+import { resolve } from 'path'
 import type { Reader } from '../readers'
+import type { KunlunDefineConfig } from '../webpack/types'
 import type { Configuration } from './configuration'
 import type { ConfigurationLoader } from './configuration.loader'
 import { defaultConfiguration } from './defaults'
@@ -29,5 +32,16 @@ export class KunlunConfigurationLoader implements ConfigurationLoader {
       ...defaultConfiguration,
       ...fileConfig
     }
+  }
+}
+
+export class KunlunConfigLoader {
+  load(): KunlunDefineConfig | undefined {
+    const configFile = resolve(process.cwd(), 'kunlun.config.ts')
+    if (existsSync(configFile)) {
+      const getConfig = require(configFile)
+      return getConfig()
+    }
+    return
   }
 }

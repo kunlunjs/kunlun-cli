@@ -55,7 +55,8 @@ export const getCommonConfig = (
     mode = 'development',
     entry = path.resolve(paths.root, 'src/index'),
     output,
-    plugins
+    plugins,
+    ...rest
   } = args
   const { BUNDLE_ANALYZER } = process.env
   const isEnvDevelopment = mode === 'development'
@@ -103,6 +104,7 @@ export const getCommonConfig = (
     : defaultProductionTSFile
 
   return {
+    ...rest,
     bail: !isEnvDevelopment,
     mode,
     entry,
