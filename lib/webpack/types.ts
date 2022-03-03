@@ -8,6 +8,7 @@ import type InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
 import type { Configuration } from 'webpack'
 import type { DefinePlugin, IgnorePlugin } from 'webpack'
 import type { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 import type { ManifestPluginOptions } from 'webpack-manifest-plugin'
 import type WebpackBar from 'webpackbar'
 
@@ -71,6 +72,7 @@ export type WebpackLoaders = {
 type Config = Omit<Configuration, 'rules' | 'plugin'> & {
   loaders?: WebpackLoaders
   plugins?: WebpackPlugins
+  devServer?: DevServerConfiguration
 }
 
 export type KunlunDefineConfig = {

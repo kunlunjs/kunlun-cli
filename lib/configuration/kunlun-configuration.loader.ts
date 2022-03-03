@@ -38,9 +38,9 @@ export class KunlunConfigurationLoader implements ConfigurationLoader {
 export class KunlunConfigLoader {
   load(): KunlunDefineConfig | undefined {
     const configFile = resolve(process.cwd(), 'kunlun.config.ts')
-    if (existsSync(configFile)) {
+    if (existsSync(configFile) && require(configFile)) {
       const getConfig = require(configFile)
-      return getConfig && getConfig()
+      return typeof getConfig === 'function' && getConfig()
     }
     return
   }
