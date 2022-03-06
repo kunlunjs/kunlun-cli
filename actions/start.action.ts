@@ -15,9 +15,12 @@ export class StartAction extends AbstractAction<StartOptions> {
         await viteCompiler.run({}, true)
       } else {
         const webpackCompiler = new WebpackCompiler()
-        webpackCompiler.run({
-          mode: 'development'
-        })
+        webpackCompiler.run(
+          {
+            mode: 'development'
+          },
+          'start'
+        )
       }
     } catch (err) {
       if (err instanceof Error) {

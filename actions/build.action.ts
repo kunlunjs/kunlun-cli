@@ -15,9 +15,12 @@ export class BuildAction extends AbstractAction<BuildOptions> {
         viteCompiler.run({}, false)
       } else {
         const webpackCompiler = new WebpackCompiler()
-        webpackCompiler.run({
-          mode: 'production'
-        })
+        webpackCompiler.run(
+          {
+            mode: 'production'
+          },
+          'build'
+        )
       }
     } catch (err) {
       if (err instanceof Error) {

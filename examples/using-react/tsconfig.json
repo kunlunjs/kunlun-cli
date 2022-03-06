@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "module": "commonjs",
+    "module": "ESNext",
     "target": "ESNext",
     "lib": ["DOM", "ESNext"],
     "skipLibCheck": true,

@@ -1,4 +1,5 @@
-import { defineConfig } from '@kunlunjs/cli'
+// import { defineConfig } from '@kunlunjs/cli'
+import { defineConfig } from '../../lib'
 
 // @ts-check
 export default defineConfig({
