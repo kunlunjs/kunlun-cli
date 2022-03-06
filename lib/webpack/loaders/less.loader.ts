@@ -1,29 +1,19 @@
 import type { RuleSetRule } from 'webpack'
 import { getCSSModuleLocalIdent } from '../helpers'
 import { getStyleLoaders } from './style.loader'
-// const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 
 export const getLessLoader = (
   args: {
     isEnvDevelopment?: boolean
     useSourceMap?: boolean
-    strictMath?: boolean
-    ieCompat?: boolean
-    javascriptEnabled?: boolean
-    globalVars?: Record<string, string>
-    modifyVars?: Record<string, string>
-    urlArgs?: string
-  } = {}
+  } & Less.Options = {}
 ): RuleSetRule => {
   const {
     isEnvDevelopment,
     useSourceMap,
-    strictMath = false,
-    ieCompat = false,
-    javascriptEnabled = true,
     globalVars = {},
     modifyVars = {},
-    urlArgs = ''
+    ...rest
   } = args
 
   return {
@@ -45,12 +35,9 @@ export const getLessLoader = (
         options: {
           sourceMap: useSourceMap,
           lessOptions: {
-            strictMath,
-            ieCompat,
-            javascriptEnabled,
+            ...rest,
             globalVars,
             modifyVars
-            // urlArgs: ''
           }
         }
       }
@@ -63,21 +50,14 @@ export const getLessModuleLoader = (
   args: {
     isEnvDevelopment?: boolean
     useSourceMap?: boolean
-    strictMath?: boolean
-    ieCompat?: boolean
-    javascriptEnabled?: boolean
-    globalVars?: Record<string, string>
-    modifyVars?: Record<string, string>
-  } = {}
+  } & Less.Options = {}
 ): RuleSetRule => {
   const {
     isEnvDevelopment,
     useSourceMap,
-    strictMath,
-    ieCompat,
-    javascriptEnabled,
     globalVars = {},
-    modifyVars = {}
+    modifyVars = {},
+    ...rest
   } = args
 
   return {
@@ -99,9 +79,7 @@ export const getLessModuleLoader = (
         options: {
           sourceMap: useSourceMap,
           lessOptions: {
-            strictMath,
-            ieCompat,
-            javascriptEnabled,
+            ...rest,
             globalVars,
             modifyVars
           }

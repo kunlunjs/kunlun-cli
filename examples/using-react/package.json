@@ -20,7 +20,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@kunlunjs/cli": "^0.0.18",
+    "@kunlunjs/cli": "^0.0.19",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "ts-node": "^10.6.0",

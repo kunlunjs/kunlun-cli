@@ -1,4 +1,5 @@
-import path, { normalize } from 'path'
+import { normalize, posix } from 'path'
+import { URL } from 'url'
 import escape from 'escape-string-regexp'
 import loaderUtils from 'loader-utils'
 import { paths } from './defaults'
@@ -33,6 +34,7 @@ export const getPublicUrlOrPath = (
 
   if (homepage) {
     homepage = homepage.endsWith('/') ? homepage : homepage + '/'
+    console.log(37, new URL(homepage, stubDomain))
     const validHomepagePathname = new URL(homepage, stubDomain).pathname
     return isEnvDevelopment
       ? homepage.startsWith('.')
@@ -70,7 +72,7 @@ export const getCSSModuleLocalIdent = (
     : '[name]'
   const hash = loaderUtils.getHashDigest(
     Buffer.from(
-      path.posix.relative(context.rootContext, context.resourcePath) + localName
+      posix.relative(context.rootContext, context.resourcePath) + localName
     ),
     'md5',
     'base64',

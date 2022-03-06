@@ -1,4 +1,3 @@
-import { existsSync } from 'fs'
 import path from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 // import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
@@ -93,14 +92,17 @@ export const getCommonConfig = (
     'tsconfig.production.json'
   )
 
+  // const tsconfigFile = isEnvDevelopment
+  //   ? existsSync(projectDevelopmentTSFile)
+  //     ? projectDevelopmentTSFile
+  //     : existsSync(projectProductionTSFile)
+  //     ? projectProductionTSFile
+  //     : defaultDevelopmentTSFile
+  //   : existsSync(projectProductionTSFile)
+  //   ? projectProductionTSFile
+  //   : defaultProductionTSFile
   const tsconfigFile = isEnvDevelopment
-    ? existsSync(projectDevelopmentTSFile)
-      ? projectDevelopmentTSFile
-      : existsSync(projectProductionTSFile)
-      ? projectProductionTSFile
-      : defaultDevelopmentTSFile
-    : existsSync(projectProductionTSFile)
-    ? projectProductionTSFile
+    ? defaultDevelopmentTSFile
     : defaultProductionTSFile
 
   return {
@@ -151,7 +153,7 @@ export const getCommonConfig = (
           silent: true,
           baseUrl: paths.root,
           configFile: tsconfigFile,
-          extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
+          extensions
         })
       ],
       fallback: {
