@@ -39,22 +39,19 @@ import {
   getSassLoader,
   getSassModuleLoader
 } from './loaders'
-import type { WebpackPlugins } from './types'
+import type { Config } from './types'
 
 const pkg = getPackageJson()
 
-export const getCommonConfig = (
-  args: Configuration & {
-    name?: string
-    plugins?: WebpackPlugins
-  } = {}
-): Configuration => {
+export const getCommonConfig = (args: Config = {}): Configuration => {
   const {
     name = pkg?.name || 'Webpack',
     mode = 'development',
     entry = path.resolve(paths.root, 'src/index'),
     output,
     plugins,
+    loaders,
+    devServer,
     ...rest
   } = args
   const { BUNDLE_ANALYZER } = process.env
@@ -78,11 +75,11 @@ export const getCommonConfig = (
     process.env.GENERATE_SOURCEMAP == 'true' ?? isEnvDevelopment
   const html = plugins?.html ?? isTypeScriptFrontProject
 
-  const projectDevelopmentTSFile = path.resolve(
-    paths.root,
-    'tsconfig.development.json'
-  )
-  const projectProductionTSFile = path.resolve(paths.root, 'tsconfig.json')
+  // const projectDevelopmentTSFile = path.resolve(
+  //   paths.root,
+  //   'tsconfig.development.json'
+  // )
+  // const projectProductionTSFile = path.resolve(paths.root, 'tsconfig.json')
   const defaultDevelopmentTSFile = path.resolve(
     __dirname,
     'tsconfig.development.json'
@@ -150,7 +147,6 @@ export const getCommonConfig = (
       },
       plugins: [
         new TsconfigPathsPlugin({
-          silent: true,
           baseUrl: paths.root,
           configFile: tsconfigFile,
           extensions
@@ -166,6 +162,7 @@ export const getCommonConfig = (
     },
     module: {
       strictExportPresence: true,
+      ...args.module,
       rules: [
         // useSourceMap && {
         //   enforce: 'pre',
@@ -189,8 +186,8 @@ export const getCommonConfig = (
             getSVGLoader(),
             getImageLoader()
           ]
-        },
-        ...(args?.module?.rules || [])
+        }
+        // ...(args?.module?.rules || [])
       ].filter(Boolean) as RuleSetRule[]
     },
     plugins: [
@@ -261,7 +258,15 @@ export const getCommonConfig = (
           logger: 'webpack-infrastructure',
           typescript: {
             context: paths.root,
-            configFile: tsconfigFile
+            // configFile: tsconfigFile,
+            configOverwrite: {
+              compilerOptions: {
+                paths: {
+                  '@/*': ['src/*'],
+                  'src/*': ['src/*']
+                }
+              }
+            }
           }
         }),
       /*----------------------------------------------------------------*/

@@ -14,20 +14,20 @@ export class WebpackCompiler {
 
   public run(
     configuration: Parameters<typeof getWebpackConfig>[0] = {},
+    command: 'start' | 'build',
     onSuccess?: () => void
   ) {
     const { SPEED_MEASURE, PORT = 8000 } = process.env
-    const customConfig = this.config.load() || {}
-    console.log('kunlun.config: ', customConfig)
-    const webpackConfiguration = getWebpackConfig(configuration)
+    const customConfig = this.config.load(command) || {}
+    const webpackConfiguration = getWebpackConfig({
+      ...configuration,
+      ...customConfig
+    })
     // if (SPEED_MEASURE || SPEED_MEASURE === 'true') {
     //   const smp = new SpeedMeasurePlugin()
     //   webpackConfiguration = smp.wrap(webpackConfiguration)
     // }
-    const compiler = webpack({
-      ...webpackConfiguration,
-      ...customConfig
-    })
+    const compiler = webpack(webpackConfiguration)
 
     const afterCallback = (
       err: Error | null | undefined,
@@ -62,7 +62,10 @@ export class WebpackCompiler {
       })
       // compiler.watch(configuration.watchOptions! || {}, afterCallback)
       const server = new WebpackDevServer(
-        getDevServerConfig(configuration.devServer),
+        getDevServerConfig({
+          ...configuration.devServer,
+          ...customConfig.devServer
+        }),
         compiler
       )
       const localIPv4 = WebpackDevServer.internalIPSync('v4')
