@@ -127,6 +127,8 @@ scripts/**/*.js
 tools/**/*.d.ts
 tools/**/*.js
 
+!examples/**/kunlun.config.js
+
 # configuration
 # renovate.json
 # gulpfile.js

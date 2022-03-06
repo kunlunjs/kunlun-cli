@@ -1,5 +1,6 @@
 import { defineConfig } from '@kunlunjs/cli'
 
+// @ts-check
 export default defineConfig({
   start: {
     loaders: {
@@ -8,7 +9,7 @@ export default defineConfig({
         globalVars: {}
       }
     },
-    // plugins: {},
+    plugins: {},
     devServer: {
       proxy: {
         '/api': {

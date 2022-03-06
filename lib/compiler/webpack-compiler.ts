@@ -18,7 +18,7 @@ export class WebpackCompiler {
   ) {
     const { SPEED_MEASURE, PORT = 8000 } = process.env
     const customConfig = this.config.load() || {}
-    console.log('kunlun.config.ts: ', customConfig)
+    console.log('kunlun.config: ', customConfig)
     const webpackConfiguration = getWebpackConfig(configuration)
     // if (SPEED_MEASURE || SPEED_MEASURE === 'true') {
     //   const smp = new SpeedMeasurePlugin()
