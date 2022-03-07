@@ -14,6 +14,11 @@ export class KunlunCollection extends AbstractCollection {
       name: 'application',
       alias: 'application',
       description: 'Generate a new application workspace'
+    },
+    {
+      name: 'resource',
+      alias: 'res',
+      description: 'Generate a new CRUD resource'
     }
   ]
 

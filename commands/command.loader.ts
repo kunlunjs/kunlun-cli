@@ -1,9 +1,16 @@
 import chalk from 'chalk'
 import type { Command } from 'commander'
-import { BuildAction, NewAction, StartAction, InfoAction } from '../actions'
+import {
+  BuildAction,
+  NewAction,
+  StartAction,
+  InfoAction,
+  GenerateAction
+} from '../actions'
 import { ModelAction } from '../actions/model.action'
 import { ERROR_PREFIX } from '../lib/ui'
 import { BuildCommand } from './build.command'
+import { GenerateCommand } from './generate.command'
 import { InfoCommand } from './info.command'
 import { ModelCommand } from './model.command'
 import { NewCommand } from './new.command'
@@ -16,6 +23,7 @@ export class CommandLoader {
     new StartCommand(new StartAction()).load(program)
     new InfoCommand(new InfoAction()).load(program)
     new ModelCommand(new ModelAction()).load(program)
+    new GenerateCommand(new GenerateAction()).load(program)
     this.handleInvalidCommand(program)
   }
 
