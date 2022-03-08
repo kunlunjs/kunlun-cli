@@ -146,6 +146,7 @@ export const getCommonConfig = (args: Config = {}): Configuration => {
         })
       },
       plugins: [
+        // @ts-ignore
         new TsconfigPathsPlugin({
           baseUrl: paths.root,
           configFile: tsconfigFile,
