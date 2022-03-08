@@ -140,5 +140,5 @@ tools/**/*.js
 yarn.lock
 pnpm-lock.yaml
 dist*
-kl.config.json
+kl.model.generated.json
 !lib/configs/cli.d.ts
