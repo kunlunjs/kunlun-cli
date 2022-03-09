@@ -1,5 +1,6 @@
 import { existsSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, join } from 'path'
+import { register } from 'ts-node'
 import type { Reader } from '../readers'
 import type { Config } from '../webpack/types'
 import type { Configuration } from './configuration'
@@ -35,17 +36,29 @@ export class KunlunConfigurationLoader implements ConfigurationLoader {
   }
 }
 
+function getRealConfig(config: any) {
+  if ('default' in config) {
+    return config['default']
+  }
+  return config
+}
+
 export class KunlunConfigLoader {
   load(command: 'start' | 'build'): Config | undefined {
     const tsConfigFile = resolve(process.cwd(), 'kunlun.config.ts')
-    if (existsSync(tsConfigFile) && require(tsConfigFile)?.default?.[command]) {
-      const config = require(tsConfigFile)?.default?.[command]
-      return config
+    if (existsSync(tsConfigFile)) {
+      const tsconfigPath = join(__dirname, './kunlun.tsconfig.json')
+      register({
+        project: tsconfigPath
+      })
+      const config = require(tsConfigFile)
+      return getRealConfig(config)?.[command]
     }
+
     const jsConfigFile = resolve(process.cwd(), 'kunlun.config.js')
     if (existsSync(jsConfigFile) && require(jsConfigFile)?.default?.[command]) {
-      const config = require(jsConfigFile)?.default?.[command]
-      return config
+      const config = require(jsConfigFile)
+      return getRealConfig(config)?.[command]
     }
     return
   }

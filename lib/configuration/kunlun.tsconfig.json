@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": false,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "commonjs",
+    "target": "esnext",
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}
