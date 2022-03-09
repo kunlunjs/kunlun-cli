@@ -1,3 +1,4 @@
+import { existsSync } from 'fs'
 import path from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 // import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
@@ -75,11 +76,11 @@ export const getCommonConfig = (args: Config = {}): Configuration => {
     process.env.GENERATE_SOURCEMAP == 'true' ?? isEnvDevelopment
   const html = plugins?.html ?? isTypeScriptFrontProject
 
-  // const projectDevelopmentTSFile = path.resolve(
-  //   paths.root,
-  //   'tsconfig.development.json'
-  // )
-  // const projectProductionTSFile = path.resolve(paths.root, 'tsconfig.json')
+  const projectDevelopmentTSFile = path.resolve(
+    paths.root,
+    'tsconfig.development.json'
+  )
+  const projectProductionTSFile = path.resolve(paths.root, 'tsconfig.json')
   const defaultDevelopmentTSFile = path.resolve(
     __dirname,
     'tsconfig.development.json'
@@ -89,18 +90,18 @@ export const getCommonConfig = (args: Config = {}): Configuration => {
     'tsconfig.production.json'
   )
 
-  // const tsconfigFile = isEnvDevelopment
-  //   ? existsSync(projectDevelopmentTSFile)
-  //     ? projectDevelopmentTSFile
-  //     : existsSync(projectProductionTSFile)
-  //     ? projectProductionTSFile
-  //     : defaultDevelopmentTSFile
-  //   : existsSync(projectProductionTSFile)
-  //   ? projectProductionTSFile
-  //   : defaultProductionTSFile
   const tsconfigFile = isEnvDevelopment
-    ? defaultDevelopmentTSFile
+    ? existsSync(projectDevelopmentTSFile)
+      ? projectDevelopmentTSFile
+      : existsSync(projectProductionTSFile)
+      ? projectProductionTSFile
+      : defaultDevelopmentTSFile
+    : existsSync(projectProductionTSFile)
+    ? projectProductionTSFile
     : defaultProductionTSFile
+  // const tsconfigFile = isEnvDevelopment
+  //   ? defaultDevelopmentTSFile
+  //   : defaultProductionTSFile
 
   return {
     ...rest,
@@ -259,13 +260,14 @@ export const getCommonConfig = (args: Config = {}): Configuration => {
           logger: 'webpack-infrastructure',
           typescript: {
             context: paths.root,
-            // configFile: tsconfigFile,
+            configFile: tsconfigFile,
             configOverwrite: {
               compilerOptions: {
-                paths: {
-                  '@/*': ['src/*'],
-                  'src/*': ['src/*']
-                }
+                module: 'commonjs'
+                // paths: {
+                //   '@/*': ['src/*'],
+                //   'src/*': ['src/*']
+                // }
               }
             }
           }

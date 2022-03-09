@@ -1,6 +1,6 @@
 import { join } from 'path'
 import type { DBModelField } from '@kunlunjs/model-design/dist/types'
-import { blue, green } from 'chalk'
+import chalk from 'chalk'
 import type { RenderData } from '../../utils/render'
 import { renderDir } from '../../utils/render'
 
@@ -38,6 +38,6 @@ export async function generateAdminModule(
     join(baseDir, './src')
   )
   renderFiles.forEach(file => {
-    console.log(green('[Admin generated]:'), blue(file))
+    console.log(chalk.green('[Admin generated]:'), chalk.blue(file))
   })
 }
