@@ -37,7 +37,10 @@ describe('Kunlun Configuration Loader', () => {
   it('should call reader.readAnyOf when load', async () => {
     const loader: ConfigurationLoader = new KunlunConfigurationLoader(reader)
     const configuration: Configuration = await loader.load()
-    expect(reader.readAnyOf).toHaveBeenCalledWith(['kunlun.config.ts'])
+    expect(reader.readAnyOf).toHaveBeenCalledWith([
+      'kunlun.config.js',
+      'kunlun.config.ts'
+    ])
     expect(configuration).toEqual({
       // language: 'ts',
       collection: '@kunlunjs/schematics',
