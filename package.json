@@ -57,7 +57,7 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/runtime": "^7.17.2",
-    "@kunlunjs/model-design": "0.0.4",
+    "@kunlunjs/model-design": "^0.0.6",
     "@kunlunjs/schematics": "^0.0.8",
     "@originjs/vite-plugin-commonjs": "^1.0.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
