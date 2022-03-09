@@ -39,6 +39,14 @@ export class ViteCompiler {
           plugins: getPostCSSConfig({
             isEnvDevelopment
           })
+        },
+        preprocessorOptions: {
+          less: {
+            globalVars: {},
+            noIeCompat: true,
+            strictMath: false,
+            javascriptEnabled: true
+          }
         }
       },
       plugins

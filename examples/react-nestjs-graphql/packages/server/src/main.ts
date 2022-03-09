@@ -2,7 +2,7 @@ import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import chalk = require('chalk')
+import chalk from 'chalk'
 import { AppModule } from './app.module'
 import type { CorsConfig, NestConfig, SwaggerConfig } from './common/configs'
 import { PrismaService } from './common/prisma'

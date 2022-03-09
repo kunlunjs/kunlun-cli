@@ -1,7 +1,7 @@
 import { resolve, sep } from 'path'
 import { createServer } from '@kunlunjs/model-design'
 import type { ModelGeneratePlugin } from '@kunlunjs/model-design/dist/types'
-import { red } from 'chalk'
+import chalk from 'chalk'
 import { glob } from 'glob'
 import type { ModelOptions } from '../commands/model.command'
 import { generateAdminModule } from '../lib/generator/admin'
@@ -20,7 +20,7 @@ function isAdmin(pkgPath: string, projectName: string) {
 }
 
 function unsupport() {
-  console.error(red('This may not a KunlunJS application'))
+  console.error(chalk.red('This may not a KunlunJS application'))
   process.exit(-1)
 }
 
