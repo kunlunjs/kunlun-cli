@@ -195,6 +195,7 @@ dependencies:
   cssnano: 5.0.17_postcss@8.4.8
   dotenv: 16.0.0
   escape-string-regexp: 4.0.0
+  eta: 1.12.3
   file-loader: 6.2.0_webpack@5.70.0
   fork-ts-checker-webpack-plugin: 7.2.1_typescript@4.6.2+webpack@5.70.0
   fs-extra: 10.0.1
@@ -290,7 +291,6 @@ devDependencies:
   eslint-plugin-jest: 26.1.1_9117a8db616bf327d99a8aa244bfd135
   eslint-plugin-prettier: 4.0.0_07b422646bb75d3db791621d4fdbc992
   eslint-plugin-unused-imports: 2.0.0_0165b4b6c5dc4cbdbf5c26c10eab7b7f
-  eta: 1.12.3
   gulp: 4.0.2
   gulp-clean: 0.4.0
   husky: 7.0.4
@@ -6517,7 +6517,7 @@ packages:
   /eta/1.12.3:
     resolution: {integrity: sha512-qHixwbDLtekO/d51Yr4glcaUJCIjGVJyTzuqV4GPlgZo1YpgOKG+avQynErZIYrfM6JIJdtiG2Kox8tbb+DoGg==}
     engines: {node: '>=6.0.0'}
-    dev: true
+    dev: false
 
   /etag/1.8.1:
     resolution: {integrity: sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=}

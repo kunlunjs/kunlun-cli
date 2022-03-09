@@ -1,5 +1,5 @@
-// import { defineConfig } from '@kunlunjs/cli'
-import { defineConfig } from '../../lib'
+import { defineConfig } from '@kunlunjs/cli'
+// import { defineConfig } from '../../lib'
 
 // @ts-check
 export default defineConfig({
@@ -10,7 +10,6 @@ export default defineConfig({
         globalVars: {}
       }
     },
-    plugins: {},
     devServer: {
       proxy: {
         '/api': {
