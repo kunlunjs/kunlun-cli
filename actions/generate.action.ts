@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
+import * as fs from 'fs'
 import chalk from 'chalk'
 import { Answers } from 'inquirer'
 import { GenerateOptions } from '../commands/generate.command'
@@ -30,8 +31,8 @@ const generateFiles = async (options: GenerateOptions) => {
   const collectionOption = options.collection as string
   const schematic = options.schematic as string
   const appName = options.name as string
-  const path = options.path as string
   const spec = options.spec ?? true
+  let klConfig = options.klConfig
 
   const collection: AbstractCollection = CollectionFactory.create(
     collectionOption || configuration.collection || Collection.KUNLUNJS
@@ -39,7 +40,11 @@ const generateFiles = async (options: GenerateOptions) => {
   const schematicOptions: SchematicOption[] = Object.keys(options).reduce<
     SchematicOption[]
   >((acc, cur) => {
-    if (options[cur as keyof typeof options]) {
+    if (
+      options[cur as keyof typeof options] &&
+      cur != 'klConfig' &&
+      cur != 'name'
+    ) {
       acc.push(new SchematicOption(cur, options[cur as keyof typeof options]))
     }
     return acc
@@ -108,7 +113,24 @@ const generateFiles = async (options: GenerateOptions) => {
     if (!schematic) {
       throw new Error('Unable to find a schematic for this configuration')
     }
-    await collection.execute(schematic as string, schematicOptions)
+
+    klConfig = `${sourceRoot}/../prisma/kl.config.json`
+    if (klConfig) {
+      const obj = JSON.parse(fs.readFileSync(klConfig, 'utf8'))
+
+      for (const model of obj.models) {
+        schematicOptions.push(
+          new SchematicOption('name', model.name.replace(/Model$/, ''))
+        )
+        schematicOptions.push(
+          new SchematicOption('fields_str', JSON.stringify(model.fields))
+        )
+        await collection.execute(schematic as string, schematicOptions)
+      }
+    } else {
+      schematicOptions.push(new SchematicOption('name', appName))
+      await collection.execute(schematic as string, schematicOptions)
+    }
   } catch (error) {
     if (error && error.message) {
       console.error(chalk.red(error.message))

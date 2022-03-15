@@ -14,6 +14,7 @@ export interface GenerateOptions {
   flat: boolean
   collection: string
   project: string
+  klConfig: string
 }
 
 export class GenerateCommand extends AbstractCommand<GenerateOptions> {
@@ -38,6 +39,7 @@ export class GenerateCommand extends AbstractCommand<GenerateOptions> {
         '-c, --collection [collectionName]',
         'Schematics collection to use.'
       )
+      .option('-k, --kl-config [klConf]', 'Location of kl.config.json')
       .action(
         async (
           schematic: string,
