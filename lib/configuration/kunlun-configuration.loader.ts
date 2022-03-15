@@ -49,14 +49,19 @@ export class KunlunConfigLoader {
     if (existsSync(tsConfigFile)) {
       const tsconfigPath = join(__dirname, './kunlun.tsconfig.json')
       register({
-        project: tsconfigPath
+        project: tsconfigPath,
+        cwd: process.cwd()
       })
       const config = require(tsConfigFile)
       return getRealConfig(config)?.[command]
     }
 
     const jsConfigFile = resolve(process.cwd(), 'kunlun.config.js')
-    if (existsSync(jsConfigFile) && require(jsConfigFile)?.default?.[command]) {
+    if (
+      existsSync(jsConfigFile) &&
+      (require(jsConfigFile)?.[command] ||
+        require(jsConfigFile)?.default?.[command])
+    ) {
       const config = require(jsConfigFile)
       return getRealConfig(config)?.[command]
     }

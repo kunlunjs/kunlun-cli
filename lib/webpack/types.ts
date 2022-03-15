@@ -70,6 +70,7 @@ export type WebpackLoaders = {
 }
 
 export type Config = Omit<Configuration, 'module' | 'plugins'> & {
+  tsconfigFile?: string
   module?: Omit<Configuration['module'], 'rules'>
   loaders?: WebpackLoaders
   plugins?: WebpackPlugins

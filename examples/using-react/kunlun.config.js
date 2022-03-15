@@ -1,8 +1,7 @@
-import { defineConfig } from '@kunlunjs/cli'
-// import { defineConfig } from '../../lib'
+const { defineConfig } = require('@kunlunjs/cli')
 
 // @ts-check
-export default defineConfig({
+module.exports = defineConfig({
   start: {
     loaders: {
       less: {
