@@ -10,7 +10,7 @@ import {
   SchematicOption
 } from '../lib/schematics'
 import { MESSAGES } from '../lib/ui'
-import { loadConfiguration } from '../lib/utils/load-configuration'
+import { BackendloadConfiguration } from '../lib/utils/load-configuration'
 import {
   askForProjectName,
   moveDefaultProjectToStart,
@@ -26,19 +26,25 @@ export class GenerateAction extends AbstractAction<GenerateOptions> {
 }
 
 const generateFiles = async (options: GenerateOptions) => {
-  const configuration = await loadConfiguration()
+  const configuration = await BackendloadConfiguration()
   const collectionOption = options.collection as string
   const schematic = options.schematic as string
   const appName = options.name as string
-  const spec = options.spec
+  const path = options.path as string
+  const spec = options.spec ?? true
 
   const collection: AbstractCollection = CollectionFactory.create(
-    options.collection || configuration.collection || Collection.KUNLUNJS
+    collectionOption || configuration.collection || Collection.KUNLUNJS
   )
-  const schematicOptions: SchematicOption[] = Object.keys(options).map(
-    key => new SchematicOption(key, options[key as keyof typeof options])
-  )
-  // schematicOptions.push(new SchematicOption('language', configuration.language))
+  const schematicOptions: SchematicOption[] = Object.keys(options).reduce<
+    SchematicOption[]
+  >((acc, cur) => {
+    if (options[cur as keyof typeof options]) {
+      acc.push(new SchematicOption(cur, options[cur as keyof typeof options]))
+    }
+    return acc
+  }, [])
+
   const configurationProjects = configuration.projects
 
   let sourceRoot = appName
@@ -46,13 +52,11 @@ const generateFiles = async (options: GenerateOptions) => {
     : configuration.sourceRoot
 
   const specValue = spec as boolean
-  // const specOptions = spec!.options as any
   let generateSpec = shouldGenerateSpec(
     configuration,
     schematic,
     appName,
     specValue
-    // specOptions.passedAsInput
   )
 
   // If you only add a `lib` we actually don't have monorepo: true BUT we do have "projects"
