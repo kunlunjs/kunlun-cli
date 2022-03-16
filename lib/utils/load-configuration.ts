@@ -8,3 +8,12 @@ export async function loadConfiguration(): Promise<Required<Configuration>> {
   )
   return loader.load()
 }
+
+export async function BackendloadConfiguration(): Promise<
+  Required<Configuration>
+> {
+  const loader: ConfigurationLoader = new KunlunConfigurationLoader(
+    new FileSystemReader(process.cwd())
+  )
+  return loader.load('nest-cli.json')
+}

@@ -9,6 +9,8 @@ export class SchematicOption {
         return `--${this.name}=${this.format()}`
       } else if (this.name === 'version' || this.name === 'path') {
         return `--${this.name}=${this.value}`
+      } else if (this.name === 'fields_str') {
+        return `--${this.name}='${this.value}'`
       } else {
         return `--${this.name}="${this.value}"`
       }
