@@ -49,3 +49,5 @@ lib/generator/*/files/**/*.*
 .node-version
 Dockerfile*
 *.graphql
+_redirects
+robots.txt

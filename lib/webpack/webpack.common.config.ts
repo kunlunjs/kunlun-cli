@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import path from 'path'
+import path, { resolve } from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
@@ -17,6 +17,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import WebpackBar from 'webpackbar'
 import WindCSSPlugin from 'windicss-webpack-plugin'
+import { isEmptyDir } from '../utils/is-empty-dir'
 import { getPackageJson } from '../utils/package'
 import {
   isTypeScriptProject,
@@ -45,13 +46,17 @@ import type { WebpackConfig } from './types'
 
 const pkg = getPackageJson()
 
-export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
+export const getCommonConfig = (
+  args: WebpackConfig & {
+    mode?: 'development' | 'production'
+  } = {}
+): Configuration => {
   const {
     engine,
     mode = 'development',
     tsconfigFile: tsconfigPath,
     name = pkg?.name || 'Webpack',
-    entry = path.resolve(paths.root, 'src/index'),
+    entry = resolve(paths.root, 'src/index'),
     output,
     plugins,
     loaders,
@@ -79,19 +84,16 @@ export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
     process.env.GENERATE_SOURCEMAP == 'true' ?? isEnvDevelopment
   const html = plugins?.html ?? isTypeScriptFrontProject
 
-  const projectDevelopmentTSFile = path.resolve(
+  const projectDevelopmentTSFile = resolve(
     paths.root,
     'tsconfig.development.json'
   )
-  const projectProductionTSFile = path.resolve(paths.root, 'tsconfig.json')
-  const defaultDevelopmentTSFile = path.resolve(
+  const projectProductionTSFile = resolve(paths.root, 'tsconfig.json')
+  const defaultDevelopmentTSFile = resolve(
     __dirname,
     'tsconfig.development.json'
   )
-  const defaultProductionTSFile = path.resolve(
-    __dirname,
-    'tsconfig.production.json'
-  )
+  const defaultProductionTSFile = resolve(__dirname, 'tsconfig.production.json')
 
   const tsconfigFile = isEnvDevelopment
     ? existsSync(projectDevelopmentTSFile)
@@ -102,9 +104,6 @@ export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
     : existsSync(projectProductionTSFile)
     ? projectProductionTSFile
     : defaultProductionTSFile
-  // const tsconfigFile = isEnvDevelopment
-  //   ? defaultDevelopmentTSFile
-  //   : defaultProductionTSFile
 
   return {
     ...rest,
@@ -118,7 +117,7 @@ export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
       : isEnvDevelopment && 'cheap-module-source-map',
     output: {
       pathinfo: isEnvDevelopment,
-      path: output?.path || path.resolve(paths.root, 'dist'), // path.resolve(paths.root, name ? `dist-${name}` : 'dist'),
+      path: output?.path || resolve(paths.root, 'dist'), // resolve(paths.root, name ? `dist-${name}` : 'dist'),
       filename:
         output?.filename ||
         (mode === 'development'
@@ -137,13 +136,13 @@ export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
               .relative(paths.src, info.absoluteResourcePath)
               .replace(/\\/g, '/')
         : (info: { absoluteResourcePath: string }) =>
-            path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')
+            resolve(info.absoluteResourcePath).replace(/\\/g, '/')
     },
     resolve: {
       extensions,
       alias: {
-        '@': path.resolve(paths.root, 'src'),
-        'src': path.resolve(paths.root, 'src'),
+        '@': resolve(paths.root, 'src'),
+        'src': resolve(paths.root, 'src'),
         ...(isEnvProductionProfile && {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling'
@@ -238,14 +237,22 @@ export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
       copy &&
         new CopyWebpackPlugin({
           patterns: [
-            {
-              from: paths.public,
-              filter: filename => {
-                return (
-                  filename !== path.resolve(paths.root, 'public/index.html')
-                )
-              }
-            },
+            existsSync(paths.public) && !isEmptyDir(paths.public)
+              ? {
+                  from: paths.public,
+                  filter: filename => {
+                    return (
+                      filename !==
+                      resolve(paths.root, `${paths.publicUrlOrPath}/index.html`)
+                    )
+                  }
+                }
+              : {
+                  from: resolve(__dirname, 'public'),
+                  filter: filename => {
+                    return filename !== resolve(paths.root, 'public/index.html')
+                  }
+                },
             ...copy.patterns
           ],
           options: {
@@ -298,7 +305,8 @@ export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
                 title: name,
                 inject: 'body',
                 minify: false,
-                template: path.resolve(__dirname, './template.html')
+                favicon: resolve(__dirname, 'public/favicon.ico'),
+                template: resolve(__dirname, './public/index.html')
               }
         ),
       ...(Array.isArray(html)

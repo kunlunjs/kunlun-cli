@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@6.32.1",
+  "packageManager": "pnpm@6.32.3",
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",
     "@commitlint/config-angular": "^16.2.1",

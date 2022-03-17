@@ -8,23 +8,23 @@ const msgPath = process.argv[2]
 const msg = readFileSync(msgPath, 'utf-8').trim()
 
 const releaseRE = /^v\d/
-const types = [
-  'feat',
-  'fix',
-  'docs',
-  'dx',
-  'refactor',
-  'perf',
-  'test',
-  'workflow',
-  'build',
-  'ci',
-  'chore',
-  'types',
-  'wip',
-  'release',
-  'deps'
-]
+// const types = [
+//   'feat',
+//   'fix',
+//   'docs',
+//   'dx',
+//   'refactor',
+//   'perf',
+//   'test',
+//   'workflow',
+//   'build',
+//   'ci',
+//   'chore',
+//   'types',
+//   'wip',
+//   'release',
+//   'deps'
+// ]
 const commitRE =
   /^(revert: )?(feat|fix|docs|dx|refactor|perf|test|workflow|build|ci|chore|types|wip|release|deps)(\(.+\))?: .{1,50}/
 
