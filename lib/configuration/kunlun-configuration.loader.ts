@@ -42,12 +42,12 @@ export class KunlunConfigurationLoader implements ConfigurationLoader {
   }
 }
 
-function getRealConfig(config: any) {
-  if ('default' in config) {
-    return config['default']
-  }
-  return config
-}
+// function getRealConfig(config: any) {
+//   if ('default' in config) {
+//     return config['default']
+//   }
+//   return config
+// }
 
 const kunlunConfigPrefix = 'kunlun'
 const kunlunConfigExplorer = cosmiconfigSync(kunlunConfigPrefix, {

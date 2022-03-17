@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { getPort } from 'get-port-please'
 import { omit } from 'lodash'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
@@ -14,13 +15,18 @@ export class WebpackCompiler {
   private config = new KunlunConfigLoader()
   constructor() {}
 
-  public run(
+  public async run(
     configuration: Parameters<typeof getWebpackConfig>[0] = {},
     command: CommandType,
     onSuccess?: () => void
   ) {
-    const { /* SPEED_MEASURE, */ PORT = 8000 } = process.env
-    const customConfig = this.config.load(command) || {}
+    const PORT =
+      process.env.PORT ||
+      (await getPort({
+        ports: [8080, 8081, 8082]
+      }))
+    // const { SPEED_MEASURE } = process.env
+    const customConfig = (await this.config.load(command)) || {}
     const webpackConfiguration = getWebpackConfig({
       ...configuration,
       ...customConfig
@@ -67,7 +73,8 @@ export class WebpackCompiler {
       const server = new WebpackDevServer(
         getDevServerConfig({
           ...configuration.devServer,
-          ...omit(devServerConfig, ['startCallback', 'stopCallback'])
+          ...omit(devServerConfig, ['startCallback', 'stopCallback']),
+          port: devServerConfig?.port || PORT
         }),
         compiler
       )

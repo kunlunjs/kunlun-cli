@@ -53,7 +53,10 @@ export const defaultDefinePluginOption: DefinePluginOptions = {
     if (key.startsWith('VITE_')) {
       acc[`import.meta.env.${key}`] = JSON.stringify(process.env[key])
     } else {
-      acc[key] = JSON.stringify(process.env[key])
+      acc[`process.env.${key}`] =
+        typeof process.env[key] === 'string'
+          ? process.env[key]
+          : JSON.stringify(process.env[key])
     }
     return acc
   }, {} as Record<string, any>)

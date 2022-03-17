@@ -4,7 +4,7 @@ import { ignoredFiles } from './helpers'
 
 export const getDevServerConfig = (args: Configuration = {}): Configuration => {
   const {
-    port = process.env.PORT || 8000,
+    port,
     hot = isTypeScriptFrontProject,
     client,
     headers,
