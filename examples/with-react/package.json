@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "ts-node ../../bin/kunlun.ts start",
-    "start:node": "kunlun start",
-    "build": "ts-node ../../bin/kunlun.ts build",
-    "build:node": "kunlun build",
-    "start:vite": "ts-node ../../bin/kunlun.ts start -- --vite",
-    "build:vite": "ts-node ../../bin/kunlun.ts build -- --vite",
+    "start": "kunlun start",
+    "build": "kunlun build",
+    "start:vite": "kunlun start --vite",
+    "build:vite": "kunlun build --vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

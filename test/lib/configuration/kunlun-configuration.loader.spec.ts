@@ -39,7 +39,9 @@ describe('Kunlun Configuration Loader', () => {
     const configuration: Configuration = await loader.load()
     expect(reader.readAnyOf).toHaveBeenCalledWith([
       'kunlun.config.js',
-      'kunlun.config.ts'
+      'kunlun.config.ts',
+      '.kunlunrc.js',
+      '.kunlunrc.ts'
     ])
     expect(configuration).toEqual({
       // language: 'ts',

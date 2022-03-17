@@ -1,1 +1,1 @@
-export { defineConfig } from './webpack/types'
+export { defineConfig } from './types'

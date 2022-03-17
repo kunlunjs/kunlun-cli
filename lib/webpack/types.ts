@@ -1,9 +1,9 @@
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
-import CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
+import type CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import type { CleanWebpackPlugin } from 'clean-webpack-plugin'
-import CompressionWebpackPlugin = require('compression-webpack-plugin')
-import CopyWebpackPlugin = require('copy-webpack-plugin')
-import HtmlWebpackPlugin = require('html-webpack-plugin')
+import type CompressionWebpackPlugin from 'compression-webpack-plugin'
+import type CopyWebpackPlugin from 'copy-webpack-plugin'
+import type HtmlWebpackPlugin from 'html-webpack-plugin'
 import type InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
 import type { Configuration } from 'webpack'
 import type { DefinePlugin, IgnorePlugin } from 'webpack'
@@ -69,20 +69,14 @@ export type WebpackLoaders = {
   }
 }
 
-export type Config = Omit<Configuration, 'module' | 'plugins'> & {
+export type WebpackConfig = Omit<Configuration, 'module' | 'plugins'> & {
   tsconfigFile?: string
+  engine?: 'webpack'
   module?: Omit<Configuration['module'], 'rules'>
   loaders?: WebpackLoaders
   plugins?: WebpackPlugins
-  devServer?: DevServerConfiguration
-}
-
-export type KunlunDefineConfig = {
-  start?: Config
-  build?: Config
-  preview?: Record<string, string>
-}
-
-export function defineConfig(config: KunlunDefineConfig) {
-  return config
+  devServer?: DevServerConfiguration & {
+    startCallback?: () => void
+    stopCallback?: () => void
+  }
 }

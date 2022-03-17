@@ -14,3 +14,7 @@ test/lib/compiler/hooks/fixtures/type-imports/src/main.ts
 test/lib/compiler/hooks/fixtures/unused-imports/src/main.ts
 
 lib/generator/*/files/**/*.*
+.graphqlconfig
+.node-version
+Dockerfile*
+*.graphql

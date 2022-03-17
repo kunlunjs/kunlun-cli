@@ -36,9 +36,10 @@ export class ViteCompiler {
       configFile: false,
       css: {
         postcss: {
+          // TODO
           plugins: getPostCSSConfig({
             isEnvDevelopment
-          })
+          }) as any
         },
         preprocessorOptions: {
           less: {

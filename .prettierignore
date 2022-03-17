@@ -45,3 +45,7 @@ yarn.lock
 **/*.d.ts
 
 lib/generator/*/files/**/*.*
+.graphqlconfig
+.node-version
+Dockerfile*
+*.graphql

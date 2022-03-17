@@ -40,14 +40,16 @@ import {
   getSassLoader,
   getSassModuleLoader
 } from './loaders'
-import type { Config } from './types'
+import type { WebpackConfig } from './types'
 
 const pkg = getPackageJson()
 
-export const getCommonConfig = (args: Config = {}): Configuration => {
+export const getCommonConfig = (args: WebpackConfig = {}): Configuration => {
   const {
-    name = pkg?.name || 'Webpack',
+    engine,
     mode = 'development',
+    tsconfigFile: tsconfigPath,
+    name = pkg?.name || 'Webpack',
     entry = path.resolve(paths.root, 'src/index'),
     output,
     plugins,
