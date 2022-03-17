@@ -5,14 +5,14 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "commonjs",
     "target": "es6",
-    // "outDir": "./dist",
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
     "useUnknownInCatchVariables": false,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-    // "types": ["node", "jest"]
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
+    // "types": []
   },
   "include": ["actions", "bin", "commands", "examples", "lib", "types"],
   "exclude": ["node_modules", "e2e", "examples"]

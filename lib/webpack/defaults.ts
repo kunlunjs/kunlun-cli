@@ -51,7 +51,7 @@ export const isExistTailwindCSS =
 
 export const isReactProject = !!dependencies?.react
 export const isVueProject = !!dependencies?.vue
-export const isExistAntd = !!dependencies?.antd
+export const isExistAntd = !!dependencies?.antd || !!devDependencies.antd
 export const isTypeScriptFrontProject =
   (isReactProject || isVueProject) && isTypeScriptProject
 
