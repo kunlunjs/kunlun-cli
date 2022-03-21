@@ -41,7 +41,10 @@ import {
   getCSSModuleLoader,
   getLessModuleLoader,
   getSassLoader,
-  getSassModuleLoader
+  getSassModuleLoader,
+  getJson5Loader,
+  getHtmlLoader,
+  getWorkerLoader
 } from './loaders'
 import type { WebpackConfig } from './types'
 
@@ -183,15 +186,18 @@ export const getCommonConfig = (
           // back to the "file" loader at the end of the loader list.
           oneOf: [
             getBabelLoader({ isEnvDevelopment }),
+            getHtmlLoader(),
+            getSVGLoader(),
             getAvifLoader(),
+            getImageLoader(),
+            getJson5Loader(),
+            getWorkerLoader(),
             getCSSLoader({ isEnvDevelopment, useSourceMap }),
             getCSSModuleLoader({ isEnvDevelopment, useSourceMap }),
             getLessLoader({ isEnvDevelopment, useSourceMap }),
             getLessModuleLoader({ isEnvDevelopment, useSourceMap }),
             getSassLoader({ isEnvDevelopment, useSourceMap }),
-            getSassModuleLoader({ isEnvDevelopment, useSourceMap }),
-            getSVGLoader(),
-            getImageLoader()
+            getSassModuleLoader({ isEnvDevelopment, useSourceMap })
           ]
         }
         // ...(args?.module?.rules || [])
