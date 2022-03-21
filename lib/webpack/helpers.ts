@@ -49,6 +49,10 @@ export const getPublicUrlOrPath = (
 }
 
 export const defaultDefinePluginOption: DefinePluginOptions = {
+  // Conflicting values with Dotenv
+  // 'process.env': {},
+  // 'process.stdout': null,
+  // 'process.platform': 'browser',
   ...Object.keys(process.env).reduce((acc, key) => {
     if (key.startsWith('VITE_')) {
       acc[`import.meta.env.${key}`] = JSON.stringify(process.env[key])

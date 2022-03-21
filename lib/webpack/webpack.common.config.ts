@@ -163,10 +163,13 @@ export const getCommonConfig = (
         })
       ],
       fallback: {
-        fs: false,
-        path: false,
-        buffer: false,
+        http: false,
         assert: false,
+        buffer: require.resolve('buffer'),
+        fs: resolve(__dirname, 'empty.js'),
+        os: resolve(__dirname, 'empty.js'),
+        tty: resolve(__dirname, 'empty.js'),
+        path: require.resolve('path-browserify'),
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify')
       },
@@ -220,6 +223,9 @@ export const getCommonConfig = (
               }
         ),
       env && new Dotenv(typeof env === 'boolean' ? {} : env),
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer']
+      }),
       /*----------------------------------------------------------------*/
       // isVueProject && new VueLoaderPlugin(),
       /*----------------------------------------------------------------*/
@@ -291,7 +297,7 @@ export const getCommonConfig = (
       /*----------------------------------------------------------------*/
       isTypeScriptProject &&
         new ForkTSCheckerWebpackPlugin({
-          logger: 'webpack-infrastructure',
+          logger: 'webpack-infrastructure', // { infrastructure: 'silent', issues: 'console' }
           typescript: {
             context: paths.root,
             configFile: tsconfigFile,
