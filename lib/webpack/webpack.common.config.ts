@@ -5,6 +5,7 @@ import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import Dotenv from 'dotenv-webpack'
 import ForkTSCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
@@ -69,6 +70,7 @@ export const getCommonConfig = (
   const isEnvProductionProfile =
     isEnvProduction && process.argv.includes('--profile')
 
+  const env = plugins?.env ?? true
   const bar = plugins?.bar ?? true
   const copy = plugins?.copy
   const banner = plugins?.banner
@@ -149,7 +151,6 @@ export const getCommonConfig = (
         })
       },
       plugins: [
-        // @ts-ignore
         new TsconfigPathsPlugin({
           baseUrl: paths.root,
           configFile: tsconfigFile,
@@ -160,7 +161,9 @@ export const getCommonConfig = (
         fs: false,
         path: false,
         buffer: false,
-        assert: false
+        assert: false,
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify')
       },
       ...args?.resolve
     },
@@ -204,6 +207,7 @@ export const getCommonConfig = (
                 name
               }
         ),
+      env && new Dotenv(typeof env === 'boolean' ? {} : env),
       /*----------------------------------------------------------------*/
       // new DashboardPlugin(),
       /*----------------------------------------------------------------*/
@@ -245,12 +249,18 @@ export const getCommonConfig = (
                       filename !==
                       resolve(paths.root, `${paths.publicUrlOrPath}/index.html`)
                     )
+                  },
+                  globOptions: {
+                    ignore: ['*.DS_Store']
                   }
                 }
               : {
                   from: resolve(__dirname, 'public'),
                   filter: filename => {
                     return filename !== resolve(paths.root, 'public/index.html')
+                  },
+                  globOptions: {
+                    ignore: ['*.DS_Store']
                   }
                 },
             ...copy.patterns
@@ -274,10 +284,6 @@ export const getCommonConfig = (
             configOverwrite: {
               compilerOptions: {
                 module: 'commonjs'
-                // paths: {
-                //   '@/*': ['src/*'],
-                //   'src/*': ['src/*']
-                // }
               }
             }
           }

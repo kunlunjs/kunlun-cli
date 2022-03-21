@@ -3,6 +3,7 @@ import type CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import type { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import type CompressionWebpackPlugin from 'compression-webpack-plugin'
 import type CopyWebpackPlugin from 'copy-webpack-plugin'
+import type Dotenv from 'dotenv-webpack'
 import type HtmlWebpackPlugin from 'html-webpack-plugin'
 import type InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
 import type { Configuration } from 'webpack'
@@ -16,6 +17,7 @@ export type Rule = Required<
   Pick<Required<Pick<Configuration, 'module'>>['module'], 'rules'>
 >['rules'][number]
 
+export type DotenvOptions = ConstructorParameters<typeof Dotenv>[0]
 export type BarPluginOptions = ConstructorParameters<typeof WebpackBar>[0]
 export type DefinePluginOptions = ConstructorParameters<typeof DefinePlugin>[0]
 export type IgnorePluginOptions = ConstructorParameters<typeof IgnorePlugin>[0]
@@ -42,6 +44,7 @@ export type CaseSensitivePathsPluginOptions = ConstructorParameters<
 >[0]
 
 export type WebpackPlugins = {
+  env?: boolean | DotenvOptions
   bar?: boolean | BarPluginOptions
   banner?: string // | BannerPluginOptions
   copy?: CopyPluginOptions
