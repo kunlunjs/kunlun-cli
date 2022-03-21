@@ -372,6 +372,25 @@ export const getCommonConfig = (
             reuseExistingChunk: true
           }
         }
+        // chunks: 'async',
+        // minSize: 20480,
+        // minRemainingSize: 0,
+        // minChunks: 1,
+        // maxAsyncRequests: 30,
+        // maxInitialRequests: 30,
+        // enforceSizeThreshold: 40960,
+        // cacheGroups: {
+        //   defaultVendors: {
+        //     test: /[\\/]node_modules[\\/]/,
+        //     priority: -10,
+        //     reuseExistingChunk: true
+        //   },
+        //   default: {
+        //     minChunks: 2,
+        //     priority: -20,
+        //     reuseExistingChunk: true
+        //   }
+        // }
       },
       runtimeChunk: {
         name: (entryPoint: { name: string }) => `runtime-${entryPoint.name}`
