@@ -44,7 +44,8 @@ import {
   getSassModuleLoader,
   getJson5Loader,
   getHtmlLoader,
-  getWorkerLoader
+  getWorkerLoader,
+  getAssetLoader
 } from './loaders'
 import { getMdxLoader } from './loaders/mdx.loader'
 import type { WebpackConfig } from './types'
@@ -169,6 +170,7 @@ export const getCommonConfig = (
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify')
       },
+      // modules: [resolve(process.cwd(), 'node_modules'), 'node_modules'],
       ...args?.resolve
     },
     module: {
@@ -187,11 +189,13 @@ export const getCommonConfig = (
           // back to the "file" loader at the end of the loader list.
           oneOf: [
             getBabelLoader({ isEnvDevelopment }),
+            // getVueLoader(loaders?.vue),
             getMdxLoader(loaders?.mdx),
             getHtmlLoader(),
             getSVGLoader(),
             getAvifLoader(),
             getImageLoader(),
+            getAssetLoader(),
             getJson5Loader(),
             getWorkerLoader(),
             getCSSLoader({ isEnvDevelopment, useSourceMap }),
@@ -216,6 +220,8 @@ export const getCommonConfig = (
               }
         ),
       env && new Dotenv(typeof env === 'boolean' ? {} : env),
+      /*----------------------------------------------------------------*/
+      // isVueProject && new VueLoaderPlugin(),
       /*----------------------------------------------------------------*/
       // new DashboardPlugin(),
       /*----------------------------------------------------------------*/

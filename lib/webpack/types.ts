@@ -1,5 +1,5 @@
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
-import type { Options as MdxOptions } from '@mdx-js/loader'
+import type { Options as MdxLoaderOptions } from '@mdx-js/loader'
 import type CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import type { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import type CompressionWebpackPlugin from 'compression-webpack-plugin'
@@ -7,6 +7,7 @@ import type CopyWebpackPlugin from 'copy-webpack-plugin'
 import type Dotenv from 'dotenv-webpack'
 import type HtmlWebpackPlugin from 'html-webpack-plugin'
 import type InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
+import type { VueLoaderOptions, VueLoaderPlugin } from 'vue-loader'
 import type { Configuration } from 'webpack'
 import type { DefinePlugin, IgnorePlugin } from 'webpack'
 import type { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
@@ -18,7 +19,7 @@ export type Rule = Required<
   Pick<Required<Pick<Configuration, 'module'>>['module'], 'rules'>
 >['rules'][number]
 
-export type MdxLoaderOptions = MdxOptions
+export { VueLoaderOptions, VueLoaderPlugin, MdxLoaderOptions }
 
 export type DotenvOptions = ConstructorParameters<typeof Dotenv>[0]
 export type BarPluginOptions = ConstructorParameters<typeof WebpackBar>[0]
@@ -63,6 +64,7 @@ export type WebpackPlugins = {
 }
 
 export type WebpackLoaders = {
+  vue?: VueLoaderOptions
   mdx?: MdxLoaderOptions
   less?: {
     strictMath?: boolean

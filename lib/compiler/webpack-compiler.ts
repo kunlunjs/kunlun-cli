@@ -1,6 +1,6 @@
 import chalk from 'chalk'
-import { getPort } from 'get-port-please'
 import { omit } from 'lodash'
+import portfinder from 'portfinder'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import { KunlunConfigLoader } from '../configuration'
@@ -20,11 +20,7 @@ export class WebpackCompiler {
     command: CommandType,
     onSuccess?: () => void
   ) {
-    const PORT =
-      process.env.PORT ||
-      (await getPort({
-        ports: [8080, 8081, 8082]
-      }))
+    const PORT = process.env.PORT || (await portfinder.getPortPromise())
     // const { SPEED_MEASURE } = process.env
     const customConfig = (await this.config.load(command)) || {}
     const webpackConfiguration = getWebpackConfig({

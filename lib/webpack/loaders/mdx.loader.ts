@@ -7,7 +7,7 @@ export const getMdxLoader = (options?: MdxLoaderOptions): RuleSetRule => {
     use: {
       loader: require.resolve('@mdx-js/loader'),
       /** @type {import('@mdx-js/loader').Options}  */
-      options: {}
+      options
     }
   }
 }
