@@ -60,6 +60,7 @@
     "@babel/runtime": "^7.17.2",
     "@kunlunjs/model-design": "^0.0.6",
     "@kunlunjs/schematics": "^0.0.8",
+    "@mdx-js/loader": "^2.1.0",
     "@originjs/vite-plugin-commonjs": "^1.0.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
     "@rollup/plugin-babel": "^5.3.1",

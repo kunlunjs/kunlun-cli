@@ -46,6 +46,7 @@ import {
   getHtmlLoader,
   getWorkerLoader
 } from './loaders'
+import { getMdxLoader } from './loaders/mdx.loader'
 import type { WebpackConfig } from './types'
 
 const pkg = getPackageJson()
@@ -186,6 +187,7 @@ export const getCommonConfig = (
           // back to the "file" loader at the end of the loader list.
           oneOf: [
             getBabelLoader({ isEnvDevelopment }),
+            getMdxLoader(loaders?.mdx),
             getHtmlLoader(),
             getSVGLoader(),
             getAvifLoader(),
