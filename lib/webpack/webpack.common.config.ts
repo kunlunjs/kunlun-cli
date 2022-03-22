@@ -1,4 +1,4 @@
-import { existsSync } from 'fs'
+import { existsSync, realpathSync } from 'fs'
 import path, { resolve } from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
@@ -113,6 +113,7 @@ export const getCommonConfig = (
     : defaultProductionTSFile
 
   return {
+    context: realpathSync(process.cwd()),
     ...rest,
     bail: !isEnvDevelopment,
     mode,

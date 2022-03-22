@@ -69,7 +69,7 @@ export const getBabelConfig = (args: {
         'antd'
       ],
       !!dependencies?.lodash && [
-        require('babel-plugin-lodash').default,
+        require('babel-plugin-import').default,
         {
           libraryName: 'lodash',
           libraryDirectory: '',
