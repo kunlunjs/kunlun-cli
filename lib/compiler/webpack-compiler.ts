@@ -1,15 +1,22 @@
 import chalk from 'chalk'
 import { omit } from 'lodash'
 import portfinder from 'portfinder'
+import semve from 'semver'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import { KunlunConfigLoader } from '../configuration'
 import type { CommandType } from '../types'
+import { paths } from '../webpack/defaults'
 // import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import { getWebpackConfig } from '../webpack/webpack.config'
 import { getDevServerConfig } from '../webpack/webpack.dev-server.config'
 // import { ip } from './helpers/ip'
 // import { INFO_PREFIX } from '../ui'
+const react = require(require.resolve('react', {
+  paths: [paths.root]
+}))
+
+const isInteractive = process.stdout.isTTY
 
 export class WebpackCompiler {
   private config = new KunlunConfigLoader()
@@ -81,6 +88,16 @@ export class WebpackCompiler {
         devServerConfig?.startCallback
           ? devServerConfig.startCallback
           : () => {
+              if (isInteractive) {
+                // clearConsole()
+              }
+              if (semve.lt(react.version, '16.10.0')) {
+                console.log(
+                  chalk.yellow(
+                    `Fast Refresh requires React 16.10.0 or higher. You are using React ${react.version}`
+                  )
+                )
+              }
               console.log(
                 chalk.green(`🚀 Application running at:
     - Local:   ${chalk.underline(`http://localhost:${PORT}`)}
@@ -90,6 +107,18 @@ export class WebpackCompiler {
       )
       if (devServerConfig?.stopCallback) {
         server.stopCallback(devServerConfig.stopCallback)
+      }
+      ;['SIGINT', 'SIGTERM'].forEach(sig => {
+        process.on(sig, () => {
+          server.close()
+          process.exit()
+        })
+      })
+      if (process.env.CI !== 'true') {
+        process.stdin.on('end', () => {
+          server.close()
+          process.exit()
+        })
       }
     } else {
       compiler.run(afterCallback)
