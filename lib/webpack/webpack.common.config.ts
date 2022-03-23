@@ -163,16 +163,31 @@ export const getCommonConfig = (
           extensions
         })
       ],
+      // https://webpack.js.org/configuration/resolve/#resolvefallback
       fallback: {
-        http: false,
-        assert: false,
+        assert: require.resolve('assert'),
         buffer: require.resolve('buffer'),
-        fs: resolve(__dirname, 'empty.js'),
-        os: resolve(__dirname, 'empty.js'),
-        tty: resolve(__dirname, 'empty.js'),
-        path: require.resolve('path-browserify'),
+        console: require.resolve('console-browserify'),
+        constants: require.resolve('constants-browserify'),
         crypto: require.resolve('crypto-browserify'),
-        stream: require.resolve('stream-browserify')
+        domain: require.resolve('domain-browser'),
+        events: require.resolve('events'),
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        os: require.resolve('os-browserify/browser'),
+        path: require.resolve('path-browserify'),
+        punycode: require.resolve('punycode'),
+        process: require.resolve('process/browser'),
+        querystring: require.resolve('querystring-es3'),
+        stream: require.resolve('stream-browserify'),
+        string_decoder: require.resolve('string_decoder'),
+        sys: require.resolve('util'),
+        timers: require.resolve('timers-browserify'),
+        tty: require.resolve('tty-browserify'),
+        url: require.resolve('url'),
+        util: require.resolve('util/'),
+        vm: require.resolve('vm-browserify'),
+        zlib: require.resolve('browserify-zlib')
       },
       // modules: [resolve(process.cwd(), 'node_modules'), 'node_modules'],
       ...args?.resolve
@@ -225,6 +240,7 @@ export const getCommonConfig = (
         ),
       env && new Dotenv(typeof env === 'boolean' ? {} : env),
       new webpack.ProvidePlugin({
+        // process: 'process/browser',
         Buffer: ['buffer', 'Buffer']
       }),
       /*----------------------------------------------------------------*/
