@@ -17,8 +17,10 @@ specifiers:
   '@kunlunjs/model-design': ^0.0.6
   '@kunlunjs/schematics': ^0.0.8
   '@mdx-js/loader': ^2.1.0
+  '@nestjs/swagger': ^5.2.0
   '@originjs/vite-plugin-commonjs': ^1.0.2
   '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
+  '@prisma/client': ^3.11.0
   '@prisma/generator-helper': ^3.11.0
   '@prisma/sdk': ^3.11.0
   '@rollup/plugin-babel': ^5.3.1
@@ -72,9 +74,12 @@ specifiers:
   browserify-zlib: ^0.2.0
   browserslist: ^4.20.2
   buffer: ^6.0.3
+  case: ^1.6.3
   case-sensitive-paths-webpack-plugin: ^2.4.0
   chalk: '3'
   chokidar: 3.5.2
+  class-transformer: ^0.5.1
+  class-validator: ^0.13.2
   clean-webpack-plugin: ^4.0.0
   cli-table3: 0.6.1
   commander: 9.0.0
@@ -163,6 +168,7 @@ specifiers:
   sass-loader: ^12.6.0
   semver: ^7.3.5
   shelljs: 0.8.5
+  slash: ^4.0.0
   source-map-loader: ^3.0.1
   source-map-support: 0.5.21
   speed-measure-webpack-plugin: ^1.5.0
@@ -215,8 +221,10 @@ dependencies:
   '@kunlunjs/model-design': 0.0.6
   '@kunlunjs/schematics': 0.0.8_chokidar@3.5.2
   '@mdx-js/loader': 2.1.0_webpack@5.70.0
+  '@nestjs/swagger': 5.2.0_279461c9b8c03a205cdbc4878bc60cf8
   '@originjs/vite-plugin-commonjs': 1.0.3
   '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_8ed57ecc5ac7b9010d3e6ce156e1c99e
+  '@prisma/client': 3.11.0
   '@prisma/generator-helper': 3.11.0
   '@prisma/sdk': 3.11.0
   '@rollup/plugin-babel': 5.3.1_@babel+core@7.17.5+rollup@2.70.1
@@ -242,9 +250,12 @@ dependencies:
   browserify-zlib: 0.2.0
   browserslist: 4.20.2
   buffer: 6.0.3
+  case: 1.6.3
   case-sensitive-paths-webpack-plugin: 2.4.0
   chalk: 3.0.0
   chokidar: 3.5.2
+  class-transformer: 0.5.1
+  class-validator: 0.13.2
   clean-webpack-plugin: 4.0.0_webpack@5.70.0
   cli-table3: 0.6.1
   commander: 9.0.0
@@ -315,6 +326,7 @@ dependencies:
   sass-loader: 12.6.0_sass@1.49.9+webpack@5.70.0
   semver: 7.3.5
   shelljs: 0.8.5
+  slash: 4.0.0
   source-map-loader: 3.0.1_webpack@5.70.0
   source-map-support: 0.5.21
   speed-measure-webpack-plugin: 1.5.0_webpack@5.70.0
@@ -2327,7 +2339,7 @@ packages:
     engines: {node: '>16.0.0'}
     dependencies:
       '@mrleebo/prisma-ast': 0.3.0
-      '@prisma/client': 3.10.0_prisma@3.11.0
+      '@prisma/client': 3.11.0_prisma@3.11.0
       compression: 1.7.4
       express: 4.17.3
       fs-extra: 10.0.1
@@ -2394,6 +2406,45 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       chevrotain: 9.1.0
+    dev: false
+
+  /@nestjs/mapped-types/1.0.1_279461c9b8c03a205cdbc4878bc60cf8:
+    resolution: {integrity: sha512-NFvofzSinp00j5rzUd4tf+xi9od6383iY0JP7o0Bnu1fuItAUkWBgc4EKuIQ3D+c2QI3i9pG1kDWAeY27EMGtg==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.8 || ^8.0.0
+      class-transformer: ^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0
+      class-validator: ^0.11.1 || ^0.12.0 || ^0.13.0
+      reflect-metadata: ^0.1.12
+    peerDependenciesMeta:
+      class-transformer:
+        optional: true
+      class-validator:
+        optional: true
+    dependencies:
+      class-transformer: 0.5.1
+      class-validator: 0.13.2
+    dev: false
+
+  /@nestjs/swagger/5.2.0_279461c9b8c03a205cdbc4878bc60cf8:
+    resolution: {integrity: sha512-wcW2KCe7irwBw0WKsb03uFk4gnjqNcAcJxXGZxi6ljFiDgyLrQtx5MpE95o703tnn4V/hZR8MqMNFOXuup7Pqw==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0
+      '@nestjs/core': ^8.0.0
+      fastify-swagger: '*'
+      reflect-metadata: ^0.1.12
+      swagger-ui-express: '*'
+    peerDependenciesMeta:
+      fastify-swagger:
+        optional: true
+      swagger-ui-express:
+        optional: true
+    dependencies:
+      '@nestjs/mapped-types': 1.0.1_279461c9b8c03a205cdbc4878bc60cf8
+      lodash: 4.17.21
+      path-to-regexp: 3.2.0
+    transitivePeerDependencies:
+      - class-transformer
+      - class-validator
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -2572,8 +2623,8 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: false
 
-  /@prisma/client/3.10.0_prisma@3.11.0:
-    resolution: {integrity: sha512-6P4sV7WFuODSfSoSEzCH1qfmWMrCUBk1LIIuTbQf6m1LI/IOpLN4lnqGDmgiBGprEzuWobnGLfe9YsXLn0inrg==}
+  /@prisma/client/3.11.0:
+    resolution: {integrity: sha512-d42o/tlalaWMmNOR4r5BiR6YYTYEV82eZ2lNKOm5ht3WyYwI9e+zy2MyZnNO4Fx5e08RAhW+GRVcEgKl5faUaQ==}
     engines: {node: '>=12.6'}
     requiresBuild: true
     peerDependencies:
@@ -2582,7 +2633,20 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 3.10.0-50.73e60b76d394f8d37d8ebd1f8918c79029f0db86
+      '@prisma/engines-version': 3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b
+    dev: false
+
+  /@prisma/client/3.11.0_prisma@3.11.0:
+    resolution: {integrity: sha512-d42o/tlalaWMmNOR4r5BiR6YYTYEV82eZ2lNKOm5ht3WyYwI9e+zy2MyZnNO4Fx5e08RAhW+GRVcEgKl5faUaQ==}
+    engines: {node: '>=12.6'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b
       prisma: 3.11.0
     dev: false
 
@@ -2620,8 +2684,8 @@ packages:
       undici: 3.3.6
     dev: false
 
-  /@prisma/engines-version/3.10.0-50.73e60b76d394f8d37d8ebd1f8918c79029f0db86:
-    resolution: {integrity: sha512-cVYs5gyQH/qyut24hUvDznCfPrWiNMKNfPb9WmEoiU6ihlkscIbCfkmuKTtspVLWRdl0LqjYEC7vfnPv17HWhw==}
+  /@prisma/engines-version/3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b:
+    resolution: {integrity: sha512-bhMW1XybXZyqCf+9QqjP7Oi7xgVHcISVyOZNMm51qeZsy12M1RtHaCcXUFeMMV0JOCZZuPFVr3+0KVpQqK35CQ==}
     dev: false
 
   /@prisma/engines/3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b:
@@ -5254,6 +5318,11 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
+  /case/1.6.3:
+    resolution: {integrity: sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==}
+    engines: {node: '>= 0.8.0'}
+    dev: false
+
   /ccount/2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
     dev: false
@@ -5423,6 +5492,10 @@ packages:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
 
+  /class-transformer/0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+    dev: false
+
   /class-utils/0.3.6:
     resolution: {integrity: sha512-qOhPa/Fj7s6TY8H8esGu5QNpMMQxz79h+urzrNYN6mn+9BnxlDGf5QZ+XeCDsxSjPqsSR56XOZOJmpeurnLMeg==}
     engines: {node: '>=0.10.0'}
@@ -5432,6 +5505,13 @@ packages:
       isobject: 3.0.1
       static-extend: 0.1.2
     dev: true
+
+  /class-validator/0.13.2:
+    resolution: {integrity: sha512-yBUcQy07FPlGzUjoLuUfIOXzgynnQPPruyK1Ge2B74k9ROwnle1E+NxLWnUv5OLU8hA/qL5leAE9XnXq3byaBw==}
+    dependencies:
+      libphonenumber-js: 1.9.50
+      validator: 13.7.0
+    dev: false
 
   /clean-css/5.2.4:
     resolution: {integrity: sha512-nKseG8wCzEuji/4yrgM/5cthL9oTDc5UOQyFMvW/Q53oP6gLH690o1NbuTh6Y18nujr7BxlsFuS7gXLnLzKJGg==}
@@ -10209,6 +10289,10 @@ packages:
       type-check: 0.4.0
     dev: true
 
+  /libphonenumber-js/1.9.50:
+    resolution: {integrity: sha512-cCzQPChw2XbordcO2LKiw5Htx5leHVfFk/EXkxNHqJfFo7Fndcb1kF5wPJpc316vCJhhikedYnVysMh3Sc7Ocw==}
+    dev: false
+
   /liftoff/3.1.0:
     resolution: {integrity: sha512-DlIPlJUkCV0Ips2zf2pJP0unEoT1kwYhiiPUGF3s/jtxTCjziNLoiVVh+jqWOWeFi6mmwQ5fNxvAUyPad4Dfog==}
     engines: {node: '>= 0.8'}
@@ -11812,6 +11896,10 @@ packages:
 
   /path-to-regexp/0.1.7:
     resolution: {integrity: sha1-32BBeABfUi8V60SQ5yR6G/qmf4w=}
+    dev: false
+
+  /path-to-regexp/3.2.0:
+    resolution: {integrity: sha512-jczvQbCUS7XmS7o+y1aEO9OBVFeZBQ1MDSEqmO7xSoPgOPoowY/SxLpZ6Vh97/8qHZOteiCKb7gkG9gA2ZUxJA==}
     dev: false
 
   /path-type/1.1.0:
@@ -15258,6 +15346,11 @@ packages:
     dependencies:
       spdx-correct: 3.1.1
       spdx-expression-parse: 3.0.1
+
+  /validator/13.7.0:
+    resolution: {integrity: sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==}
+    engines: {node: '>= 0.10'}
+    dev: false
 
   /value-or-function/3.0.0:
     resolution: {integrity: sha1-HCQ6ULWVwb5Up1S/7OhWO5/42BM=}

@@ -8,6 +8,8 @@
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
     "useUnknownInCatchVariables": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
