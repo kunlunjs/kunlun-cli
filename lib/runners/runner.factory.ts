@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import { NpmRunner } from './npm.runner'
 import { PnpmRunner } from './pnpm.runner'
+import { PrismaRunner } from './prisma.runner'
 import { Runner } from './runner'
 import { SchematicRunner } from './schematic.runner'
 import { YarnRunner } from './yarn.runner'
@@ -19,6 +20,9 @@ export class RunnerFactory {
 
       case Runner.PNPM:
         return new PnpmRunner()
+
+      case Runner.PRISMA:
+        return new PrismaRunner()
 
       default:
         console.info(chalk.yellow(`[WARN] Unsupported runner: ${runner}`))
