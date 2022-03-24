@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
+    "strictBindCallApply": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "useUnknownInCatchVariables": false,
