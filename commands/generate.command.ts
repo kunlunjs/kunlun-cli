@@ -16,11 +16,10 @@ export interface GenerateOptions {
   project: string
   klConfig: string
 }
-
 export class GenerateCommand extends AbstractCommand<GenerateOptions> {
   public load(program: Command) {
     program
-      .command('generate <schematic> [name] [path]')
+      .command('generate [app]')
       .alias('g')
       .description(this.buildDescription())
       .option(
@@ -42,16 +41,13 @@ export class GenerateCommand extends AbstractCommand<GenerateOptions> {
       .option('-k, --kl-config [klConf]', 'Location of kl.config.json')
       .action(
         async (
-          schematic: string,
-          name: string,
-          path: string,
-          command: Omit<GenerateOptions, 'schematic' | 'name' | 'path'>
+          app: string | undefined,
+          options: GenerateOptions,
+          command: Command
         ) => {
           const mergedOptions = {
-            schematic,
-            name,
-            path,
-            ...command
+            // TODO @weidafang
+            ...options
           }
           await this.action.handle(mergedOptions as GenerateOptions)
         }

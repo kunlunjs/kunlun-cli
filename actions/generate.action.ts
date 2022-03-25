@@ -22,7 +22,9 @@ import { AbstractAction } from './abstract.action'
 
 export class GenerateAction extends AbstractAction<GenerateOptions> {
   public async handle(options: GenerateOptions) {
-    await generateFiles(options)
+    console.log('generate.action.ts handle')
+    // TODO @weidafang
+    // await generateFiles(options)
   }
 }
 

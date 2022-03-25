@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
+
 import { program } from 'commander'
 import { CommandLoader } from '../commands'
 import {
@@ -16,7 +16,6 @@ const bootstrap = () => {
     )
     .usage('<command> [options]')
     .helpOption('-h, --help', 'Output usage information.')
-
   if (localBinExists()) {
     const localCommandLoader = loadLocalBinCommandLoader()
     localCommandLoader.load(program)
