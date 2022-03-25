@@ -1,7 +1,7 @@
 import { existsSync, realpathSync } from 'fs'
 import path, { resolve } from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
+// import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
@@ -27,8 +27,7 @@ import {
   isExistWindiCSS,
   extensions,
   defaultStats,
-  defaultProductionStats,
-  isExistAntd
+  defaultProductionStats
 } from './defaults'
 import { defaultDefinePluginOption } from './helpers'
 import {
@@ -337,7 +336,8 @@ export const getCommonConfig = (
             : banner
         ),
       /*----------------------------------------------------------------*/
-      isExistAntd && new AntdDayjsWebpackPlugin(),
+      // not support webpack5
+      // isExistAntd && new AntdDayjsWebpackPlugin(),
       /*----------------------------------------------------------------*/
       html &&
         !Array.isArray(html) &&

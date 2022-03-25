@@ -76,7 +76,10 @@ export const getStyleLoaders = (
         loader: require.resolve('less-loader'), // LessLoader,
         options: {
           sourceMap,
-          lessOptions
+          lessOptions: {
+            javascriptEnabled: true,
+            ...lessOptions
+          }
         }
       })
     }
