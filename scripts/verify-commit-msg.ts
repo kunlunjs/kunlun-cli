@@ -8,8 +8,28 @@ const msgPath = process.argv[2]
 const msg = readFileSync(msgPath, 'utf-8').trim()
 
 const releaseRE = /^v\d/
-const commitRE =
-  /^(revert: )?(ci|dx|wip|fix|feat|docs|deps|perf|test|build|chore|types|style|sample|release|refactor|workflow)(\(.+\))?: .{1,50}/
+const pre = [
+  'ci', // CI/CD Travis、Jenkins、GitLab CI、Circle等
+  'dx', // dx
+  'wip', // 开发
+  'fix', // 问题修复
+  'feat', // 功能
+  'docs', // 文档
+  'deps', // 依赖
+  'perf', // 性能
+  'test', // 测试
+  'build', // 构建
+  'chore', // 日常事务
+  'types', // 类型声明
+  'style', // 格式化
+  'sample', // 案例
+  'release', // 发布 npm package
+  'refactor', // 重构
+  'workflow' // github workflow
+]
+const commitRE = new RegExp(
+  `^(revert: )?(${pre.join('|')})(\\(.+\\))?: .{1,50}`
+)
 
 if (!releaseRE.test(msg) && !commitRE.test(msg)) {
   console.log()
