@@ -25,6 +25,7 @@ export class GenerateAction extends AbstractAction<GenerateOptions> {
     console.log('generate.action.ts handle')
     // TODO @weidafang
     // await generateFiles(options)
+    require('../lib/generate-nestjs')
   }
 }
 

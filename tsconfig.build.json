@@ -5,5 +5,9 @@
     "examples",
     "scripts",
     "lib/generator/*/files/**/*.*"
-  ]
+  ],
+  "compilerOptions": {
+    "removeComments": true,
+    "target": "ES2020"
+  }
 }
