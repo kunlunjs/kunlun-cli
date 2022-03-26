@@ -17,7 +17,6 @@ import {
   connectDtoPrefix,
   createDtoPrefix,
   dtoSuffix,
-  modelUnifiedSuffix,
   queryDtoPrefix,
   updateDtoPrefix,
   voPrefix,
@@ -55,8 +54,6 @@ export const defaultRemoveModelUnifiedSuffix = 'Model'
 interface RunParam {
   output: string
   dmmf: DMMF.Document
-  exportRelationModifierClasses: boolean
-  outputToNestJSResourceStructure: boolean
   generateSchemaOfModule: string
 }
 export const run = ({
@@ -65,11 +62,7 @@ export const run = ({
   generateSchemaOfModule = '', // 哪些 schema 生成 module
   ...options
 }: RunParam): WriteableFileSpecs[] => {
-  const {
-    exportRelationModifierClasses,
-    outputToNestJSResourceStructure,
-    ...preAndSuffixes
-  } = options
+  const { ...preAndSuffixes } = options
 
   const templateHelpers = makeHelpers({
     transformFileName,
@@ -90,7 +83,6 @@ export const run = ({
    */
   const allEnums = dmmf.datamodel.enums
   const allModels = dmmf.datamodel.models
-
   const filteredModels: Model[] = allModels
     // 忽略被 @ignore 注释的 Model
     // .filter(model => !isAnnotatedWith(model, MODEL_IGNOER))
@@ -100,34 +92,10 @@ export const run = ({
       return {
         ...model,
         output: {
-          entity: outputToNestJSResourceStructure
-            ? path.join(
-                output,
-                transformFileName(model.name, modelUnifiedSuffix),
-                'entities'
-              )
-            : output,
-          connect: outputToNestJSResourceStructure
-            ? path.join(
-                output,
-                transformFileName(model.name, modelUnifiedSuffix),
-                'dto'
-              )
-            : `${output}/dto`, // `${output}/connect`,
-          dto: outputToNestJSResourceStructure
-            ? path.join(
-                output,
-                transformFileName(model.name, modelUnifiedSuffix),
-                'dto'
-              )
-            : `${output}/dto`,
-          vo: outputToNestJSResourceStructure
-            ? path.join(
-                output,
-                transformFileName(model.name, modelUnifiedSuffix),
-                'vo'
-              )
-            : `${output}/vo`,
+          entity: output,
+          connect: `${output}/dto`, // `${output}/connect`,
+          dto: `${output}/dto`,
+          vo: `${output}/vo`,
           module: `${process.cwd()}/src/modules`
         }
       }
@@ -135,7 +103,7 @@ export const run = ({
 
   const modelFiles = filteredModels.map((model, ix) => {
     logger.info(`Processing Model ${model.name}`)
-    const { name, documentation = '' } = model
+    const { name } = model
     const modelParams = computeModelParams({
       model,
       allModels: filteredModels,
@@ -167,6 +135,7 @@ export const run = ({
     }
 
     // generate create-{model}.dto.ts
+    // TODO 使用配置
     const createDto = isAnnotatedWith(model, IGNOER_CREATE_INTERFACE) && {
       fileName: path.join(
         model.output.dto,
@@ -174,12 +143,12 @@ export const run = ({
       ),
       content: generateCreateDto({
         ...modelParams.create,
-        exportRelationModifierClasses,
         templateHelpers
       })
     }
 
     // generate update-{model}.dto.ts
+    // TODO 使用配置
     const updateDto = isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE) && {
       fileName: path.join(
         model.output.dto,
@@ -187,7 +156,6 @@ export const run = ({
       ),
       content: generateUpdateDto({
         ...modelParams.update,
-        exportRelationModifierClasses,
         templateHelpers
       })
     }
@@ -200,7 +168,6 @@ export const run = ({
       ),
       content: generateQueryDto({
         ...modelParams.query,
-        exportRelationModifierClasses,
         templateHelpers
       })
     }
@@ -219,6 +186,7 @@ export const run = ({
     }
 
     // generate NestJS Module
+    // TODO 使用配置
     if (
       generateSchemaOfModule.split(',').includes(name) &&
       !isAnnotatedWithOneOf(model, [MODEL_IGNOER, IGNOER_NESTJS_MODULE])
@@ -265,6 +233,7 @@ import type { EnumsByName } from './types'
 
 export const enumsByName: EnumsByName = ${JSON.stringify(
       allEnums.reduce((result, cur) => {
+        // TODO 使用配置
         const labels = getLabels(cur.documentation)
         const keys = cur.values.map(i => i.name)
         const options: ({ label: string; value: string } | string)[] =
@@ -298,6 +267,7 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
   const models = {}
   const modelNames = allModels.map(i => i.name)
   filteredModels.forEach(model => {
+    // TODO 使用配置
     const group = getComment(model.documentation) || model.name
     model.tag = group
     model.comment =
@@ -444,11 +414,13 @@ export type SchemaGeneratedModels = typeof schemaGeneratedModels[number]
 export const interfaces = ${JSON.stringify(
       filteredModels
         .map(model => {
+          // TODO 使用配置
           const comment = getComment(model.documentation) || model.name
           const tag =
             comment !== '管理' && !comment.endsWith('管理')
               ? comment
               : comment.slice(0, -2)
+          // TODO 使用配置
           return [
             !isAnnotatedWith(model, IGNOER_LIST_INTERFACE) && `获取${tag}列表`,
             !isAnnotatedWith(model, IGNOER_DETAIL_INTERFACE) &&

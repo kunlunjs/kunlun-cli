@@ -1,9 +1,11 @@
-import { modelUnifiedSuffix } from './default-configs'
+import {
+  exportRelationModifierClasses,
+  modelUnifiedSuffix
+} from './default-configs'
 import type { TemplateHelpers } from './template-helpers'
 import type { QueryDtoParams } from './types'
 
 interface GenerateQueryDtoParam extends QueryDtoParams {
-  exportRelationModifierClasses: boolean
   templateHelpers: TemplateHelpers
 }
 export const generateQueryDto = ({
@@ -12,7 +14,6 @@ export const generateQueryDto = ({
   imports,
   extraClasses,
   apiExtraModels,
-  exportRelationModifierClasses,
   templateHelpers: t
 }: GenerateQueryDtoParam) => {
   const name =

@@ -15,23 +15,11 @@ export const generate = (options: GeneratorOptions) => {
 
   const { generateSchemaOfModule } = config
 
-  const exportRelationModifierClasses = stringToBoolean(
-    config.exportRelationModifierClasses,
-    true
-  )
-
-  const outputToNestJSResourceStructure = stringToBoolean(
-    config.outputToNestJSResourceStructure,
-    false
-  )
-
   const reExport = stringToBoolean(config.reExport, true)
 
   const results = run({
     output,
     dmmf: options.dmmf,
-    exportRelationModifierClasses,
-    outputToNestJSResourceStructure,
     generateSchemaOfModule
   })
 

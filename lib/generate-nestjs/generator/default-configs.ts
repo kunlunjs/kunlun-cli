@@ -8,3 +8,4 @@ export const dtoSuffix = 'Dto'
 export const voPrefix = ''
 export const voSuffix = 'Vo'
 export const modelUnifiedSuffix = 'Model'
+export const exportRelationModifierClasses = true

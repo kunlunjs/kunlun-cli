@@ -1,9 +1,11 @@
-import { modelUnifiedSuffix } from './default-configs'
+import {
+  exportRelationModifierClasses,
+  modelUnifiedSuffix
+} from './default-configs'
 import type { TemplateHelpers } from './template-helpers'
 import type { UpdateDtoParams } from './types'
 
 interface GenerateUpdateDtoParam extends UpdateDtoParams {
-  exportRelationModifierClasses: boolean
   templateHelpers: TemplateHelpers
 }
 export const generateUpdateDto = ({
@@ -12,7 +14,6 @@ export const generateUpdateDto = ({
   imports,
   extraClasses,
   apiExtraModels,
-  exportRelationModifierClasses,
   templateHelpers: t
 }: GenerateUpdateDtoParam) => {
   const name =

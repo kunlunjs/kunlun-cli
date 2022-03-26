@@ -1,9 +1,11 @@
-import { modelUnifiedSuffix } from './default-configs'
+import {
+  exportRelationModifierClasses,
+  modelUnifiedSuffix
+} from './default-configs'
 import type { TemplateHelpers } from './template-helpers'
 import type { CreateDtoParams } from './types'
 
 interface GenerateCreateDtoParam extends CreateDtoParams {
-  exportRelationModifierClasses: boolean
   templateHelpers: TemplateHelpers
 }
 export const generateCreateDto = ({
@@ -12,7 +14,6 @@ export const generateCreateDto = ({
   imports, // 导入结构，example: [ { from: '@prisma/client', destruct: [ 'Prisma' ] } ]
   extraClasses,
   apiExtraModels,
-  exportRelationModifierClasses,
   templateHelpers: t
 }: GenerateCreateDtoParam) => {
   const name =
