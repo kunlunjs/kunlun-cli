@@ -1,12 +1,7 @@
 import path from 'path'
 import type { DMMF } from '@prisma/generator-helper'
 import slash from 'slash'
-import { DTO_RELATION_REQUIRED } from '../generator/annotations'
-import {
-  isAnnotatedWith,
-  isRelation,
-  isRequired
-} from '../generator/field-classifiers'
+import { isRelation, isRequired } from '../generator/field-classifiers'
 import {
   getRelationScalars,
   getRelativePath,
@@ -52,11 +47,7 @@ export const computeEntityParams = ({
     // response from PrismaClient
     if (isRelation(field)) {
       overrides.isRequired = false
-      overrides.isNullable = field.isList
-        ? false
-        : field.isRequired
-        ? false
-        : !isAnnotatedWith(field, DTO_RELATION_REQUIRED)
+      overrides.isNullable = field.isList ? false : !field.isRequired
 
       // don't try to import the class we're preparing params for
       if (field.type !== model.name) {
@@ -103,10 +94,7 @@ export const computeEntityParams = ({
         )
         if (!relationField) return false
 
-        return (
-          isRequired(relationField) ||
-          isAnnotatedWith(relationField, DTO_RELATION_REQUIRED)
-        )
+        return isRequired(relationField) || false
       })
 
       overrides.isRequired = true

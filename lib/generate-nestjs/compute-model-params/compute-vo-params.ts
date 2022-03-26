@@ -1,7 +1,7 @@
 import path from 'path'
 import type { DMMF } from '@prisma/generator-helper'
 import slash from 'slash'
-import { DTO_RELATION_REQUIRED, SELECT_FALSE } from '../generator/annotations'
+import { SELECT_FALSE } from '../generator/annotations'
 import {
   isAnnotatedWith,
   isCreatedAt,
@@ -66,11 +66,7 @@ export const computeVoParams = ({
     // response from PrismaClient
     if (isRelation(field)) {
       overrides.isRequired = false
-      overrides.isNullable = field.isList
-        ? false
-        : field.isRequired
-        ? false
-        : !isAnnotatedWith(field, DTO_RELATION_REQUIRED)
+      overrides.isNullable = field.isList ? false : !field.isRequired
 
       // don't try to import the class we're preparing params for
       if (field.type !== model.name) {
@@ -116,10 +112,7 @@ export const computeVoParams = ({
         )
         if (!relationField) return false
 
-        return (
-          isRequired(relationField) ||
-          isAnnotatedWith(relationField, DTO_RELATION_REQUIRED)
-        )
+        return isRequired(relationField) || false
       })
 
       overrides.isRequired = true

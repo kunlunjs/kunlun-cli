@@ -26,8 +26,7 @@ import {
 import {
   isAnnotatedWith,
   isAnnotatedWithOneOf,
-  isBoolean,
-  isRequiredConfirm
+  isBoolean
 } from './field-classifiers'
 import { generateConnectDto } from './generate-connect-dto'
 import { generateCreateDto } from './generate-create-dto'
@@ -46,7 +45,7 @@ import {
   getLabels
 } from './helpers'
 import { makeHelpers } from './template-helpers'
-import type { Model, WriteableFileSpecs } from './types'
+import type { DMMFField, Model, WriteableFileSpecs } from './types'
 
 const transformFileName = convertFileName
 const transformClassName = convertClassName
@@ -304,25 +303,32 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
     model.comment =
       group !== '管理' && !group.endsWith('管理') ? `${group}管理` : group
     model.interfaces = {}
-    if (!isAnnotatedWith(model, IGNOER_LIST_INTERFACE)) {
-      model.interfaces.list = `${model.comment}@获取${group}列表`
+    // TODO 从配置中获取是否生成某个接口
+    const condition = true
+    if (condition) {
+      model.interfaces.create = `${model.comment}@添加${group}`
     }
-    if (!isAnnotatedWith(model, IGNOER_DETAIL_INTERFACE)) {
-      model.interfaces.detail = `${model.comment}@获取${group}详情`
+    if (condition) {
+      model.interfaces.findMany = `${model.comment}@获取${group}列表`
     }
-    if (!isAnnotatedWith(model, IGNOER_CREATE_INTERFACE)) {
-      model.interfaces.add = `${model.comment}@添加${group}`
+    if (condition) {
+      model.interfaces.findByPrimaryKey = `${model.comment}@获取${group}详情`
     }
-    if (!isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE)) {
-      model.interfaces.update = `${model.comment}@更新${group}`
+    if (condition) {
+      model.interfaces.updateByPrimaryKey = `${model.comment}@更新${group}`
     }
-    if (!isAnnotatedWith(model, IGNOER_DELETE_INTERFACE)) {
-      model.interfaces.delete = `${model.comment}@删除${group}`
+    if (condition) {
+      model.interfaces.deleteByPrimaryKey = `${model.comment}@删除${group}`
     }
+    // 导入、导出接口
     const fieldsName: string[] = []
-    const fieldsByName = {}
+    const fieldsByName: Record<string, DMMFField[]> = {}
+    // TODO
+    // 是否嵌套 Model
+    // eslint-disable-next-line prefer-const
+    let isNestedModel = false
+    // 此 model 中所有唯一性的 field
     const inputUniqueFields: string[] = []
-    const isNestedModel = false
     model.fields.forEach(field => {
       if (field.isUnique && !field.isId) {
         inputUniqueFields.push(field.name)
@@ -346,126 +352,48 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
           { label: '否', value: 'false' }
         ]
       }
-      if (isRequiredConfirm(field)) {
-        field.isRequiredConfirm = true
-      }
+      // TODO @weidafang
       // 标题 title
-      // 是否在查询表单中隐藏
-      // 是否在创建或更新表单中隐藏
-      // 是否枚举
-      // 是否布尔
-      // 是否唯一
-      // 是否JSON
-      // 是否文件
-      // 是否图标
-      // 是否图像
-      // 是否头像
-      // 是否颜色
-      // 是否只读
-      // 是否整数
-      // 是否密码
-      // 是否日期时间
-      // 是否创建时间
-      // 是否更新时间
-      // 是否删除时间
-      // 是否浮点数
-      // 是否富文本
-      // 是否多行文本
-      // 是否系统预置
-      // 是否嵌套
+      // 是否在查询表单中隐藏 isQueryIgnore
+      // 是否在创建更新表单中隐藏 isEffectIgnore
+      // 是否枚举 isEnum
+      // 是否布尔 isBoolean
+      // 是否唯一 isUnique
+      // 是否JSON isJson
+      // 是否文件 isFile
+      // 是否图标 isIcon
+      // 是否图像 isImage
+      // 是否头像 isAvatar
+      // 是否颜色 isColor
+      // 是否只读 isReadOnly
+      // 是否整数 isInteger
+      // 是否密码 isPassword
+      // 是否日期时间 isDateTime
+      // 是否创建时间 isCreatedAt
+      // 是否更新时间 isUpdatedAt
+      // 是否删除时间 isDeletedAt
+      // 是否浮点数 isFloat
+      // 是否富文本 isRichText
+      // 是否多行文本 isTextArea
+      // 是否系统预置 isSystemPreset
+      // 是否嵌套 isNested
       // 是否 parent
       // 是否 children
-      // 是否动态列表：查询其它表的某个字段作为下拉选项
-      // 是否关系字段
-      // 是否关系字段主键
-      // 是否需要二次确认 isRequiredConfirm
-      // 是否指向某个外键的主键
+      // 是否动态列表：查询其它表的某个字段作为下拉选项，接口名
+      // 是否关系字段 isRelationField
+      // 是否关系字段主键 isRelationPrimary
+      // 是否需要二次确认 isRequiredConfirm，比如删除确认
+      // 是否指向关联表的主键
       // 提示信息 tooltip
       // 在表格中显示宽度 width
       // 在指定项中 in
-      // 是否系统内置 isSystemPreset
       // 是否默认查询不返回 select: false
-      // 是否隐藏
-      /* 指向自身 */
-
-      // 对应多个关系的字段
-      if (
-        !field.isNested &&
-        field.type !== model.name &&
-        modelNames.includes(field.type as string)
-      ) {
-        const relationModel = filteredModels.find(
-          i => i.name === field.type
-        ) as DMMF.Model
-        const tag = getComment(relationModel.documentation)
-        field.serviceName = `${tag}管理@获取${tag}列表`
-        const uniqueField = relationModel.fields.find(
-          i => i.isUnique && !i.isId
-        )
-        if (uniqueField) {
-          field.showFieldName = uniqueField.name
-          field.showFieldTitle = uniqueField.title || uniqueField.name
-        } else {
-          const titleOrName = relationModel.fields.find(
-            i => i.name === 'title' || i.name === 'name'
-          )
-          if (titleOrName) {
-            field.showFieldName = titleOrName.name
-            field.showFieldTitle = titleOrName.title || titleOrName.name
-          }
-        }
-      }
-      const hasPrimaryKeyOfParent = model.fields.find(i => {
-        return (
-          (i.relationFromFields || []).includes(field.name) &&
-          i.type === model.name
-        )
-      })
-      if (hasPrimaryKeyOfParent) {
-        field.isNested = true
-        field.asPrimaryKeyOfParent = hasPrimaryKeyOfParent.name
-      }
-      const hasWidthAnnotation = /@width=\d+/.test(field.documentation || '')
-      if (hasWidthAnnotation) {
-        field.width = Number(
-          // @ts-ignore
-          (field.documentation || '').match(/@width=(\d+)/)[1]
-        )
-      }
-      if (!hasWidthAnnotation && field.isBoolean) {
-        field.width = (field.title || field.name).length * 25
-      }
-      // TODO in
-      if (/@tooltip=[^\n]+/.test(field.documentation || '')) {
-        field.tooltip =
-          // @ts-ignore
-          (field.documentation.match(/@tooltip=([^\n]+)/) as string[])[1]
-      }
-      if (/@visibleIf=[\w]+:[\w]+/.test(field.documentation || '')) {
-        const [n, v] = (
-          field?.documentation?.match(/@visibleIf=([\w]+:[\w]+)/) as string[]
-        )[1].split(':')
-        field.visibleIf = { name: n, value: v }
-      }
-
+      // 是否隐藏 isHidden
+      // 前端选择下拉框显示其他表的某个字段（异步接口）
       fieldsName.push(field.name)
       // @ts-ignore
       fieldsByName[field.name] = field
     })
-    if (
-      !inputUniqueFields.length &&
-      (model.documentation || '').match(/@uniqueField=([a-zA-Z]\w+)/)?.[1] &&
-      model.fields.some(
-        i =>
-          i.name ===
-          (model.documentation || '').match(/@uniqueField=([a-zA-Z]\w+)/)?.[1]
-      )
-    ) {
-      inputUniqueFields.push(
-        // @ts-ignore
-        model.documentation.match(/@uniqueField=([a-zA-Z]\w+)/)[1]
-      )
-    }
     // @ts-ignore
     models[model.name] = omit(
       {
@@ -561,7 +489,7 @@ export type DMMFField = {
     | number
     | boolean
     | {
-        name: 'now' | 'autoincrement'
+        name: 'dbgenerated' | 'now' | 'autoincrement' | 'cuid' | 'uuid'
         args: string[]
       }
   isId: boolean
@@ -631,7 +559,7 @@ export type DMMFField = {
   // [key: string]: any
 }
 
-export type InterfaceType = 'add' | 'update' | 'list' | 'detail' | 'delete'
+export type InterfaceType = 'create' | 'updateByPrimaryKey' | 'findMany' | 'findByPrimaryKey' | 'deleteByPrimaryKey' | 'importFromExcel' | 'exportExcel'
 
 export type SchemaModelByName = {
   name: SchemaModels
@@ -776,7 +704,7 @@ export type Endpoints = Record<
 >
 
 export class EndpointsItem {
-  key: 'add' | 'update' | 'list' | 'detail' | 'delete'
+  key: 'create' | 'updateByPrimaryKey' | 'findMany' | 'findByPrimaryKey' | 'deleteByPrimaryKey' | 'importFromExcel' | 'exportExcel'
   model: SchemaModels
   tag: string
   comment: string
@@ -792,11 +720,10 @@ export const endpoints: Endpoints = ${JSON.stringify(
         const name =
           model.name !== 'Model' ? model.name.slice(0, -5) : model.name
         const kname = kebab(name)
-        const comment = getComment(model.documentation) || model.name
-        const tag =
-          comment !== '管理' && !comment.endsWith('管理')
-            ? `${comment}管理`
-            : comment
+        // TODO 中文名
+        const comment = model.name
+        // TODO 分组名
+        const tag = model.name
         const connectDto = `${connectDtoPrefix}${name}${dtoSuffix}`
         const createDto = `${createDtoPrefix}${name}${dtoSuffix}`
         const updateDto = `${updateDtoPrefix}${name}${dtoSuffix}`
@@ -805,7 +732,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
         acc = {
           ...acc,
           [`获取${comment}列表`]: {
-            key: 'list',
+            key: 'findMany',
             model: model.name,
             tag: comment,
             comment: tag,
@@ -820,7 +747,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
         }
         if (!isAnnotatedWith(model, IGNOER_DETAIL_INTERFACE)) {
           acc[`获取${comment}详情`] = {
-            key: 'detail',
+            key: 'findByPrimaryKey',
             model: model.name,
             tag: comment,
             comment: tag,
@@ -835,7 +762,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
         }
         if (!isAnnotatedWith(model, IGNOER_CREATE_INTERFACE)) {
           acc[`添加${comment}`] = {
-            key: 'add',
+            key: 'create',
             model: model.name,
             tag: comment,
             comment: tag,
@@ -850,7 +777,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
         }
         if (!isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE)) {
           acc[`更新${comment}`] = {
-            key: 'update',
+            key: 'updateByPrimaryKey',
             model: model.name,
             tag: comment,
             comment: tag,
@@ -865,7 +792,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
         }
         if (!isAnnotatedWith(model, IGNOER_DELETE_INTERFACE)) {
           acc[`删除${comment}`] = {
-            key: 'delete',
+            key: 'deleteByPrimaryKey',
             model: model.name,
             tag: comment,
             comment: tag,
