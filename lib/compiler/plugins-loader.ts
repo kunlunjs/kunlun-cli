@@ -49,6 +49,7 @@ export class PluginsLoader {
             }
           )
           return require(binaryPath)
+          // eslint-disable-next-line no-empty
         } catch {}
 
         const binaryPath = require.resolve(item, { paths: nodeModulePaths })

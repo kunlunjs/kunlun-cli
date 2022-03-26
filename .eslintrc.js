@@ -1,97 +1,115 @@
-// @ts-check
 const { defineConfig } = require('eslint-define-config')
 
+// @ts-check
 module.exports = defineConfig({
   root: true,
-  parser: '@typescript-eslint/parser',
+  env: {
+    es2021: true,
+    node: true,
+    jest: true
+  },
   parserOptions: {
-    ecmaVersion: 2021,
+    ecmaFeatures: 8,
     sourceType: 'module'
   },
-  env: {
-    es6: true,
-    jest: true,
-    node: true,
-    mocha: true,
-    browser: true
-  },
-  extends: [
-    // 'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    // 'plugin:node/recommended',
-    'plugin:@typescript-eslint/recommended',
-    // Note: Please keep this as the last config to make sure that this (and by extension our .prettierrc file) overrides all configuration above it
-    // https://www.npmjs.com/package/eslint-plugin-prettier#recommended-configuration
-    'plugin:prettier/recommended'
-  ],
-  plugins: ['import', 'unused-imports', 'prettier'],
-  rules: {
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/consistent-indexed-object-style': 'warn',
-    '@typescript-eslint/consistent-type-assertions': 'off',
-    '@typescript-eslint/consistent-type-definitions': 'off',
-    '@typescript-eslint/consistent-type-imports': 1,
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
-    '@typescript-eslint/no-use-before-define': 'off',
-    '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-empty-interface': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
-    'import/no-webpack-loader-syntax': 'off',
-    'import/order': [
-      'error',
-      {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-          'object'
-          // 'type'
-        ],
-        alphabetize: {
-          order: 'asc'
-        },
-        pathGroups: [
-          {
-            pattern: '@/**',
-            group: 'internal'
-          }
-        ]
-      }
-    ],
-    'unused-imports/no-unused-imports': 'warn'
-    // TODO: eslint-plugin-node
-  },
-  settings: {
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx']
-    },
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.ts']
-      },
-      typescript: {
-        alwaysTryTypes: true
-      }
-    }
-  },
+  ignorePatterns: ['node_modules/*'],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   overrides: [
     {
-      files: ['*.js'],
+      files: ['**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      settings: {
+        'react': {
+          version: 'detect'
+        },
+        'import/parsers': {
+          '@typescript-eslint/parser': ['.ts', '.tsx']
+        },
+        'import/resolver': {
+          node: {
+            extensions: ['.js', '.jsx', '.ts', '.tsx']
+          },
+          typescript: {
+            alwaysTryTypes: true
+          }
+        }
+      },
+      env: {
+        es2021: true,
+        node: true,
+        browser: true
+      },
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        // 'plugin:react/recommended',
+        // 'plugin:react-hooks/recommended',
+        // 'plugin:jsx-a11y/recommended',
+        // 'plugin:testing-library/react',
+        // 'plugin:jest-dom/recommended',
+        'plugin:prettier/recommended'
+      ],
+      plugins: ['import', 'unused-imports'/*, 'tailwindcss'*/],
       rules: {
-        'import/no-commonjs': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off'
-      }
-    },
-    {
-      files: ['*.d.ts'],
-      rules: {
-        '@typescript-eslint/triple-slash-reference': 'off'
+        'no-control-regex': ['off'],
+        'no-restricted-imports': [
+          'error',
+          {
+            // patterns: ['@/features/**/*']
+          }
+        ],
+        'linebreak-style': ['error', 'unix'],
+
+        'import/order': [
+          'error',
+          {
+            groups: [
+              'builtin',
+              'external',
+              'internal',
+              'parent',
+              'sibling',
+              'index',
+              'object'
+              // 'type'
+            ],
+            alphabetize: {
+              order: 'asc',
+              caseInsensitive: true
+            },
+            pathGroups: [
+              {
+                pattern: '@/**',
+                group: 'internal'
+              }
+            ]
+          }
+        ],
+        'import/default': 'off',
+        'import/no-named-as-default-member': 'off',
+        'import/no-named-as-default': 'off',
+
+        'unused-imports/no-unused-imports': 'warn',
+
+        'react/prop-types': 'off',
+        'react/react-in-jsx-scope': 'off',
+
+        'jsx-a11y/anchor-is-valid': 'off',
+
+        '@typescript-eslint/no-var-requires': ['off', {
+          'patterns': ['lib/webpack/configs/*', 'lib/webpack/loaders/*']
+        }],
+        '@typescript-eslint/ban-ts-comment': ['off'],
+        '@typescript-eslint/no-unused-vars': ['off'],
+        '@typescript-eslint/no-explicit-any': ['off'],
+        '@typescript-eslint/no-empty-function': ['off'],
+        '@typescript-eslint/consistent-type-imports': 1,
+        '@typescript-eslint/no-empty-interface': ['off'],
+        '@typescript-eslint/no-non-null-assertion': ['off'],
+        '@typescript-eslint/explicit-function-return-type': ['off'],
+        '@typescript-eslint/explicit-module-boundary-types': ['off'],
+
+        'prettier/prettier': ['error', {}, { usePrettierrc: true }]
       }
     }
   ]

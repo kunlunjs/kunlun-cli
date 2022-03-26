@@ -144,7 +144,7 @@ export class InfoAction extends AbstractAction<InfoOptions> {
         dependency.name = this.rightPad(dependency.name, length)
       }
       dependency.name = dependency.name.concat(' :')
-      dependency.value = dependency.value.replace(/(\^|\~)/, '')
+      dependency.value = dependency.value.replace(/(\^|~)/, '')
     })
     return sorted
   }

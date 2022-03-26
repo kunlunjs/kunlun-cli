@@ -72,6 +72,7 @@ function getNotAliasedPath(
     if (packagePath) {
       return text
     }
+    // eslint-disable-next-line no-empty
   } catch {}
 
   const resolvedPath = posix.relative(dirname(sf.fileName), result) || './'
