@@ -97,7 +97,7 @@ export const generate = (options: GeneratorOptions) => {
 generatorHandler({
   onManifest: () => ({
     defaultOutput: `${process.cwd()}/src/@generated`,
-    prettyName: 'NestJS RESTful API'
+    prettyName: 'nestjs related source code'
   }),
   onGenerate: generate
 })

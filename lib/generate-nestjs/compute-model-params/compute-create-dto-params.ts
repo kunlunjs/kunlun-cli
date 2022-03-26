@@ -146,16 +146,6 @@ export const computeCreateDtoParams = ({
     from: 'class-transformer',
     destruct: TransformerDecorators
   })
-  imports.push({
-    from: '@/validators',
-    destruct: [
-      'IsUrlArray',
-      'IsRangeArray',
-      'IsIntegerArray',
-      'IsNotEmptyUrlArray',
-      'IsValidConfigValue'
-    ]
-  })
 
   const importPrismaClient = makeImportsFromPrismaClient(fields)
   if (importPrismaClient) imports.unshift(importPrismaClient)

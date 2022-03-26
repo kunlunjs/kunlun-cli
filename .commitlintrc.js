@@ -10,18 +10,23 @@ module.exports = {
       2,
       'always',
       [
+        'ci',
+        'dx',
+        'wip',
+        'fix',
+        'feat',
+        'docs',
+        'deps',
+        'perf',
+        'test',
         'build',
         'chore',
-        'ci',
-        'docs',
-        'feat',
-        'fix',
-        'perf',
-        'refactor',
-        'revert',
+        'types',
         'style',
-        'test',
-        'sample'
+        'sample',
+        'release',
+        'refactor',
+        'workflow'
       ]
     ]
   }
