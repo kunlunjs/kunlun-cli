@@ -1,5 +1,4 @@
 import { normalize, posix } from 'path'
-import { URL } from 'url'
 import escape from 'escape-string-regexp'
 import loaderUtils from 'loader-utils'
 import { paths } from './defaults'
@@ -31,19 +30,18 @@ export const getPublicUrlOrPath = (
         : validPublicUrl
       : envPublichUrl
   }
-
-  if (homepage) {
-    homepage = homepage.endsWith('/') ? homepage : homepage + '/'
-    console.log(37, new URL(homepage, stubDomain))
-    const validHomepagePathname = new URL(homepage, stubDomain).pathname
-    return isEnvDevelopment
-      ? homepage.startsWith('.')
-        ? '/'
-        : validHomepagePathname
-      : homepage.startsWith('.')
-      ? homepage
-      : validHomepagePathname
-  }
+  // TODO
+  // if (homepage) {
+  //   homepage = homepage.endsWith('/') ? homepage : homepage + '/'
+  //   const validHomepagePathname = new URL(homepage, stubDomain).pathname
+  //   return isEnvDevelopment
+  //     ? homepage.startsWith('.')
+  //       ? '/'
+  //       : validHomepagePathname
+  //     : homepage.startsWith('.')
+  //     ? homepage
+  //     : validHomepagePathname
+  // }
 
   return '/'
 }

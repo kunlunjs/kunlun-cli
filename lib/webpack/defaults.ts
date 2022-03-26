@@ -3,15 +3,22 @@ import { resolve } from 'path'
 import type { Options as BabelPresetEnvOptions } from '@babel/preset-env'
 import type { Configuration } from 'webpack'
 import { getPackageJson } from '../utils/package'
+import { isExist } from '../utils/path-exists'
 import { getPublicUrlOrPath } from './helpers'
 
 const root = realpathSync(process.cwd())
 
+const srcDir = resolve(root, 'src')
+const publicDir = resolve(root, 'public')
+const indexHtmlFile = resolve(root, 'public/index.html')
+
 export const paths = {
   root,
-  src: resolve(root, 'src'),
-  public: resolve(root, 'public'),
-  html: resolve(root, 'public/index.html'),
+  src: isExist(srcDir) ? srcDir : '',
+  html: isExist(indexHtmlFile)
+    ? resolve(root, 'public/index.html')
+    : resolve(__dirname, 'public/index.html'),
+  public: isExist(publicDir) ? publicDir : '',
   publicUrlOrPath: getPublicUrlOrPath(
     process.env.NODE_ENV === 'development',
     getPackageJson('homepage'),
