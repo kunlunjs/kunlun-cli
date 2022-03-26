@@ -14,6 +14,16 @@ import {
   MODEL_IGNOER
 } from './annotations'
 import {
+  connectDtoPrefix,
+  createDtoPrefix,
+  dtoSuffix,
+  modelUnifiedSuffix,
+  queryDtoPrefix,
+  updateDtoPrefix,
+  voPrefix,
+  voSuffix
+} from './default-configs'
+import {
   isAnnotatedWith,
   isAnnotatedWithOneOf,
   isBoolean,
@@ -35,7 +45,6 @@ import {
   getComment,
   getLabels
 } from './helpers'
-import type { MakeHelpersParam } from './template-helpers'
 import { makeHelpers } from './template-helpers'
 import type { Model, WriteableFileSpecs } from './types'
 
@@ -45,20 +54,10 @@ const transformClassName = convertClassName
 export const defaultRemoveModelUnifiedSuffix = 'Model'
 
 interface RunParam {
-  removeModelUnifiedSuffix: MakeHelpersParam['removeModelUnifiedSuffix']
   output: string
   dmmf: DMMF.Document
   exportRelationModifierClasses: boolean
   outputToNestJSResourceStructure: boolean
-  entityPrefix: string
-  entitySuffix: string
-  connectDtoPrefix: string
-  createDtoPrefix: string
-  updateDtoPrefix: string
-  queryDtoPrefix: string
-  dtoSuffix: string
-  voPrefix: string
-  voSuffix: string
   generateSchemaOfModule: string
 }
 export const run = ({
@@ -68,14 +67,12 @@ export const run = ({
   ...options
 }: RunParam): WriteableFileSpecs[] => {
   const {
-    removeModelUnifiedSuffix,
     exportRelationModifierClasses,
     outputToNestJSResourceStructure,
     ...preAndSuffixes
   } = options
 
   const templateHelpers = makeHelpers({
-    removeModelUnifiedSuffix,
     transformFileName,
     transformClassName,
     ...preAndSuffixes
@@ -107,28 +104,28 @@ export const run = ({
           entity: outputToNestJSResourceStructure
             ? path.join(
                 output,
-                transformFileName(model.name, removeModelUnifiedSuffix),
+                transformFileName(model.name, modelUnifiedSuffix),
                 'entities'
               )
             : output,
           connect: outputToNestJSResourceStructure
             ? path.join(
                 output,
-                transformFileName(model.name, removeModelUnifiedSuffix),
+                transformFileName(model.name, modelUnifiedSuffix),
                 'dto'
               )
             : `${output}/dto`, // `${output}/connect`,
           dto: outputToNestJSResourceStructure
             ? path.join(
                 output,
-                transformFileName(model.name, removeModelUnifiedSuffix),
+                transformFileName(model.name, modelUnifiedSuffix),
                 'dto'
               )
             : `${output}/dto`,
           vo: outputToNestJSResourceStructure
             ? path.join(
                 output,
-                transformFileName(model.name, removeModelUnifiedSuffix),
+                transformFileName(model.name, modelUnifiedSuffix),
                 'vo'
               )
             : `${output}/vo`,
@@ -178,7 +175,6 @@ export const run = ({
       ),
       content: generateCreateDto({
         ...modelParams.create,
-        removeModelUnifiedSuffix,
         exportRelationModifierClasses,
         templateHelpers
       })
@@ -192,7 +188,6 @@ export const run = ({
       ),
       content: generateUpdateDto({
         ...modelParams.update,
-        removeModelUnifiedSuffix,
         exportRelationModifierClasses,
         templateHelpers
       })
@@ -206,7 +201,6 @@ export const run = ({
       ),
       content: generateQueryDto({
         ...modelParams.query,
-        removeModelUnifiedSuffix,
         exportRelationModifierClasses,
         templateHelpers
       })
@@ -803,11 +797,11 @@ export const endpoints: Endpoints = ${JSON.stringify(
           comment !== '管理' && !comment.endsWith('管理')
             ? `${comment}管理`
             : comment
-        const connectDto = `${options.connectDtoPrefix}${name}${options.dtoSuffix}`
-        const createDto = `${options.createDtoPrefix}${name}${options.dtoSuffix}`
-        const updateDto = `${options.updateDtoPrefix}${name}${options.dtoSuffix}`
-        const queryDto = `${options.queryDtoPrefix}${name}${options.dtoSuffix}`
-        const vo = `${options.voPrefix}${name}${options.voSuffix}`
+        const connectDto = `${connectDtoPrefix}${name}${dtoSuffix}`
+        const createDto = `${createDtoPrefix}${name}${dtoSuffix}`
+        const updateDto = `${updateDtoPrefix}${name}${dtoSuffix}`
+        const queryDto = `${queryDtoPrefix}${name}${dtoSuffix}`
+        const vo = `${voPrefix}${name}${voSuffix}`
         acc = {
           ...acc,
           [`获取${comment}列表`]: {

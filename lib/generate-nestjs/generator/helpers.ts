@@ -337,34 +337,34 @@ export const zipImportStatementParams = (
 }
 /**
  * 转换 Model Name
- * removeModelUnifiedSuffix: 移除 Model 尾部多余的统一后缀
+ * modelUnifiedSuffix: 移除 Model 尾部多余的统一后缀
  * fileName 默认使用 camel: FooBar -> fooBar
  * className 默认使用 pascal: fooBar -> FooBar
  */
 export const convertName = (
   name: string,
   transform: 'camel' | 'pascal' | 'kebab' | 'header' | 'snake' | 'constant',
-  removeModelUnifiedSuffix = defaultRemoveModelUnifiedSuffix
+  modelUnifiedSuffix = defaultRemoveModelUnifiedSuffix
 ): string => {
   const convert = caseMap[transform]
-  return removeModelUnifiedSuffix &&
-    name.endsWith(removeModelUnifiedSuffix) &&
-    name !== removeModelUnifiedSuffix
-    ? convert(name.slice(0, -`${removeModelUnifiedSuffix.length}`))
+  return modelUnifiedSuffix &&
+    name.endsWith(modelUnifiedSuffix) &&
+    name !== modelUnifiedSuffix
+    ? convert(name.slice(0, -`${modelUnifiedSuffix.length}`))
     : convert(name)
 }
 export const convertClassName = (
   name: string,
-  removeModelUnifiedSuffix = defaultRemoveModelUnifiedSuffix
+  modelUnifiedSuffix = defaultRemoveModelUnifiedSuffix
 ): string => {
-  return convertName(name, 'pascal', removeModelUnifiedSuffix)
+  return convertName(name, 'pascal', modelUnifiedSuffix)
 }
 export const convertFileName = (
   name: string,
-  removeModelUnifiedSuffix = defaultRemoveModelUnifiedSuffix
+  modelUnifiedSuffix = defaultRemoveModelUnifiedSuffix
 ): string => {
-  // return convertName(name, 'camel', removeModelUnifiedSuffix)
-  return convertName(name, 'kebab', removeModelUnifiedSuffix)
+  // return convertName(name, 'camel', modelUnifiedSuffix)
+  return convertName(name, 'kebab', modelUnifiedSuffix)
 }
 
 /**

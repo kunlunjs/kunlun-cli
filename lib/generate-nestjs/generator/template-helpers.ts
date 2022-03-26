@@ -1,3 +1,15 @@
+import {
+  connectDtoPrefix,
+  createDtoPrefix,
+  dtoSuffix,
+  entityPrefix,
+  entitySuffix,
+  modelUnifiedSuffix,
+  queryDtoPrefix,
+  updateDtoPrefix,
+  voPrefix,
+  voSuffix
+} from './default-configs'
 import type { convertClassName, convertFileName } from './helpers'
 import { getComment, getValidators } from './helpers'
 import type { ImportStatementParams, DMMFField } from './types'
@@ -82,16 +94,6 @@ export const importStatements = (items: ImportStatementParams[]) =>
   `${each(items, importStatement, '\n')}`
 
 export interface MakeHelpersParam {
-  removeModelUnifiedSuffix: string
-  entityPrefix: string
-  entitySuffix: string
-  connectDtoPrefix: string
-  createDtoPrefix: string
-  updateDtoPrefix: string
-  queryDtoPrefix: string
-  dtoSuffix: string
-  voPrefix: string
-  voSuffix: string
   transformFileName?: typeof convertFileName
   transformClassName?: typeof convertClassName
 }
@@ -100,16 +102,6 @@ export interface MakeHelpersParam {
  * 处理导入、类名、field 等
  */
 export const makeHelpers = ({
-  removeModelUnifiedSuffix,
-  entityPrefix,
-  entitySuffix,
-  connectDtoPrefix,
-  createDtoPrefix,
-  updateDtoPrefix,
-  queryDtoPrefix,
-  dtoSuffix,
-  voPrefix,
-  voSuffix,
   transformClassName = echo,
   transformFileName = echo
 }: MakeHelpersParam) => {
@@ -118,10 +110,7 @@ export const makeHelpers = ({
     if (name.match(/^[A-Z]+(Model)?$/)) {
       return `${prefix}${name.replace(/Model$/, '')}${suffix}`
     }
-    return `${prefix}${transformClassName(
-      name,
-      removeModelUnifiedSuffix
-    )}${suffix}`
+    return `${prefix}${transformClassName(name, modelUnifiedSuffix)}${suffix}`
   }
 
   const fileName = (
@@ -136,7 +125,7 @@ export const makeHelpers = ({
     // }
     return `${prefix}${transformFileName(
       name,
-      removeModelUnifiedSuffix
+      modelUnifiedSuffix
     )}${suffix}${when(withExtension, '.ts')}`
   }
 
@@ -445,15 +434,7 @@ export const makeHelpers = ({
 
   return {
     config: {
-      removeModelUnifiedSuffix,
-      entityPrefix,
-      entitySuffix,
-      connectDtoPrefix,
-      createDtoPrefix,
-      updateDtoPrefix,
-      dtoSuffix,
-      voPrefix,
-      voSuffix
+      modelUnifiedSuffix
     },
     apiExtraModels,
     entityClassName,

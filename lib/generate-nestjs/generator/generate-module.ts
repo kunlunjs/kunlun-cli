@@ -130,7 +130,7 @@ import { Body } from '@nestjs/common'
 import type { ${name}Model } from '@prisma/client'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Connect${name}Dto, Create${name}Dto, Query${name}Dto, Update${name}Dto } from '@/@generated'
-import { KLController, KLParam, KLQuery, KLSuperMethod, KLUser } from '@/decorators'
+import { KLController, KLParam, KLQuery, KLMethod, KLUser } from '@/decorators'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ${name}Service } from './${kebab(name)}.service'
 
@@ -141,7 +141,7 @@ export class ${name}Controller {
   ${
     hasListInterface
       ? `
-  @KLSuperMethod('获取${comment}列表')
+  @KLMethod('获取${comment}列表')
   async findMany(@KLQuery() query: Query${name}Dto) {
     return await this.${service}.findMany(query)
   }
@@ -152,7 +152,7 @@ export class ${name}Controller {
   ${
     hasDetailInterface
       ? `
-  @KLSuperMethod('获取${comment}详情')
+  @KLMethod('获取${comment}详情')
   async findOne(@KLParam() params: Connect${name}Dto) {
     return await this.${service}.findById(params)
   }
@@ -163,7 +163,7 @@ export class ${name}Controller {
   ${
     hasAddInterface
       ? `
-  @KLSuperMethod('添加${comment}')
+  @KLMethod('添加${comment}')
   async create(@KLUser('id') uid: string | number, @Body() body: Create${name}Dto) {
     return await this.${service}.create(${
           isRequiredUid ? '{ ...body, uid }' : 'body'
@@ -176,7 +176,7 @@ export class ${name}Controller {
   ${
     hasUpdateInterface
       ? `
-  @KLSuperMethod('更新${comment}')
+  @KLMethod('更新${comment}')
   async update(@KLParam() params: Connect${name}Dto, @Body() body: Update${name}Dto) {
     return await this.${service}.updateById(params.id, body)
   }
@@ -187,7 +187,7 @@ export class ${name}Controller {
   ${
     hasDeleteInterface
       ? `
-  @KLSuperMethod('删除${comment}')
+  @KLMethod('删除${comment}')
   async deleteById(@KLParam() params: Connect${name}Dto) {
     return await this.${service}.deleteById(params.id)
   }`

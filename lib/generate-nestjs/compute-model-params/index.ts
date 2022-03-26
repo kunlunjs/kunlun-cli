@@ -81,14 +81,7 @@ model
 templateHelpers
 prisma:info Processing Model ArticleModel
 {
-  config: {
-    connectDtoPrefix: 'Connect',
-    createDtoPrefix: 'Create',
-    updateDtoPrefix: 'Update',
-    dtoSuffix: 'Dto',
-    entityPrefix: '',
-    entitySuffix: ''
-  },
+  config: {},
   apiExtraModels: [Function: apiExtraModels],
   entityClassName: [Function: entityClassName],
   entityFilename: [Function: entityFilename],

@@ -13,19 +13,7 @@ export const generate = (options: GeneratorOptions) => {
   const { config } = generator
   const output = parseEnvValue(generator.output!)
 
-  const {
-    removeModelUnifiedSuffix = 'Model',
-    entityPrefix = '',
-    entitySuffix = '',
-    connectDtoPrefix = 'Connect',
-    createDtoPrefix = 'Create',
-    updateDtoPrefix = 'Update',
-    queryDtoPrefix = 'Query',
-    dtoSuffix = 'Dto',
-    voPrefix = '',
-    voSuffix = 'Vo',
-    generateSchemaOfModule
-  } = config
+  const { generateSchemaOfModule } = config
 
   const exportRelationModifierClasses = stringToBoolean(
     config.exportRelationModifierClasses,
@@ -40,20 +28,10 @@ export const generate = (options: GeneratorOptions) => {
   const reExport = stringToBoolean(config.reExport, true)
 
   const results = run({
-    removeModelUnifiedSuffix,
     output,
     dmmf: options.dmmf,
     exportRelationModifierClasses,
     outputToNestJSResourceStructure,
-    entityPrefix,
-    entitySuffix,
-    connectDtoPrefix,
-    createDtoPrefix,
-    updateDtoPrefix,
-    queryDtoPrefix,
-    dtoSuffix,
-    voPrefix,
-    voSuffix,
     generateSchemaOfModule
   })
 
