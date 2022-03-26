@@ -341,11 +341,8 @@ export const makeHelpers = ({
         i => i === '@IsNotEmpty()' || i === '@IsOptional()'
       )
     }
-    if (isQuery && isEnum) {
-      validators.push(
-        `@IsValidEnumArray('${field.type}',{message: '不允许查询不存在的枚举值'})`
-      )
-    }
+    // TODO
+    // if (isQuery && isEnum) {}
     if (!isQuery && isEnum) {
       validators.push(`@IsEnum(${fieldType(field, useInputTypes)})`)
     }
