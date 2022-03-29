@@ -4,6 +4,7 @@ import { logger } from '@prisma/sdk'
 import { kebab } from 'case'
 import { omit } from 'lodash'
 import { computeModelParams } from '../compute-model-params'
+import type { DBModel } from '../model'
 import {
   IGNOER_CREATE_INTERFACE,
   IGNOER_DELETE_INTERFACE,
@@ -43,8 +44,9 @@ import {
   getComment,
   getLabels
 } from './helpers'
+import { assignKLConfigField, parseKLConfModel } from './parse-kl-config'
 import { makeHelpers } from './template-helpers'
-import type { DMMFField, Model, WriteableFileSpecs } from './types'
+import type { DMMFField, KLModel, WriteableFileSpecs } from './types'
 
 const transformFileName = convertFileName
 const transformClassName = convertClassName
@@ -55,11 +57,14 @@ interface RunParam {
   output: string
   dmmf: DMMF.Document
   generateSchemaOfModule: string
+  klConfigModels: DBModel[]
 }
+
 export const run = ({
   dmmf,
   output, // 输出目录
   generateSchemaOfModule = '', // 哪些 schema 生成 module
+  klConfigModels,
   ...options
 }: RunParam): WriteableFileSpecs[] => {
   const { ...preAndSuffixes } = options
@@ -83,14 +88,18 @@ export const run = ({
    */
   const allEnums = dmmf.datamodel.enums
   const allModels = dmmf.datamodel.models
-  const filteredModels: Model[] = allModels
+  const filteredModels: KLModel[] = allModels
     // 忽略被 @ignore 注释的 Model
     // .filter(model => !isAnnotatedWith(model, MODEL_IGNOER))
     // adds `output` information for each model so we can compute relative import paths
     // this assumes that NestJS resource modules (more specifically their folders on disk) are named as `transformFileName(model.name)`
     .map(model => {
+      const klModel = parseKLConfModel(
+        model,
+        klConfigModels.filter(item => item.name === model.name)[0]
+      )
       return {
-        ...model,
+        ...klModel,
         output: {
           entity: output,
           connect: `${output}/dto`, // `${output}/connect`,
@@ -304,8 +313,7 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
         inputUniqueFields.push(field.name)
       }
       // TODO 用于前端展示（表格title、表单label）
-      const title = model.name
-      field.title = title || field.name
+      field.title = field.klConfig?.title || field.name
       if (field.kind === 'enum' && field.type) {
         // TODO 生成枚举类型 options: { label: string; value: string | boolean | number }[]
         field.options = allEnums
@@ -315,6 +323,7 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
             value: i.name
           }))
       }
+      // 是否布尔 isBoolean
       if (isBoolean(field)) {
         field.isBoolean = true
         field.options = [
@@ -322,30 +331,51 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
           { label: '否', value: 'false' }
         ]
       }
-      // TODO @weidafang
-      // 标题 title
       // 是否在查询表单中隐藏 isQueryIgnore
       // 是否在创建更新表单中隐藏 isEffectIgnore
       // 是否枚举 isEnum
-      // 是否布尔 isBoolean
+      if (field.kind === 'enum') {
+        field.isEnum = true
+      }
       // 是否唯一 isUnique
       // 是否JSON isJson
+      if (field.type === 'Json') {
+        field.isJson = true
+      }
       // 是否文件 isFile
+      if (field.klConfig?.isFile === true) {
+        field.isJson = true
+      }
       // 是否图标 isIcon
+      assignKLConfigField(field, 'isIcon')
       // 是否图像 isImage
+      assignKLConfigField(field, 'isImage')
       // 是否头像 isAvatar
+      assignKLConfigField(field, 'isAvatar')
       // 是否颜色 isColor
+      assignKLConfigField(field, 'isColor')
       // 是否只读 isReadOnly
+      assignKLConfigField(field, 'isReadOnly')
       // 是否整数 isInteger
+      assignKLConfigField(field, 'isInteger')
       // 是否密码 isPassword
+      assignKLConfigField(field, 'isPassword')
       // 是否日期时间 isDateTime
+      assignKLConfigField(field, 'isDateTime')
       // 是否创建时间 isCreatedAt
+      assignKLConfigField(field, 'isCreatedAt')
       // 是否更新时间 isUpdatedAt
+      assignKLConfigField(field, 'isUpdatedAt')
       // 是否删除时间 isDeletedAt
+      assignKLConfigField(field, 'isDeletedAt')
       // 是否浮点数 isFloat
+      assignKLConfigField(field, 'isFloat')
       // 是否富文本 isRichText
+      assignKLConfigField(field, 'isRichText')
       // 是否多行文本 isTextArea
+      assignKLConfigField(field, 'isTextArea')
       // 是否系统预置 isSystemPreset
+      assignKLConfigField(field, 'isSystemPreset')
       // 是否嵌套 isNested
       // 是否 parent
       // 是否 children
@@ -358,7 +388,9 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
       // 在表格中显示宽度 width
       // 在指定项中 in
       // 是否默认查询不返回 select: false
+      assignKLConfigField(field, 'isSelectFalse')
       // 是否隐藏 isHidden
+      assignKLConfigField(field, 'isHidden')
       // 前端选择下拉框显示其他表的某个字段（异步接口）
       fieldsName.push(field.name)
       // @ts-ignore

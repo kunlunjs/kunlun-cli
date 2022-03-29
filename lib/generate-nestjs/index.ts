@@ -8,10 +8,16 @@ import { run } from './generator'
 import { stringToBoolean } from './generator/helpers'
 import type { WriteableFileSpecs } from './generator/types'
 
+function readConf(fpath: string) {
+  const data = fs.readFileSync(fpath)
+  return JSON.parse(data.toString())
+}
+
 export const generate = (options: GeneratorOptions) => {
   const { generator } = options
   const { config } = generator
   const output = parseEnvValue(generator.output!)
+  const klJson = readConf(`${process.cwd()}/prisma/kl.config.json`)
 
   const { generateSchemaOfModule } = config
 
@@ -20,7 +26,8 @@ export const generate = (options: GeneratorOptions) => {
   const results = run({
     output,
     dmmf: options.dmmf,
-    generateSchemaOfModule
+    generateSchemaOfModule,
+    klConfigModels: klJson.models
   })
 
   const indexCollections: Record<string, WriteableFileSpecs> = {

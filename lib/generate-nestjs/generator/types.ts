@@ -1,4 +1,13 @@
 import type { DMMF } from '@prisma/generator-helper'
+import type { DBModelField } from '../model'
+
+export interface KLField extends DMMF.Field {
+  klConfig?: DBModelField['db']
+}
+
+export interface KLModel extends Model {
+  fields: KLField[]
+}
 
 export interface Model extends DMMF.Model {
   output: {
