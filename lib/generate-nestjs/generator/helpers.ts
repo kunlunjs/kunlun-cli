@@ -369,17 +369,6 @@ export const convertFileName = (
 
 /**
  * 从 documentation 摘取出注释
- */
-export const getComment = (documentation = ''): string => {
-  const docs = documentation.split('\n') as string[]
-  const hasComment = /@comment\s*([^@]*)/
-  const isComment = docs.find(i => hasComment.test(i)) || ''
-  const comment = (isComment?.match(hasComment) || ['', ''])[1].trim()
-  return comment
-}
-
-/**
- * 从 documentation 摘取出注释
  * @param {string} /// @labels 系统 用户
  * @returns ['系统', '用户']
  */

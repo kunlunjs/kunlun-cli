@@ -12,6 +12,7 @@ export type DBConnectionConfig = {
 
 export type DBModel = {
   id: string
+  title?: string
   /**
    * 模型名
    */
@@ -51,7 +52,19 @@ export type DBModel = {
   /**
    * 自动生成的http接口列表
    */
-  generatedApis?: ('list' | 'get' | 'create' | 'update' | 'delete')[]
+  generatedApis?: (
+    | 'create'
+    | 'createMany'
+    | 'findMany'
+    | 'findByPrimaryKey'
+    | 'findFirst'
+    | 'updateByPrimaryKey'
+    | 'updateMany'
+    | 'deleteByPrimarykey'
+    | 'deleteMany'
+    | 'importsFromExcel'
+    | 'exportExcel'
+  )[]
   /**
    * 模型的字段
    */

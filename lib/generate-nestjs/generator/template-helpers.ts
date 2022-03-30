@@ -11,7 +11,7 @@ import {
   voSuffix
 } from './default-configs'
 import type { convertClassName, convertFileName } from './helpers'
-import { getComment, getValidators } from './helpers'
+import { getValidators } from './helpers'
 import type { ImportStatementParams, DMMFField } from './types'
 
 const PrismaScalarToTypeScript: Record<string, string> = {
@@ -205,7 +205,7 @@ export const makeHelpers = ({
     const isNotEmtpty =
       isRequired && !isGenerated && !isNullable && !hasDefaultValue
     const property = isNotEmtpty ? 'ApiProperty' : 'ApiPropertyOptional'
-    const comment = getComment(documentation)
+    const comment = name
     const _enum = `{ enum: ${fieldType(
       field,
       useInputTypes
@@ -256,7 +256,7 @@ export const makeHelpers = ({
       isNotEmtpty = true
     }
     const property = isNotEmtpty ? 'ApiProperty' : 'ApiPropertyOptional'
-    const comment = getComment(documentation)
+    const comment = name
     const _enum = `{ enum: ${fieldType(
       field,
       useInputTypes
@@ -305,7 +305,7 @@ export const makeHelpers = ({
       queryRelationFieldType
     } = field
     const isEnum = kind === 'enum'
-    const comment = getComment(documentation)
+    const comment = name
     const _enum = `{ enum: ${fieldType(
       field,
       useInputTypes
@@ -402,7 +402,7 @@ export const makeHelpers = ({
     const isNotEmtpty =
       isRequired && !isGenerated && !isNullable && !hasDefaultValue
     const property = 'ApiProperty' // isNotEmtpty ? 'ApiProperty' : 'ApiPropertyOptional'
-    const comment = getComment(documentation)
+    const comment = name
     const _enum = `{ enum: ${fieldTypeForVo(
       field,
       useInputTypes

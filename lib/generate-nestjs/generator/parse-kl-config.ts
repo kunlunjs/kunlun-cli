@@ -14,6 +14,7 @@ export function parseKLConfModel(model: DMMF.Model, confModel: DBModel) {
   return {
     fields: rFields,
     generatedApis: confModel.generatedApis,
+    title: confModel.title,
     ...rest
   }
 }
