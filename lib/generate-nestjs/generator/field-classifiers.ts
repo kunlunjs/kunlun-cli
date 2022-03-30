@@ -1,5 +1,4 @@
 import type { DMMF } from '@prisma/generator-helper'
-import { IS_READ_ONLY } from './annotations'
 
 export const isAnnotatedWith = (
   instance: DMMF.Field | DMMF.Model,
@@ -83,7 +82,7 @@ export const isIdWithDefaultValue = (field: DMMF.Field): boolean =>
 export const isBoolean = (field: DMMF.Field): boolean =>
   field.type === 'Boolean'
 export const isReadOnly = (field: DMMF.Field): boolean =>
-  field.isReadOnly || isAnnotatedWith(field, IS_READ_ONLY)
+  field.isReadOnly || field.isReadOnly
 export const isCreatedAt = (field: DMMF.Field): boolean => {
   return field.name === 'createdAt' // field.hasDefaultValue && !!field.default && field.type === 'DateTime'
 }
@@ -104,43 +103,43 @@ export const isDateTime = (field: DMMF.Field): boolean => {
   return field.type === 'DateTime'
 }
 export const isFile = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isFile/i)
+  return field.isFile
 }
 export const isIcon = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isIcon/i)
+  return field.isIcon
 }
 export const isImage = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isImage/i)
+  return field.isImage
 }
 export const isAvatar = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isAvatar/i)
+  return field.isAvatar
 }
 export const isColor = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isColor/i)
+  return field.isColor
 }
 export const isTextArea = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isTextArea/i)
+  return field.isTextArea
 }
 export const isRichText = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isRichText/i)
+  return field.isRichText
 }
 export const isSelectFalse = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isSelectFalse/i)
+  return field.isSelectFalse
 }
 export const isSystemPreset = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isSystemPreset/i)
+  return field.isSystemPreset
 }
 export const isQueryFormHidden = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isQueryFormHidden/i)
+  return field.isQueryFormHidden
 }
 export const isCreateOrUpdateFormHidden = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isCreateOrUpdateFormHidden/i)
+  return field.isCreateOrUpdateFormHidden
 }
 export const isRequiredConfirm = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isRequiredConfirm/i)
+  return field.isRequiredConfirm
 }
 export const isPassword = (field: DMMF.Field): boolean => {
-  return isAnnotatedWith(field, /@isPassword/i)
+  return field.isPassword
 }
 /**
  * for schema-required fields that fallback to a default value when empty.

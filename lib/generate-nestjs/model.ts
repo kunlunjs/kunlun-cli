@@ -172,6 +172,9 @@ interface KLDBField {
   isInteger: boolean
   isFloat: boolean
   isHidden: boolean
+  isRequiredConfirm: boolean
+  isCreateOrUpdateFormHidden: boolean
+  isQueryFormHidden: boolean
   [key: string]: any
 }
 

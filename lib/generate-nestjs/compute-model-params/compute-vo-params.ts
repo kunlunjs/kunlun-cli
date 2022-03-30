@@ -1,9 +1,7 @@
 import path from 'path'
 import type { DMMF } from '@prisma/generator-helper'
 import slash from 'slash'
-import { SELECT_FALSE } from '../generator/annotations'
 import {
-  isAnnotatedWith,
   isCreatedAt,
   isDeletedAt,
   isId,
@@ -57,7 +55,7 @@ export const computeVoParams = ({
     if (
       relationScalarFieldNames.includes(name) ||
       isDeletedAt(field) ||
-      isAnnotatedWith(field, SELECT_FALSE)
+      field.isSelectFalse
     )
       return result
 
