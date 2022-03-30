@@ -6,6 +6,7 @@ export interface KLField extends DMMF.Field {
 }
 
 export interface KLModel extends Model {
+  generatedApis: string[] | undefined
   fields: KLField[]
 }
 

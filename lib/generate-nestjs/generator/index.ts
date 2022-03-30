@@ -145,7 +145,7 @@ export const run = ({
 
     // generate create-{model}.dto.ts
     // TODO 使用配置
-    const createDto = isAnnotatedWith(model, IGNOER_CREATE_INTERFACE) && {
+    const createDto = model.generatedApis?.includes('create') && {
       fileName: path.join(
         model.output.dto,
         templateHelpers.createDtoFilename(name, true)
@@ -158,7 +158,7 @@ export const run = ({
 
     // generate update-{model}.dto.ts
     // TODO 使用配置
-    const updateDto = isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE) && {
+    const updateDto = model.generatedApis?.includes('update') && {
       fileName: path.join(
         model.output.dto,
         templateHelpers.updateDtoFilename(name, true)
