@@ -21,7 +21,6 @@ export const paths = {
   public: isExist(publicDir) ? publicDir : '',
   publicUrlOrPath: getPublicUrlOrPath(
     process.env.NODE_ENV === 'development',
-    getPackageJson('homepage'),
     process.env.PUBLIC_URL
   ) as string,
   package: resolve(root, 'package.json'),

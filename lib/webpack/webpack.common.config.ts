@@ -1,7 +1,6 @@
 import { existsSync, realpathSync } from 'fs'
 import path, { resolve } from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-// import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
@@ -14,7 +13,6 @@ import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import type { Configuration, RuleSetRule } from 'webpack'
 import webpack from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-// import DashboardPlugin from 'webpack-dashboard/plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import WebpackBar from 'webpackbar'
 import WindCSSPlugin from 'windicss-webpack-plugin'
@@ -74,10 +72,12 @@ export const getCommonConfig = (
   const isEnvProductionProfile =
     isEnvProduction && process.argv.includes('--profile')
 
+  const swc = loaders?.swc
+
+  const banner = plugins?.banner ?? name
   const env = plugins?.env ?? true
   const bar = plugins?.bar ?? true
   const copy = plugins?.copy
-  const banner = plugins?.banner
   const clean = plugins?.define ?? true
   const define = plugins?.define ?? true
   const ignore = plugins?.ignore ?? true
@@ -207,6 +207,8 @@ export const getCommonConfig = (
           // back to the "file" loader at the end of the loader list.
           oneOf: [
             getBabelLoader({ isEnvDevelopment }),
+            // TODO
+            // swc ? getSWCLoader() : getBabelLoader({ isEnvDevelopment }),
             // getVueLoader(loaders?.vue),
             getMdxLoader(loaders?.mdx),
             getHtmlLoader(),
@@ -245,7 +247,6 @@ export const getCommonConfig = (
       /*----------------------------------------------------------------*/
       // isVueProject && new VueLoaderPlugin(),
       /*----------------------------------------------------------------*/
-      // new DashboardPlugin(),
       /*----------------------------------------------------------------*/
       // @see https://github.com/johnagan/clean-webpack-plugin
       clean && new CleanWebpackPlugin(clean !== true ? clean : {}),
@@ -336,9 +337,6 @@ export const getCommonConfig = (
             : banner
         ),
       /*----------------------------------------------------------------*/
-      // not support webpack5
-      // isExistAntd && new AntdDayjsWebpackPlugin(),
-      /*----------------------------------------------------------------*/
       html &&
         !Array.isArray(html) &&
         new HtmlWebpackPlugin(
@@ -381,39 +379,39 @@ export const getCommonConfig = (
     ].filter(Boolean) as Configuration['plugins'],
     optimization: {
       splitChunks: {
-        chunks: 'all',
-        minSize: 20480,
-        maxInitialRequests: 10,
-        maxAsyncRequests: 10,
-        cacheGroups: {
-          commons: {
-            test: /[\\/]node_modules[\\/]/,
-            chunks: 'initial',
-            name: 'vendors',
-            priority: -10,
-            enforce: true,
-            reuseExistingChunk: true
-          }
-        }
-        // chunks: 'async',
+        // chunks: 'all',
         // minSize: 20480,
-        // minRemainingSize: 0,
-        // minChunks: 1,
-        // maxAsyncRequests: 30,
-        // maxInitialRequests: 30,
-        // enforceSizeThreshold: 40960,
+        // maxInitialRequests: 10,
+        // maxAsyncRequests: 10,
         // cacheGroups: {
-        //   defaultVendors: {
+        //   commons: {
         //     test: /[\\/]node_modules[\\/]/,
+        //     chunks: 'initial',
+        //     name: 'vendors',
         //     priority: -10,
-        //     reuseExistingChunk: true
-        //   },
-        //   default: {
-        //     minChunks: 2,
-        //     priority: -20,
+        //     enforce: true,
         //     reuseExistingChunk: true
         //   }
         // }
+        chunks: 'async',
+        minSize: 20480,
+        minRemainingSize: 0,
+        minChunks: 1,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
+        enforceSizeThreshold: 40960,
+        cacheGroups: {
+          defaultVendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+            reuseExistingChunk: true
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
+        }
       },
       runtimeChunk: {
         name: (entryPoint: { name: string }) => `runtime-${entryPoint.name}`

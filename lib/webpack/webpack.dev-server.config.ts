@@ -61,7 +61,7 @@ export const getDevServerConfig = (args: Configuration = {}): Configuration => {
      * @default public
      */
     static: args.static || {
-      directory: paths.public,
+      ...(paths.public ? { directory: paths.public } : {}),
       publicPath: [paths.publicUrlOrPath],
       watch: {
         ignored: ignoredFiles()

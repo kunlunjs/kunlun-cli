@@ -15,7 +15,6 @@ export const ignoredFiles = (src: string = paths.root) => {
 
 export const getPublicUrlOrPath = (
   isEnvDevelopment: boolean,
-  homepage: string,
   envPublichUrl?: string
 ) => {
   const stubDomain = ''
@@ -30,19 +29,6 @@ export const getPublicUrlOrPath = (
         : validPublicUrl
       : envPublichUrl
   }
-  // TODO
-  // if (homepage) {
-  //   homepage = homepage.endsWith('/') ? homepage : homepage + '/'
-  //   const validHomepagePathname = new URL(homepage, stubDomain).pathname
-  //   return isEnvDevelopment
-  //     ? homepage.startsWith('.')
-  //       ? '/'
-  //       : validHomepagePathname
-  //     : homepage.startsWith('.')
-  //     ? homepage
-  //     : validHomepagePathname
-  // }
-
   return '/'
 }
 

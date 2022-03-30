@@ -10,6 +10,7 @@ import type InlineChunkHtmlPlugin from 'inline-chunk-html-plugin'
 import type { VueLoaderOptions, VueLoaderPlugin } from 'vue-loader'
 import type { Configuration } from 'webpack'
 import type { DefinePlugin, IgnorePlugin } from 'webpack'
+import type webpack from 'webpack'
 import type { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 import type { ManifestPluginOptions } from 'webpack-manifest-plugin'
@@ -21,6 +22,12 @@ export type Rule = Required<
 
 export { VueLoaderOptions, VueLoaderPlugin, MdxLoaderOptions }
 
+export type BannerPluginOptions = ConstructorParameters<
+  typeof webpack.BannerPlugin
+>[0]
+export type ModuleFederationPluginOptions = ConstructorParameters<
+  typeof webpack.container.ModuleFederationPlugin
+>[0]
 export type DotenvOptions = ConstructorParameters<typeof Dotenv>[0]
 export type BarPluginOptions = ConstructorParameters<typeof WebpackBar>[0]
 export type DefinePluginOptions = ConstructorParameters<typeof DefinePlugin>[0]
@@ -48,11 +55,12 @@ export type CaseSensitivePathsPluginOptions = ConstructorParameters<
 >[0]
 
 export type WebpackPlugins = {
-  env?: boolean | DotenvOptions
+  banner?: string | BannerPluginOptions
+  moduleFederation?: ModuleFederationPluginOptions
   bar?: boolean | BarPluginOptions
-  banner?: string // | BannerPluginOptions
-  copy?: CopyPluginOptions
+  env?: boolean | DotenvOptions
   ignore?: IgnorePluginOptions
+  copy?: CopyPluginOptions
   define?: Record<string, string>
   clean?: boolean | CleanPluginOptions
   manifest?: boolean | ManifestPluginOptions
@@ -64,7 +72,11 @@ export type WebpackPlugins = {
 }
 
 export type WebpackLoaders = {
+  swc?: boolean
   vue?: VueLoaderOptions
+  babel?: {
+    presetEnv?: BabelPresetEnvOptions
+  }
   mdx?: MdxLoaderOptions
   less?: {
     strictMath?: boolean
@@ -72,9 +84,6 @@ export type WebpackLoaders = {
     javascriptEnabled?: boolean
     globalVars?: Record<string, string>
     modifyVars?: Record<string, string>
-  }
-  babel?: {
-    presetEnv?: BabelPresetEnvOptions
   }
 }
 
