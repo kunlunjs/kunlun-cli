@@ -10,9 +10,7 @@ import {
   IGNOER_DELETE_INTERFACE,
   IGNOER_DETAIL_INTERFACE,
   IGNOER_LIST_INTERFACE,
-  IGNOER_NESTJS_MODULE,
-  IGNOER_UPDATE_INTERFACE,
-  MODEL_IGNOER
+  IGNOER_UPDATE_INTERFACE
 } from './annotations'
 import {
   connectDtoPrefix,
@@ -23,11 +21,7 @@ import {
   voPrefix,
   voSuffix
 } from './default-configs'
-import {
-  isAnnotatedWith,
-  isAnnotatedWithOneOf,
-  isBoolean
-} from './field-classifiers'
+import { isAnnotatedWith, isBoolean } from './field-classifiers'
 import { generateConnectDto } from './generate-connect-dto'
 import { generateCreateDto } from './generate-create-dto'
 import {
@@ -144,7 +138,6 @@ export const run = ({
     }
 
     // generate create-{model}.dto.ts
-    // TODO 使用配置
     const createDto = model.generatedApis?.includes('create') && {
       fileName: path.join(
         model.output.dto,
@@ -157,7 +150,6 @@ export const run = ({
     }
 
     // generate update-{model}.dto.ts
-    // TODO 使用配置
     const updateDto = model.generatedApis?.includes('update') && {
       fileName: path.join(
         model.output.dto,
@@ -195,11 +187,7 @@ export const run = ({
     }
 
     // generate NestJS Module
-    // TODO 使用配置
-    if (
-      generateSchemaOfModule.split(',').includes(name) &&
-      !isAnnotatedWithOneOf(model, [MODEL_IGNOER, IGNOER_NESTJS_MODULE])
-    ) {
+    if (model.ignore !== true) {
       const df = transformFileName(name)
       const prefix = `${model.output.module}/${df}/${df}`
       const nestService = {
@@ -277,7 +265,7 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
   const modelNames = allModels.map(i => i.name)
   filteredModels.forEach(model => {
     // TODO 使用配置
-    const group = getComment(model.documentation) || model.name
+    const group = model.title || model.name
     model.tag = group
     model.comment =
       group !== '管理' && !group.endsWith('管理') ? `${group}管理` : group
