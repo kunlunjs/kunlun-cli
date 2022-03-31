@@ -39,14 +39,17 @@ interface RunParam {
   output: string
   dmmf: DMMF.Document
   generateSchemaOfModule: string
-  klConfigModels: DBModel[]
+  klConfigJson: {
+    models: DBModel[]
+    enums: DMMF.DatamodelEnum[]
+  }
 }
 
 export const run = ({
   dmmf,
   output, // 输出目录
   generateSchemaOfModule = '', // 哪些 schema 生成 module
-  klConfigModels,
+  klConfigJson,
   ...options
 }: RunParam): WriteableFileSpecs[] => {
   const { ...preAndSuffixes } = options
@@ -68,7 +71,8 @@ export const run = ({
       documentation: '@commment 原创 转载'
     }]
    */
-  const allEnums = dmmf.datamodel.enums
+  const klConfigModels = klConfigJson.models
+  const allEnums = klConfigJson.enums
   const allModels = dmmf.datamodel.models
   const filteredModels: KLModel[] = allModels
     // 忽略被 @ignore 注释的 Model
@@ -218,8 +222,7 @@ import type { EnumsByName } from './types'
 
 export const enumsByName: EnumsByName = ${JSON.stringify(
       allEnums.reduce((result, cur) => {
-        // TODO 使用配置
-        const labels = getLabels(cur.documentation)
+        const labels = getLabels(cur.values)
         const keys = cur.values.map(i => i.name)
         const options: ({ label: string; value: string } | string)[] =
           labels.length === keys.length
@@ -283,10 +286,8 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
       if (field.isUnique && !field.isId) {
         inputUniqueFields.push(field.name)
       }
-      // TODO 用于前端展示（表格title、表单label）
       field.title = field.klConfig?.title || field.name
       if (field.kind === 'enum' && field.type) {
-        // TODO 生成枚举类型 options: { label: string; value: string | boolean | number }[]
         field.options = allEnums
           .find(i => i.name === field.type)
           ?.values?.map(i => ({

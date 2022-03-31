@@ -27,7 +27,7 @@ export const generate = (options: GeneratorOptions) => {
     output,
     dmmf: options.dmmf,
     generateSchemaOfModule,
-    klConfigModels: klJson.models
+    klConfigJson: klJson
   })
 
   const indexCollections: Record<string, WriteableFileSpecs> = {

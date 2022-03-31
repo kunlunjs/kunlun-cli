@@ -372,20 +372,8 @@ export const convertFileName = (
  * @param {string} /// @labels 系统 用户
  * @returns ['系统', '用户']
  */
-export const getLabels = (documentation = ''): string[] => {
-  const docs = documentation.split('\n') as string[]
-  const labelReg = /@labels\s*([^@]*)/
-  const hasLables = docs.find(i => labelReg.test(i)) || '@labels'
-  const labels =
-    (hasLables &&
-      // @ts-ignore
-      hasLables
-        .match(/@labels\s*([^@]*)/)[1]
-        .trim()
-        .split(' ')
-        .filter(Boolean)) ||
-    []
-  return labels
+export const getLabels = (items: any[]): string[] => {
+  return items.map(x => x.value)
 }
 
 /**
