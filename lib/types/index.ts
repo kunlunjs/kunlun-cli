@@ -15,8 +15,8 @@ export type RollupConfig = {
 }
 
 export type KunlunDefineConfig = {
-  start?: WebpackConfig | ViteConfig | RollupConfig
-  build?: WebpackConfig | ViteConfig | RollupConfig
+  start?: WebpackConfig // | ViteConfig | RollupConfig
+  build?: WebpackConfig // | ViteConfig | RollupConfig
   preview?: Record<string, any>
   deploy?: Record<string, any>
 }

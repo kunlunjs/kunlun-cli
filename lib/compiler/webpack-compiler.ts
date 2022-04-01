@@ -7,16 +7,16 @@ import WebpackDevServer from 'webpack-dev-server'
 import { KunlunConfigLoader } from '../configuration'
 import type { CommandType } from '../types'
 import { paths } from '../webpack/defaults'
-// import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import { getWebpackConfig } from '../webpack/webpack.config'
 import { getDevServerConfig } from '../webpack/webpack.dev-server.config'
 // import { ip } from './helpers/ip'
 // import { INFO_PREFIX } from '../ui'
-const react = require(require.resolve('react', {
-  paths: [paths.root]
-}))
 
 const isInteractive = process.stdout.isTTY
+
+process.on('unhandledRejection', error => {
+  throw error
+})
 
 export class WebpackCompiler {
   private config = new KunlunConfigLoader()
@@ -28,35 +28,32 @@ export class WebpackCompiler {
     onSuccess?: () => void
   ) {
     const PORT = process.env.PORT || (await portfinder.getPortPromise())
-    // const { SPEED_MEASURE } = process.env
+    const react = require(require.resolve('react', {
+      paths: [paths.root]
+    }))
     const customConfig = (await this.config.load(command)) || {}
-    const webpackConfiguration = getWebpackConfig({
+    let webpackConfig = getWebpackConfig({
       ...configuration,
       ...customConfig
     })
-    // if (SPEED_MEASURE || SPEED_MEASURE === 'true') {
-    //   const smp = new SpeedMeasurePlugin()
-    //   webpackConfiguration = smp.wrap(webpackConfiguration)
-    // }
-    const compiler = webpack(webpackConfiguration)
+    if (configuration.mode === 'production') {
+      webpackConfig = omit(webpackConfig, ['devServer'])
+    }
+    const compiler = webpack(webpackConfig)
 
     const afterCallback = (
-      err: Error | null | undefined,
+      error: Error | null | undefined,
       stats: webpack.Stats | undefined
     ) => {
       const statsOutput = stats?.toString({
-        ...(typeof webpackConfiguration.stats === 'object'
-          ? webpackConfiguration.stats
-          : {}),
+        ...(typeof webpackConfig.stats === 'object' ? webpackConfig.stats : {}),
         colors: true
       })
       if (statsOutput) {
         console.log(statsOutput)
       }
-      if (err) {
-        // Could not complete the compilation
-        // The error caught is most likely thrown by underlying tasks
-        console.error(err)
+      if (error) {
+        console.error(error)
         return process.exit(1)
       }
       if (!stats?.hasErrors()) {
@@ -66,12 +63,11 @@ export class WebpackCompiler {
       }
     }
 
-    if (configuration.watch || configuration.mode === 'development') {
+    if (configuration.mode === 'development') {
       compiler.hooks.watchRun.tapAsync('Rebuid info', (params, callback) => {
         // console.log(`\n${INFO_PREFIX} Webpack is building your sources...\n`)
         callback()
       })
-      // compiler.watch(configuration.watchOptions! || {}, afterCallback)
       const devServerConfig = customConfig.devServer
       const server = new WebpackDevServer(
         getDevServerConfig({
@@ -91,7 +87,7 @@ export class WebpackCompiler {
               if (isInteractive) {
                 // clearConsole()
               }
-              if (semve.lt(react.version, '16.10.0')) {
+              if (react && semve.lt(react.version, '16.10.0')) {
                 console.log(
                   chalk.yellow(
                     `Fast Refresh requires React 16.10.0 or higher. You are using React ${react.version}`

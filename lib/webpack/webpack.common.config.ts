@@ -18,6 +18,7 @@ import WebpackBar from 'webpackbar'
 import WindCSSPlugin from 'windicss-webpack-plugin'
 import { isEmptyDir } from '../utils/is-empty-dir'
 import { getPackageJson } from '../utils/package'
+import { isExist } from '../utils/path-exists'
 import {
   isTypeScriptProject,
   isTypeScriptFrontProject,
@@ -239,7 +240,11 @@ export const getCommonConfig = (
                 name
               }
         ),
-      env && new Dotenv(typeof env === 'boolean' ? {} : env),
+      /*----------------------------------------------------------------*/
+      env &&
+        isExist(path.resolve(process.cwd(), '.env')) &&
+        new Dotenv(typeof env === 'boolean' ? {} : env),
+      /*----------------------------------------------------------------*/
       new webpack.ProvidePlugin({
         // process: 'process/browser',
         Buffer: ['buffer', 'Buffer']
