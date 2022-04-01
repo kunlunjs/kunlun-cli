@@ -392,25 +392,8 @@ export const getTitle = (documentation = ''): string => {
   return title
 }
 
-export const getValidators = (documentation = ''): string => {
-  // '@Length()  @IsEmail()' => ['@Length()', '@IsEmail()']
-  const validators: string[] = []
-  // 过滤出包含校验的行
-  documentation.split('\n').forEach(i => {
-    const v = i && i.trim()
-    // TODO
-    // 取出类似 @IsSomeValidator(...) 结构
-    const decorator = v.match(/^@[A-Z][a-zA-Z]+\(.*\)$/)
-    // 取出函数名
-    const validator =
-      decorator && (v.match(/^@([A-Z][a-zA-Z]+)\(.*/) as string[])[1]
-    if (
-      validator &&
-      (ValidatorDecorators.includes(validator) ||
-        TransformerDecorators.includes(validator))
-    ) {
-      validators.push(decorator[0])
-    }
-  })
-  return validators.length ? validators.join('\n') : ''
+export const getValidators = (validators: string[] = []): string => {
+  // ['Length', 'IsEmail'] => ['@Length()', '@IsEmail()']
+  const v = validators.map(x => `@${x}()`)
+  return v.length ? v.join('\n') : ''
 }

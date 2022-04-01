@@ -327,7 +327,7 @@ export const makeHelpers = ({
     if (isReadonly) {
       validators.length = 0
     }
-    const vs = getValidators(field.kind)
+    const vs = getValidators(field.validators)
     if (vs) {
       validators.push(vs)
     }

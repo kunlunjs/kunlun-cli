@@ -3,6 +3,7 @@ import type { DBModelField } from '../model'
 
 export interface KLField extends Omit<DMMF.Field, 'kind'> {
   kind: DMMF.FieldKind | 'relation-input'
+  validators?: string[]
   klConfig?: DBModelField['db']
 }
 
@@ -11,7 +12,6 @@ export interface KLModel extends Omit<Model, 'fields'> {
   comment?: string
   generatedApis?: string[]
   fields: KLField[]
-  validators?: string[]
 }
 
 export interface Model extends DMMF.Model {
