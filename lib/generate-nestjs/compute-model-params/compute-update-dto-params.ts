@@ -21,15 +21,15 @@ import {
 import type { TemplateHelpers } from '../generator/template-helpers'
 
 import type {
-  Model,
   UpdateDtoParams,
   ImportStatementParams,
-  DMMFField
+  DMMFField,
+  KLModel
 } from '../generator/types'
 
 interface ComputeUpdateDtoParamsParam {
-  model: Model
-  allModels: Model[]
+  model: KLModel
+  allModels: KLModel[]
   templateHelpers: TemplateHelpers
 }
 /**

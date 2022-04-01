@@ -1,7 +1,7 @@
-import type { Model, ModuleParams } from '../generator/types'
+import type { KLModel, ModuleParams } from '../generator/types'
 
 interface ComputeModuleParamsParam {
-  model: Model
+  model: KLModel
 }
 
 /**

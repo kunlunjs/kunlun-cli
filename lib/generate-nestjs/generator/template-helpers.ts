@@ -12,7 +12,7 @@ import {
 } from './default-configs'
 import type { convertClassName, convertFileName } from './helpers'
 import { getValidators } from './helpers'
-import type { ImportStatementParams, DMMFField } from './types'
+import type { ImportStatementParams, KLField } from './types'
 
 const PrismaScalarToTypeScript: Record<string, string> = {
   Int: 'number',
@@ -155,7 +155,7 @@ export const makeHelpers = ({
     fileName(name, undefined, '.vo', withExtension)
 
   const fieldType = (
-    field: DMMFField, // DMMF.Field
+    field: KLField, // DMMF.Field
     toInputType = false
   ) => {
     return `${
@@ -168,7 +168,7 @@ export const makeHelpers = ({
   }
 
   const fieldTypeForVo = (
-    field: DMMFField, // DMMF.Field
+    field: KLField, // DMMF.Field
     toInputType = false
   ) => {
     return `${
@@ -181,7 +181,7 @@ export const makeHelpers = ({
   }
 
   const fieldToEntityProp = (
-    field: DMMFField,
+    field: KLField,
     useInputTypes = false,
     forceOptional = false
   ) => {
@@ -219,7 +219,7 @@ export const makeHelpers = ({
     )};`
   }
   const fieldsToEntityProps = (
-    fields: DMMFField[],
+    fields: KLField[],
     useInputTypes = false,
     forceOptional = false
   ) =>
@@ -230,7 +230,7 @@ export const makeHelpers = ({
     )}`
 
   const fieldToConnectProp = (
-    field: DMMFField,
+    field: KLField,
     useInputTypes = false,
     forceOptional = false
   ) => {
@@ -270,7 +270,7 @@ export const makeHelpers = ({
     )};`
   }
   const fieldsToConnectProps = (
-    fields: DMMFField[],
+    fields: KLField[],
     useInputTypes = false,
     forceOptional = false
   ) => {
@@ -282,7 +282,7 @@ export const makeHelpers = ({
   }
 
   const fieldToDtoProp = (
-    field: DMMFField,
+    field: KLField,
     useInputTypes = false,
     forceOptional = false,
     isQuery = false
@@ -327,7 +327,7 @@ export const makeHelpers = ({
     if (isReadonly) {
       validators.length = 0
     }
-    const vs = getValidators(documentation)
+    const vs = getValidators(field.kind)
     if (vs) {
       validators.push(vs)
     }
@@ -365,7 +365,7 @@ export const makeHelpers = ({
     }`
   }
   const fieldsToDtoProps = (
-    fields: DMMFField[],
+    fields: KLField[],
     useInputTypes = false,
     forceOptional = false,
     isQuery = false
@@ -378,7 +378,7 @@ export const makeHelpers = ({
   }
 
   const fieldToVoProp = (
-    field: DMMFField,
+    field: KLField,
     useInputTypes = false,
     forceOptional = false
   ) => {
@@ -416,7 +416,7 @@ export const makeHelpers = ({
     )};`
   }
   const fieldsToVoProps = (
-    fields: DMMFField[],
+    fields: KLField[],
     useInputTypes = false,
     forceOptional = false
   ) =>

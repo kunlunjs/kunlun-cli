@@ -20,15 +20,15 @@ import {
 
 import type { TemplateHelpers } from '../generator/template-helpers'
 import type {
-  Model,
   ImportStatementParams,
   DMMFField,
-  VoParams
+  VoParams,
+  KLModel
 } from '../generator/types'
 
 interface ComputeVoParamsParam {
-  model: Model
-  allModels: Model[]
+  model: KLModel
+  allModels: KLModel[]
   templateHelpers: TemplateHelpers
 }
 
