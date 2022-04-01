@@ -309,11 +309,9 @@ export const getCommonConfig = (
                     ignore: ['*.DS_Store']
                   }
                 },
-            ...copy.patterns
+            ...(typeof copy !== 'boolean' ? copy.patterns : [])
           ],
-          options: {
-            ...copy.options
-          }
+          options: typeof copy === 'boolean' ? {} : copy.options
         }),
       /*----------------------------------------------------------------*/
       isExistWindiCSS && new WindCSSPlugin(),
@@ -415,6 +413,7 @@ export const getCommonConfig = (
           defaultVendors: {
             test: /[\\/]node_modules[\\/]/,
             priority: -10,
+            name: 'nodemodules-commons',
             reuseExistingChunk: true
           },
           default: {

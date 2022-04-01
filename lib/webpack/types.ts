@@ -60,8 +60,8 @@ export type WebpackPlugins = {
   bar?: boolean | BarPluginOptions
   env?: boolean | DotenvOptions
   ignore?: IgnorePluginOptions
-  copy?: CopyPluginOptions
   define?: Record<string, string>
+  copy?: boolean | CopyPluginOptions
   clean?: boolean | CleanPluginOptions
   manifest?: boolean | ManifestPluginOptions
   bundleAnalyzer?: BundleAnalyzerPluginOptions
