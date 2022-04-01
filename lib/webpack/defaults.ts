@@ -55,11 +55,11 @@ export const isExistTailwindCSS =
   existsSync(resolve(root, 'tailwind.config.js')) &&
   devDependencies?.tailwindcss
 
-export const isReactProject = !!dependencies?.react
-export const isVueProject = !!dependencies?.vue
+export const isExistReact = !!dependencies?.react
+export const isExistVue = !!dependencies?.vue
 export const isExistAntd = !!dependencies?.antd || !!devDependencies.antd
 export const isTypeScriptFrontProject =
-  (isReactProject || isVueProject) && isTypeScriptProject
+  (isExistReact || isExistVue) && isTypeScriptProject
 
 export const extensions = [
   '.wasm',

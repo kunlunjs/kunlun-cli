@@ -6,6 +6,7 @@ export const getBabelLoader = ({
 }: {
   isEnvDevelopment?: boolean
 }): RuleSetRule => {
+  // TODO
   const babel = {}
   return {
     test: /\.(mjs|[jt]sx?)$/,

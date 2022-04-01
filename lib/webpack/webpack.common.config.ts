@@ -1,3 +1,4 @@
+import events from 'events'
 import { existsSync, realpathSync } from 'fs'
 import path, { resolve } from 'path'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -47,6 +48,8 @@ import {
 } from './loaders'
 import { getMdxLoader } from './loaders/mdx.loader'
 import type { WebpackConfig } from './types'
+
+events.EventEmitter.defaultMaxListeners = 0
 
 const pkg = getPackageJson()
 
@@ -112,6 +115,7 @@ export const getCommonConfig = (
     ? projectProductionTSFile
     : defaultProductionTSFile
 
+  const indexHtml = resolve(paths.root, 'src/index.cjs')
   return {
     context: realpathSync(process.cwd()),
     ...rest,
@@ -250,7 +254,7 @@ export const getCommonConfig = (
         Buffer: ['buffer', 'Buffer']
       }),
       /*----------------------------------------------------------------*/
-      // isVueProject && new VueLoaderPlugin(),
+      // isExistVue && new VueLoaderPlugin(),
       /*----------------------------------------------------------------*/
       /*----------------------------------------------------------------*/
       // @see https://github.com/johnagan/clean-webpack-plugin
@@ -352,7 +356,9 @@ export const getCommonConfig = (
                 inject: 'body',
                 minify: false,
                 favicon: resolve(__dirname, 'public/favicon.ico'),
-                template: resolve(__dirname, './public/index.html')
+                template: isExist(indexHtml)
+                  ? indexHtml
+                  : resolve(__dirname, './public/index.ejs')
               }
         ),
       ...(Array.isArray(html)

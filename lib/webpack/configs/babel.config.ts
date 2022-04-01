@@ -4,8 +4,8 @@ import { getPackageJson } from '../../utils/package'
 import {
   defaultBabelPresetEnvOptions,
   isTypeScriptProject,
-  isVueProject,
-  isReactProject
+  isExistVue,
+  isExistReact
 } from '../defaults'
 
 const dependencies = getPackageJson('dependencies')
@@ -24,6 +24,7 @@ export const getBabelConfig = (args: {
   } = args
   const env = process.env.BABEL_ENV || process.env.NODE_ENV
   const isEnvTest = env === 'test'
+
   return {
     presets: [
       [
@@ -37,7 +38,7 @@ export const getBabelConfig = (args: {
             }
           : presetEnv
       ],
-      isReactProject && [
+      isExistReact && [
         require('@babel/preset-react').default,
         {
           development: isEnvDevelopment,
@@ -49,7 +50,7 @@ export const getBabelConfig = (args: {
     ].filter(Boolean),
 
     plugins: [
-      isVueProject && require('@vue/babel-plugin-jsx').default,
+      isExistVue && require('@vue/babel-plugin-jsx').default,
       !!dependencies?.['antd-mobile'] && [
         require('babel-plugin-import').default,
         {
@@ -77,9 +78,8 @@ export const getBabelConfig = (args: {
         },
         'lodash'
       ],
-      isEnvDevelopment &&
-        isReactProject &&
-        require('react-refresh/babel').default,
+      // react-refresh@0.11.0 https://github.com/pmmmwh/react-refresh-webpack-plugin/issues/621
+      isEnvDevelopment && isExistReact && require('react-refresh/babel'),
       transformConsoleRemove === false
         ? require('babel-plugin-transform-remove-console').default
         : typeof transformConsoleRemove === 'object'
