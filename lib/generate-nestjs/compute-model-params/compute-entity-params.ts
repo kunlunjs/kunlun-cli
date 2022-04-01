@@ -13,15 +13,15 @@ import {
 
 import type { TemplateHelpers } from '../generator/template-helpers'
 import type {
-  Model,
   EntityParams,
   ImportStatementParams,
-  DMMFField
+  DMMFField,
+  KLModel
 } from '../generator/types'
 
 interface ComputeEntityParamsParam {
-  model: Model
-  allModels: Model[]
+  model: KLModel
+  allModels: KLModel[]
   templateHelpers: TemplateHelpers
 }
 export const computeEntityParams = ({

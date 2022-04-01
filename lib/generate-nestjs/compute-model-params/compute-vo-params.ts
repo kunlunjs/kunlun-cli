@@ -1,9 +1,7 @@
 import path from 'path'
 import type { DMMF } from '@prisma/generator-helper'
 import slash from 'slash'
-import { SELECT_FALSE } from '../generator/annotations'
 import {
-  isAnnotatedWith,
   isCreatedAt,
   isDeletedAt,
   isId,
@@ -22,15 +20,15 @@ import {
 
 import type { TemplateHelpers } from '../generator/template-helpers'
 import type {
-  Model,
   ImportStatementParams,
   DMMFField,
-  VoParams
+  VoParams,
+  KLModel
 } from '../generator/types'
 
 interface ComputeVoParamsParam {
-  model: Model
-  allModels: Model[]
+  model: KLModel
+  allModels: KLModel[]
   templateHelpers: TemplateHelpers
 }
 
@@ -57,7 +55,7 @@ export const computeVoParams = ({
     if (
       relationScalarFieldNames.includes(name) ||
       isDeletedAt(field) ||
-      isAnnotatedWith(field, SELECT_FALSE)
+      field.isSelectFalse
     )
       return result
 

@@ -14,7 +14,7 @@ import {
 import { scalarToTS } from './template-helpers'
 
 import type { TemplateHelpers } from './template-helpers'
-import type { ImportStatementParams, Model, DMMFField } from './types'
+import type { ImportStatementParams, Model, DMMFField, KLField } from './types'
 import { defaultRemoveModelUnifiedSuffix } from './index'
 
 const caseMap = { camel, pascal, kebab, header, snake, constant }
@@ -74,8 +74,8 @@ export const makeImportsFromPrismaClient = (
 }
 
 export const mapDMMFToDMMFField = (
-  field: DMMF.Field,
-  overrides: Partial<DMMF.Field> = {}
+  field: KLField,
+  overrides: Partial<KLField> = {}
 ): DMMFField =>
   ({
     ...field,
@@ -83,7 +83,7 @@ export const mapDMMFToDMMFField = (
   } as DMMFField)
 
 export const getRelationScalars = (
-  fields: DMMF.Field[]
+  fields: KLField[]
 ): Record<string, string[]> => {
   const scalars = fields.flatMap(
     ({ relationFromFields = [] }) => relationFromFields
@@ -103,13 +103,13 @@ export const getRelationScalars = (
 }
 
 interface GetRelationConnectInputFieldsParam {
-  field: DMMF.Field
+  field: KLField
   allModels: DMMF.Model[]
 }
 export const getRelationConnectInputFields = ({
   field,
   allModels
-}: GetRelationConnectInputFieldsParam): Set<DMMF.Field> => {
+}: GetRelationConnectInputFieldsParam): Set<KLField> => {
   const { name, type, relationToFields = [] } = field
 
   if (!isRelation(field)) {
@@ -134,18 +134,20 @@ export const getRelationConnectInputFields = ({
     )
   }
 
-  const foreignKeyFields = relationToFields.map(relationToFieldName => {
-    const relatedField = relatedModel.fields.find(
-      relatedModelField => relatedModelField.name === relationToFieldName
-    )
-
-    if (!relatedField)
-      throw new Error(
-        `Can not find foreign key field '${relationToFieldName}' on model '${relatedModel.name}'`
+  const foreignKeyFields = relationToFields.map(
+    (relationToFieldName: string) => {
+      const relatedField = relatedModel.fields.find(
+        relatedModelField => relatedModelField.name === relationToFieldName
       )
 
-    return relatedField
-  })
+      if (!relatedField)
+        throw new Error(
+          `Can not find foreign key field '${relationToFieldName}' on model '${relatedModel.name}'`
+        )
+
+      return relatedField
+    }
+  )
 
   const idFields = relatedModel.fields.filter(relatedModelField =>
     isId(relatedModelField)
@@ -155,7 +157,7 @@ export const getRelationConnectInputFields = ({
     isUnique(relatedModelField)
   )
 
-  const foreignFields = new Set<DMMF.Field>([
+  const foreignFields = new Set<KLField>([
     ...foreignKeyFields,
     ...idFields,
     ...uniqueFields
@@ -170,7 +172,7 @@ export const getRelativePath = (from: string, to: string) => {
 }
 
 interface GenerateRelationInputParam {
-  field: DMMF.Field
+  field: KLField
   model: Model
   allModels: Model[]
   templateHelpers: TemplateHelpers
@@ -189,7 +191,7 @@ export const generateRelationInput = ({
   canCreateAnnotation,
   canConnectAnnotation
 }: GenerateRelationInputParam) => {
-  const relationInputClassProps: Array<Pick<DMMFField, 'name' | 'type'>> = []
+  const relationInputClassProps: Array<Pick<KLField, 'name' | 'type'>> = []
 
   const imports: ImportStatementParams[] = []
   const apiExtraModels: string[] = []
@@ -261,6 +263,7 @@ export const generateRelationInput = ({
   )
   generatedClasses.push(`class ${preAndPostfixedInputClassName} {
     ${t.fieldsToDtoProps(
+      // @ts-ignore
       relationInputClassProps.map(inputField => ({
         ...inputField,
         kind: 'relation-input',
@@ -369,34 +372,11 @@ export const convertFileName = (
 
 /**
  * 从 documentation 摘取出注释
- */
-export const getComment = (documentation = ''): string => {
-  const docs = documentation.split('\n') as string[]
-  const hasComment = /@comment\s*([^@]*)/
-  const isComment = docs.find(i => hasComment.test(i)) || ''
-  const comment = (isComment?.match(hasComment) || ['', ''])[1].trim()
-  return comment
-}
-
-/**
- * 从 documentation 摘取出注释
  * @param {string} /// @labels 系统 用户
  * @returns ['系统', '用户']
  */
-export const getLabels = (documentation = ''): string[] => {
-  const docs = documentation.split('\n') as string[]
-  const labelReg = /@labels\s*([^@]*)/
-  const hasLables = docs.find(i => labelReg.test(i)) || '@labels'
-  const labels =
-    (hasLables &&
-      // @ts-ignore
-      hasLables
-        .match(/@labels\s*([^@]*)/)[1]
-        .trim()
-        .split(' ')
-        .filter(Boolean)) ||
-    []
-  return labels
+export const getLabels = (items: any[]): string[] => {
+  return items.map(x => x.value)
 }
 
 /**
@@ -412,25 +392,8 @@ export const getTitle = (documentation = ''): string => {
   return title
 }
 
-export const getValidators = (documentation = ''): string => {
-  // '@Length()  @IsEmail()' => ['@Length()', '@IsEmail()']
-  const validators: string[] = []
-  // 过滤出包含校验的行
-  documentation.split('\n').forEach(i => {
-    const v = i && i.trim()
-    // TODO
-    // 取出类似 @IsSomeValidator(...) 结构
-    const decorator = v.match(/^@[A-Z][a-zA-Z]+\(.*\)$/)
-    // 取出函数名
-    const validator =
-      decorator && (v.match(/^@([A-Z][a-zA-Z]+)\(.*/) as string[])[1]
-    if (
-      validator &&
-      (ValidatorDecorators.includes(validator) ||
-        TransformerDecorators.includes(validator))
-    ) {
-      validators.push(decorator[0])
-    }
-  })
-  return validators.length ? validators.join('\n') : ''
+export const getValidators = (validators: string[] = []): string => {
+  // ['Length', 'IsEmail'] => ['@Length()', '@IsEmail()']
+  const v = validators.map(x => `@${x}()`)
+  return v.length ? v.join('\n') : ''
 }

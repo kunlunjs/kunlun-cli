@@ -9,11 +9,12 @@ import type { TemplateHelpers } from '../generator/template-helpers'
 
 import type {
   ConnectDtoParams,
-  ImportStatementParams
+  ImportStatementParams,
+  KLModel
 } from '../generator/types'
 
 interface ComputeConnectDtoParamsParam {
-  model: DMMF.Model
+  model: KLModel
   templateHelpers: TemplateHelpers
 }
 export const computeConnectDtoParams = ({

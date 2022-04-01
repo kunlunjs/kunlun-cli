@@ -1,13 +1,5 @@
 import { kebab } from 'case'
-import {
-  IGNOER_CREATE_INTERFACE,
-  IGNOER_DELETE_INTERFACE,
-  IGNOER_DETAIL_INTERFACE,
-  IGNOER_LIST_INTERFACE,
-  IGNOER_UPDATE_INTERFACE
-} from './annotations'
-import { isAnnotatedWith } from './field-classifiers'
-import { getComment } from './helpers'
+
 import type { DtoParams } from './types'
 
 interface GenerateModuleParam extends Pick<DtoParams, 'model'> {}
@@ -106,7 +98,7 @@ export const generateController = ({ model }: GenerateModuleParam) => {
   const name = model.name !== 'Model' ? model.name.slice(0, -5) : model.name
   const { documentation = '' } = model
   const service = name.charAt(0).toLowerCase() + name.slice(1) + 'Service'
-  const comment = getComment(model.documentation) || model.name
+  const comment = model.title || model.name
   const tag =
     comment !== '管理' && !comment.endsWith('管理') ? `${comment}管理` : comment
   const isRequiredUid = model.fields.some(
@@ -120,11 +112,11 @@ export const generateController = ({ model }: GenerateModuleParam) => {
   //     i.isList &&
   //     ['String', 'Int', 'Float', 'Boolean'].includes(i.type as string)
   // )
-  const hasListInterface = !isAnnotatedWith(model, IGNOER_LIST_INTERFACE)
-  const hasDetailInterface = !isAnnotatedWith(model, IGNOER_DETAIL_INTERFACE)
-  const hasAddInterface = !isAnnotatedWith(model, IGNOER_CREATE_INTERFACE)
-  const hasUpdateInterface = !isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE)
-  const hasDeleteInterface = !isAnnotatedWith(model, IGNOER_DELETE_INTERFACE)
+  const hasListInterface = model.generatedApis?.includes('findMany')
+  const hasDetailInterface = model.generatedApis?.includes('findByPrimaryKey')
+  const hasAddInterface = model.generatedApis?.includes('create')
+  const hasUpdateInterface = model.generatedApis?.includes('updateByPrimaryKey')
+  const hasDeleteInterface = model.generatedApis?.includes('deleteByPrimarykey')
   return `
 import { Body } from '@nestjs/common'
 import type { ${name}Model } from '@prisma/client'

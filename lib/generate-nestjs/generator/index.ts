@@ -4,15 +4,7 @@ import { logger } from '@prisma/sdk'
 import { kebab } from 'case'
 import { omit } from 'lodash'
 import { computeModelParams } from '../compute-model-params'
-import {
-  IGNOER_CREATE_INTERFACE,
-  IGNOER_DELETE_INTERFACE,
-  IGNOER_DETAIL_INTERFACE,
-  IGNOER_LIST_INTERFACE,
-  IGNOER_NESTJS_MODULE,
-  IGNOER_UPDATE_INTERFACE,
-  MODEL_IGNOER
-} from './annotations'
+import type { DBModel } from '../model'
 import {
   connectDtoPrefix,
   createDtoPrefix,
@@ -22,11 +14,7 @@ import {
   voPrefix,
   voSuffix
 } from './default-configs'
-import {
-  isAnnotatedWith,
-  isAnnotatedWithOneOf,
-  isBoolean
-} from './field-classifiers'
+import { isBoolean } from './field-classifiers'
 import { generateConnectDto } from './generate-connect-dto'
 import { generateCreateDto } from './generate-create-dto'
 import {
@@ -37,14 +25,10 @@ import {
 import { generateQueryDto } from './generate-query-dto'
 import { generateUpdateDto } from './generate-update-dto'
 import { generateVo } from './generate-vo'
-import {
-  convertClassName,
-  convertFileName,
-  getComment,
-  getLabels
-} from './helpers'
+import { convertClassName, convertFileName, getLabels } from './helpers'
+import { assignKLConfigField, parseKLConfModel } from './parse-kl-config'
 import { makeHelpers } from './template-helpers'
-import type { DMMFField, Model, WriteableFileSpecs } from './types'
+import type { DMMFField, KLModel, WriteableFileSpecs } from './types'
 
 const transformFileName = convertFileName
 const transformClassName = convertClassName
@@ -55,11 +39,17 @@ interface RunParam {
   output: string
   dmmf: DMMF.Document
   generateSchemaOfModule: string
+  klConfigJson: {
+    models: DBModel[]
+    enums: DMMF.DatamodelEnum[]
+  }
 }
+
 export const run = ({
   dmmf,
   output, // 输出目录
   generateSchemaOfModule = '', // 哪些 schema 生成 module
+  klConfigJson,
   ...options
 }: RunParam): WriteableFileSpecs[] => {
   const { ...preAndSuffixes } = options
@@ -81,16 +71,21 @@ export const run = ({
       documentation: '@commment 原创 转载'
     }]
    */
-  const allEnums = dmmf.datamodel.enums
+  const klConfigModels = klConfigJson.models
+  const allEnums = klConfigJson.enums
   const allModels = dmmf.datamodel.models
-  const filteredModels: Model[] = allModels
+  const filteredModels: KLModel[] = allModels
     // 忽略被 @ignore 注释的 Model
     // .filter(model => !isAnnotatedWith(model, MODEL_IGNOER))
     // adds `output` information for each model so we can compute relative import paths
     // this assumes that NestJS resource modules (more specifically their folders on disk) are named as `transformFileName(model.name)`
     .map(model => {
+      const klModel = parseKLConfModel(
+        model,
+        klConfigModels.filter(item => item.name === model.name)[0]
+      )
       return {
-        ...model,
+        ...klModel,
         output: {
           entity: output,
           connect: `${output}/dto`, // `${output}/connect`,
@@ -135,8 +130,7 @@ export const run = ({
     }
 
     // generate create-{model}.dto.ts
-    // TODO 使用配置
-    const createDto = isAnnotatedWith(model, IGNOER_CREATE_INTERFACE) && {
+    const createDto = model.generatedApis?.includes('create') && {
       fileName: path.join(
         model.output.dto,
         templateHelpers.createDtoFilename(name, true)
@@ -148,8 +142,7 @@ export const run = ({
     }
 
     // generate update-{model}.dto.ts
-    // TODO 使用配置
-    const updateDto = isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE) && {
+    const updateDto = model.generatedApis?.includes('updateByPrimaryKey') && {
       fileName: path.join(
         model.output.dto,
         templateHelpers.updateDtoFilename(name, true)
@@ -186,11 +179,7 @@ export const run = ({
     }
 
     // generate NestJS Module
-    // TODO 使用配置
-    if (
-      generateSchemaOfModule.split(',').includes(name) &&
-      !isAnnotatedWithOneOf(model, [MODEL_IGNOER, IGNOER_NESTJS_MODULE])
-    ) {
+    if (model.ignore !== true) {
       const df = transformFileName(name)
       const prefix = `${model.output.module}/${df}/${df}`
       const nestService = {
@@ -233,8 +222,7 @@ import type { EnumsByName } from './types'
 
 export const enumsByName: EnumsByName = ${JSON.stringify(
       allEnums.reduce((result, cur) => {
-        // TODO 使用配置
-        const labels = getLabels(cur.documentation)
+        const labels = getLabels(cur.values)
         const keys = cur.values.map(i => i.name)
         const options: ({ label: string; value: string } | string)[] =
           labels.length === keys.length
@@ -267,28 +255,23 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
   const models = {}
   const modelNames = allModels.map(i => i.name)
   filteredModels.forEach(model => {
-    // TODO 使用配置
-    const group = getComment(model.documentation) || model.name
+    const group = model.title || model.name
     model.tag = group
-    model.comment =
-      group !== '管理' && !group.endsWith('管理') ? `${group}管理` : group
     model.interfaces = {}
-    // TODO 从配置中获取是否生成某个接口
-    const condition = true
-    if (condition) {
-      model.interfaces.create = `${model.comment}@添加${group}`
+    if (model.generatedApis?.includes('create')) {
+      model.interfaces.create = `${group}@添加${group}`
     }
-    if (condition) {
-      model.interfaces.findMany = `${model.comment}@获取${group}列表`
+    if (model.generatedApis?.includes('findMany')) {
+      model.interfaces.findMany = `${group}@获取${group}列表`
     }
-    if (condition) {
-      model.interfaces.findByPrimaryKey = `${model.comment}@获取${group}详情`
+    if (model.generatedApis?.includes('findByPrimaryKey')) {
+      model.interfaces.findByPrimaryKey = `${group}@获取${group}详情`
     }
-    if (condition) {
-      model.interfaces.updateByPrimaryKey = `${model.comment}@更新${group}`
+    if (model.generatedApis?.includes('updateByPrimaryKey')) {
+      model.interfaces.updateByPrimaryKey = `${group}@更新${group}`
     }
-    if (condition) {
-      model.interfaces.deleteByPrimaryKey = `${model.comment}@删除${group}`
+    if (model.generatedApis?.includes('deleteByPrimarykey')) {
+      model.interfaces.deleteByPrimaryKey = `${group}@删除${group}`
     }
     // 导入、导出接口
     const fieldsName: string[] = []
@@ -303,11 +286,8 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
       if (field.isUnique && !field.isId) {
         inputUniqueFields.push(field.name)
       }
-      // TODO 用于前端展示（表格title、表单label）
-      const title = model.name
-      field.title = title || field.name
+      field.title = field.klConfig?.title || field.name
       if (field.kind === 'enum' && field.type) {
-        // TODO 生成枚举类型 options: { label: string; value: string | boolean | number }[]
         field.options = allEnums
           .find(i => i.name === field.type)
           ?.values?.map(i => ({
@@ -315,6 +295,7 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
             value: i.name
           }))
       }
+      // 是否布尔 isBoolean
       if (isBoolean(field)) {
         field.isBoolean = true
         field.options = [
@@ -322,30 +303,51 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
           { label: '否', value: 'false' }
         ]
       }
-      // TODO @weidafang
-      // 标题 title
       // 是否在查询表单中隐藏 isQueryIgnore
       // 是否在创建更新表单中隐藏 isEffectIgnore
       // 是否枚举 isEnum
-      // 是否布尔 isBoolean
+      if (field.kind === 'enum') {
+        field.isEnum = true
+      }
       // 是否唯一 isUnique
       // 是否JSON isJson
+      if (field.type === 'Json') {
+        field.isJson = true
+      }
       // 是否文件 isFile
+      if (field.klConfig?.isFile === true) {
+        field.isJson = true
+      }
       // 是否图标 isIcon
+      assignKLConfigField(field, 'isIcon')
       // 是否图像 isImage
+      assignKLConfigField(field, 'isImage')
       // 是否头像 isAvatar
+      assignKLConfigField(field, 'isAvatar')
       // 是否颜色 isColor
+      assignKLConfigField(field, 'isColor')
       // 是否只读 isReadOnly
+      assignKLConfigField(field, 'isReadOnly')
       // 是否整数 isInteger
+      assignKLConfigField(field, 'isInteger')
       // 是否密码 isPassword
+      assignKLConfigField(field, 'isPassword')
       // 是否日期时间 isDateTime
+      assignKLConfigField(field, 'isDateTime')
       // 是否创建时间 isCreatedAt
+      assignKLConfigField(field, 'isCreatedAt')
       // 是否更新时间 isUpdatedAt
+      assignKLConfigField(field, 'isUpdatedAt')
       // 是否删除时间 isDeletedAt
+      assignKLConfigField(field, 'isDeletedAt')
       // 是否浮点数 isFloat
+      assignKLConfigField(field, 'isFloat')
       // 是否富文本 isRichText
+      assignKLConfigField(field, 'isRichText')
       // 是否多行文本 isTextArea
+      assignKLConfigField(field, 'isTextArea')
       // 是否系统预置 isSystemPreset
+      assignKLConfigField(field, 'isSystemPreset')
       // 是否嵌套 isNested
       // 是否 parent
       // 是否 children
@@ -358,7 +360,9 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
       // 在表格中显示宽度 width
       // 在指定项中 in
       // 是否默认查询不返回 select: false
+      assignKLConfigField(field, 'isSelectFalse')
       // 是否隐藏 isHidden
+      assignKLConfigField(field, 'isHidden')
       // 前端选择下拉框显示其他表的某个字段（异步接口）
       fieldsName.push(field.name)
       // @ts-ignore
@@ -390,7 +394,7 @@ export type SchemaModels = typeof schemaModels[number]
 
 export const schemaGeneratedModelTags = ${JSON.stringify(
       filteredModels.map(model => {
-        const comment = getComment(model.documentation) || model.name
+        const comment = model.title || model.name
         const tag =
           comment !== '管理' && !comment.endsWith('管理')
             ? `${comment}管理`
@@ -414,20 +418,18 @@ export type SchemaGeneratedModels = typeof schemaGeneratedModels[number]
 export const interfaces = ${JSON.stringify(
       filteredModels
         .map(model => {
-          // TODO 使用配置
-          const comment = getComment(model.documentation) || model.name
+          const comment = model.title || model.name
           const tag =
             comment !== '管理' && !comment.endsWith('管理')
               ? comment
               : comment.slice(0, -2)
-          // TODO 使用配置
           return [
-            !isAnnotatedWith(model, IGNOER_LIST_INTERFACE) && `获取${tag}列表`,
-            !isAnnotatedWith(model, IGNOER_DETAIL_INTERFACE) &&
+            model.generatedApis?.includes('findMany') && `获取${tag}列表`,
+            model.generatedApis?.includes('findByPrimaryKey') &&
               `获取${tag}详情`,
-            !isAnnotatedWith(model, IGNOER_CREATE_INTERFACE) && `添加${tag}`,
-            !isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE) && `更新${tag}`,
-            !isAnnotatedWith(model, IGNOER_DELETE_INTERFACE) && `删除${tag}`
+            model.generatedApis?.includes('create') && `添加${tag}`,
+            model.generatedApis?.includes('updateByPrimaryKey') && `更新${tag}`,
+            model.generatedApis?.includes('deleteByPrimarykey') && `删除${tag}`
           ].filter(Boolean)
         })
         .flat(),
@@ -692,10 +694,9 @@ export const endpoints: Endpoints = ${JSON.stringify(
         const name =
           model.name !== 'Model' ? model.name.slice(0, -5) : model.name
         const kname = kebab(name)
-        // TODO 中文名
-        const comment = model.name
+        const comment = model.title || model.name
         // TODO 分组名
-        const tag = model.name
+        const tag = model.title || model.name
         const connectDto = `${connectDtoPrefix}${name}${dtoSuffix}`
         const createDto = `${createDtoPrefix}${name}${dtoSuffix}`
         const updateDto = `${updateDtoPrefix}${name}${dtoSuffix}`
@@ -717,7 +718,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
             vo: [vo]
           }
         }
-        if (!isAnnotatedWith(model, IGNOER_DETAIL_INTERFACE)) {
+        if (model.generatedApis?.includes('findByPrimaryKey')) {
           acc[`获取${comment}详情`] = {
             key: 'findByPrimaryKey',
             model: model.name,
@@ -732,7 +733,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
             vo: vo
           }
         }
-        if (!isAnnotatedWith(model, IGNOER_CREATE_INTERFACE)) {
+        if (model.generatedApis?.includes('create')) {
           acc[`添加${comment}`] = {
             key: 'create',
             model: model.name,
@@ -747,7 +748,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
             vo: vo
           }
         }
-        if (!isAnnotatedWith(model, IGNOER_UPDATE_INTERFACE)) {
+        if (model.generatedApis?.includes('updateByPrimaryKey')) {
           acc[`更新${comment}`] = {
             key: 'updateByPrimaryKey',
             model: model.name,
@@ -762,7 +763,7 @@ export const endpoints: Endpoints = ${JSON.stringify(
             vo: vo
           }
         }
-        if (!isAnnotatedWith(model, IGNOER_DELETE_INTERFACE)) {
+        if (model.generatedApis?.includes('deleteByPrimaryKey')) {
           acc[`删除${comment}`] = {
             key: 'deleteByPrimaryKey',
             model: model.name,

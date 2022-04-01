@@ -1,5 +1,5 @@
 import type { TemplateHelpers } from '../generator/template-helpers'
-import type { Model, ModelParams } from '../generator/types'
+import type { KLModel, ModelParams } from '../generator/types'
 import { computeConnectDtoParams } from './compute-connect-dto-params'
 import { computeCreateDtoParams } from './compute-create-dto-params'
 import { computeEntityParams } from './compute-entity-params'
@@ -9,8 +9,8 @@ import { computeUpdateDtoParams } from './compute-update-dto-params'
 import { computeVoParams } from './compute-vo-params'
 
 interface ComputeModelParamsParam {
-  model: Model
-  allModels: Model[]
+  model: KLModel
+  allModels: KLModel[]
   templateHelpers: TemplateHelpers
 }
 

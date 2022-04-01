@@ -1,4 +1,18 @@
 import type { DMMF } from '@prisma/generator-helper'
+import type { DBModelField } from '../model'
+
+export interface KLField extends Omit<DMMF.Field, 'kind'> {
+  kind: DMMF.FieldKind | 'relation-input'
+  validators?: string[]
+  klConfig?: DBModelField['db']
+}
+
+export interface KLModel extends Omit<Model, 'fields'> {
+  title?: string
+  comment?: string
+  generatedApis?: string[]
+  fields: KLField[]
+}
 
 export interface Model extends DMMF.Model {
   output: {
@@ -66,8 +80,8 @@ export interface ImportStatementParams {
 }
 
 export interface DtoParams {
-  model: DMMF.Model
-  fields: DMMFField[]
+  model: KLModel
+  fields: KLField[]
   // should include all Enums, ExtraModels, ConnectDTOs and CreateDTOs for related models
   imports: ImportStatementParams[]
 }
