@@ -16,15 +16,15 @@ aliases:
   - &install-deps
     run:
       name: Install dependencies
-      command: pnpm install
+      command: yarn
   - &build-packages
     run:
       name: Build
-      command: pnpm run build
+      command: yarn build
   - &run-unit-tests
     run:
       name: Test
-      command: pnpm run test
+      command: yarn test
 
 jobs:
   build:
