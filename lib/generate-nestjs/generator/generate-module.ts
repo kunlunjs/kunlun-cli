@@ -20,7 +20,7 @@ import { ${model.name} } from '@prisma/client'
 import type { SchemaGeneratedModels, SchemaGeneratedModelMethods, Query${name}Dto, Create${name}Dto,
   Update${name}Dto } from '@/@generated'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { PrismaService } from '@/shared/prisma.service'
+import { PrismaService } from '@/common/prisma/prisma.service'
 import { buildWhere, buildDataForCreateOrUpdate, getSelectFields, builderOrderBy } from '@/utils'
 
 type ModelInstance<T extends SchemaGeneratedModels> =
