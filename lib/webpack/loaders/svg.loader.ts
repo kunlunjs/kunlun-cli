@@ -1,31 +1,29 @@
 import type { RuleSetRule } from 'webpack'
 
 export const getSVGLoader = (): RuleSetRule => {
+  // TODO: 深刻理解 @svgr/webpack 的使用
   return {
-    test: /\.svg$/,
+    test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
     // type: 'asset/source' // 'asset/inline'
+    // resourceQuery: { not: [/url/] },
     use: [
       {
         loader: require.resolve('@svgr/webpack'),
         options: {
           prettier: false,
+          ref: true,
+          semi: false,
           svgo: false,
+          titleProp: true,
           svgoConfig: {
             plugins: [{ removeViewBox: false }]
-          },
-          titleProp: true,
-          ref: true
-        }
-      },
-      {
-        loader: require.resolve('file-loader'),
-        options: {
-          name: 'static/media/[name].[hash:8].[ext]'
+          }
         }
       }
     ],
-    issuer: {
-      and: [/\.(ts|tsx|js|jsx|md|mdx)$/]
-    }
+    issuer: /\.(mjs|[jt]sx?|mdx?)$/
+    // issuer: {
+    //   and: [/\.(ts|tsx|js|jsx|md|mdx)$/]
+    // }
   }
 }

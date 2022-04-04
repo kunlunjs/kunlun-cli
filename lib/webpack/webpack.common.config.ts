@@ -43,10 +43,10 @@ import {
   getSassModuleLoader,
   getJson5Loader,
   getHtmlLoader,
-  getWorkerLoader,
-  getAssetLoader
+  getAssetLoader,
+  getRawLoader,
+  getMdxLoader
 } from './loaders'
-import { getMdxLoader } from './loaders/mdx.loader'
 import type { WebpackConfig } from './types'
 
 events.EventEmitter.defaultMaxListeners = 0
@@ -211,6 +211,7 @@ export const getCommonConfig = (
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
           oneOf: [
+            getRawLoader(),
             getBabelLoader({ isEnvDevelopment }),
             // TODO
             // swc ? getSWCLoader() : getBabelLoader({ isEnvDevelopment }),
@@ -222,7 +223,6 @@ export const getCommonConfig = (
             getImageLoader(),
             getAssetLoader(),
             getJson5Loader(),
-            getWorkerLoader(),
             getCSSLoader({ isEnvDevelopment, useSourceMap }),
             getCSSModuleLoader({ isEnvDevelopment, useSourceMap }),
             getLessLoader({ isEnvDevelopment, useSourceMap }),

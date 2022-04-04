@@ -95,9 +95,12 @@ declare module 'antd-dayjs-webpack-plugin' {
   export default AntdDayjsWebpackPlugin
 }
 
-declare module 'worker-loader!*' {
-  class WebpackWorker extends Worker {
-    constructor()
-  }
-  export = WebpackWorker
-}
+/**
+ * @deprecated
+ */
+// declare module 'worker-loader!*' {
+//   class WebpackWorker extends Worker {
+//     constructor()
+//   }
+//   export = WebpackWorker
+// }
