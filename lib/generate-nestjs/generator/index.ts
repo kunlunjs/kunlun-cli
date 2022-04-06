@@ -270,7 +270,7 @@ export const enumsByName: EnumsByName = ${JSON.stringify(
     if (model.generatedApis?.includes('updateByPrimaryKey')) {
       model.interfaces.updateByPrimaryKey = `${group}@更新${group}`
     }
-    if (model.generatedApis?.includes('deleteByPrimarykey')) {
+    if (model.generatedApis?.includes('deleteByPrimaryKey')) {
       model.interfaces.deleteByPrimaryKey = `${group}@删除${group}`
     }
     // 导入、导出接口
@@ -429,7 +429,7 @@ export const interfaces = ${JSON.stringify(
               `获取${tag}详情`,
             model.generatedApis?.includes('create') && `添加${tag}`,
             model.generatedApis?.includes('updateByPrimaryKey') && `更新${tag}`,
-            model.generatedApis?.includes('deleteByPrimarykey') && `删除${tag}`
+            model.generatedApis?.includes('deleteByPrimaryKey') && `删除${tag}`
           ].filter(Boolean)
         })
         .flat(),
@@ -472,7 +472,7 @@ export type DMMFField = {
   isRequired: boolean
   isNullable?: boolean
   isReadOnly?: boolean
-  isUpdatedAt: boolean
+  isUpdatedAt?: boolean
   isCreatedAt?: boolean
   isDeletedAt?: boolean
   isGenerated?: boolean
@@ -530,7 +530,7 @@ export type DMMFField = {
     name: string
     value: string | number | boolean
   }
-  // [key: string]: any
+  [key: string]: any
 }
 
 export type InterfaceType = 'create' | 'updateByPrimaryKey' | 'findMany' | 'findByPrimaryKey' | 'deleteByPrimaryKey' | 'importFromExcel' | 'exportExcel'
@@ -540,7 +540,7 @@ export type SchemaModelByName = {
   dbName: string | null
   tag: string
   fieldsName: string[]
-  comment: SchemaGeneratedModelTags
+  // comment: SchemaGeneratedModelTags
   fieldsByName: Record<string, DMMFField>
   interfaces: { [K in InterfaceType]?: string }
   isGenerated: false
@@ -551,6 +551,7 @@ export type SchemaModelByName = {
   inputUniqueFields: string[]
   uniqueFields: string[] | string[][]
   uniqueIndexes: string[] | {name: string | null; fields: string[]}[]
+  generatedApis: string[]
 }
 
 export type ModelsByName = {
@@ -655,9 +656,7 @@ export const modelsByName: Record<SchemaModels, SchemaModelByName> = ${JSON.stri
       models,
       null,
       2
-    )
-      .replace(/("updatedAt":\s*{[^}]+})/g, 'updatedAt')
-      .replace(/("deletedAt":\s*{[^}]+})/g, 'deletedAt')}
+    )}
   `
   }
 
