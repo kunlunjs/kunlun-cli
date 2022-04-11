@@ -784,8 +784,471 @@ export const endpoints: Endpoints = ${JSON.stringify(
     )}
 `
   }
+
+  const apiResponseVo = {
+    fileName: `${output}/abs-dto-vo/api-response.vo.ts`,
+    content: `import { HttpStatus } from '@nestjs/common'
+    import { ApiProperty } from '@nestjs/swagger'
+
+    export class ApiResponseVo<T> {
+      @ApiProperty({
+        type: 'integer',
+        default: HttpStatus.OK,
+        description: '响应状态码'
+      })
+      status: HttpStatus
+
+      @ApiProperty({
+        description: '是否成功'
+      })
+      success: boolean
+
+      @ApiProperty({
+        description: '提示信息',
+        example: ''
+      })
+      message: string
+
+      @ApiProperty({
+        description: '错误码',
+        example: null
+      })
+      errorCode: string
+
+      @ApiProperty({
+        description: '错误信息',
+        example: null
+      })
+      errorMessage: string
+
+      data: T
+    }
+    `
+  }
+
+  const queryOptionsDto = {
+    fileName: `${output}/abs-dto-vo/query-options.dto.ts`,
+    content: `import { ApiHideProperty, ApiPropertyOptional } from '@nestjs/swagger'
+    import { Type } from 'class-transformer'
+    import { IsEnum, IsInt, IsOptional } from 'class-validator'
+
+    enum ELike {
+      true = 'true',
+      false = 'false'
+    }
+
+    export class QueryOptionsDto {
+      @ApiHideProperty()
+      _take?: number
+
+      @ApiHideProperty()
+      _skip?: number
+
+      @ApiPropertyOptional({
+        minimum: 1,
+        default: 10,
+        description: '每页数量'
+      })
+      @Type(() => Number)
+      @IsInt()
+      @IsOptional()
+      _pageSize?: number
+
+      @ApiPropertyOptional({
+        minimum: 1,
+        default: 1,
+        description: '第几页'
+      })
+      @Type(() => Number)
+      @IsInt()
+      @IsOptional()
+      _pageNumber?: number
+
+      @ApiPropertyOptional({
+        description: '是否模糊查询 true - 是 false - 否，默认： true'
+      })
+      @IsOptional()
+      @IsEnum(ELike)
+      _like?: boolean
+
+      @ApiPropertyOptional({
+        description: \`排序（非关系字段），asc - 升序 desc - 降序
+          example: /path?_sorter=updatedAt:desc,type:asc&_pageNumber=10\`
+      })
+      @IsOptional()
+      _sorter?: string
+
+      // @ApiPropertyOptional({
+      //   description: '是否缓存',
+      //   default: false
+      // })
+      // @Type(() => Boolean)
+      // @IsOptional()
+      // _cache?: string
+    }
+    `
+  }
+
+  const uploadFileVo = {
+    fileName: `${output}/abs-dto-vo/upload-file.vo.ts`,
+    content: `import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsNotEmpty, IsOptional } from 'class-validator'
+
+export class UploadFileVo {
+  @ApiProperty({
+    description: '文件网络地址'
+  })
+  @IsNotEmpty()
+  url: string
+
+  @ApiPropertyOptional({
+    description: '文件大小'
+  })
+  @IsOptional()
+  size: number
+
+  @ApiPropertyOptional({
+    description: 'MIME Type'
+  })
+  @IsOptional()
+  mimetype: string
+
+  @ApiPropertyOptional({
+    description: 'Field'
+  })
+  @IsOptional()
+  fieldName: string
+
+  @ApiPropertyOptional({
+    description: '原始文件名'
+  })
+  @IsOptional()
+  originalName: string
+}
+`
+  }
+
+  const apiResponseDec = {
+    fileName: `${output}/decorators/api-response.decorator.ts`,
+    content: `import type { Type } from '@nestjs/common'
+    import { applyDecorators } from '@nestjs/common'
+    import {
+      ApiNoContentResponse,
+      ApiOkResponse,
+      getSchemaPath
+    } from '@nestjs/swagger'
+    import type { Method } from 'axios'
+    import { ApiResponseVo } from '../abs-dto-vo'
+
+    type ApiResponseType = <T extends Type<any>>(options: {
+      type: T | T[]
+      title?: string
+      method?: Method
+      /**
+       * 返回是否数组
+       */
+      isArray?: boolean
+      /**
+       * 返回是否分页
+       */
+      pagination?: boolean
+
+      description?: string
+    }) => MethodDecorator & ClassDecorator
+
+    export const ApiResponse: ApiResponseType = ({
+      type,
+      title,
+      method = 'GET',
+      description = '',
+      pagination = true
+    }) => {
+      const isArray = Array.isArray(type)
+      const dto = isArray ? type[0] : type
+      const t = title || \`\${method} ApiResponseOf\${dto.name}\${isArray ? '[]' : ''}\`
+
+      if (method === 'GET' && isArray) {
+        return pagination
+          ? applyDecorators(
+              ApiOkResponse({
+                description,
+                schema: {
+                  title: t,
+                  allOf: [
+                    {
+                      $ref: getSchemaPath(ApiResponseVo)
+                    },
+                    {
+                      properties: {
+                        data: {
+                          properties: {
+                            total: {
+                              type: 'integer',
+                              description: '总数'
+                            },
+                            items: {
+                              type: 'array',
+                              items: {
+                                $ref: getSchemaPath(dto)
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              })
+            )
+          : applyDecorators(
+              ApiOkResponse({
+                description,
+                schema: {
+                  title: t,
+                  allOf: [
+                    {
+                      $ref: getSchemaPath(ApiResponseVo)
+                    },
+                    {
+                      properties: {
+                        data: {
+                          type: 'array',
+                          items: {
+                            $ref: getSchemaPath(dto)
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              })
+            )
+      }
+      if (method === 'POST') {
+        return applyDecorators(
+          ApiOkResponse({
+            description,
+            schema: {
+              title: t,
+              allOf: [
+                {
+                  $ref: getSchemaPath(ApiResponseVo)
+                },
+                {
+                  properties: {
+                    data: {
+                      $ref: getSchemaPath(dto)
+                    }
+                  }
+                }
+              ]
+            }
+          })
+        )
+      }
+      if (method === 'DELETE') {
+        return applyDecorators(
+          ApiNoContentResponse({
+            description,
+            schema: {
+              title: t
+            }
+          })
+        )
+      }
+
+      // (method === 'GET' && !isArray) || method === 'PUT'
+      return applyDecorators(
+        ApiOkResponse({
+          description,
+          schema: {
+            title: t,
+            allOf: [
+              {
+                $ref: getSchemaPath(ApiResponseVo)
+              },
+              {
+                properties: {
+                  data: {
+                    $ref: getSchemaPath(dto)
+                  }
+                }
+              }
+            ]
+          }
+        })
+      )
+    }
+    `
+  }
+
+  const KLMethodDec = {
+    fileName: `${output}/decorators/kl-method.decorator.ts`,
+    content: `import {
+      applyDecorators,
+      Delete,
+      Get,
+      HttpCode,
+      HttpStatus,
+      Post,
+      Put,
+      UseGuards
+    } from '@nestjs/common'
+    import { ApiBody, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger'
+    import type { Method } from 'axios'
+    import { pathToRegexp } from 'path-to-regexp'
+    // TODO: 转移到 @generated 中
+    import type { AllDtos, AllVos, EndpointsItem, Interfaces } from '@/@generated'
+    import { endpoints } from '@/@generated'
+    import * as allDtos from '@/@generated/dto'
+    import * as allVos from '@/@generated/vo'
+    import { JwtAuthGuard } from '@/guards'
+    import type { SymmetricDifference } from '@/types'
+    import { ApiResponse } from './api-response.decorator'
+    import { KLPlatform } from './kl-platform.decorator'
+    import type { Plateform } from './kl-platform.decorator'
+    import { KLPublic } from './kl-public.decorator'
+
+    type KLMethodType = SymmetricDifference<
+      Uppercase<Method>,
+      'PATCH' | 'HEAD' | 'LINK' | 'PURGE' | 'UNLINK' | 'OPTIONS'
+    >
+
+    type Extra = {
+      method?: KLMethodType
+      path?: string
+      /**
+       * 是否开放接口
+       */
+      isPublic: boolean
+      /**
+       * 是否隐藏接口
+       */
+      isHidden: boolean
+      /**
+       * 允许访问的平台
+       */
+      platform: Plateform | null
+    }
+
+    export const pathRegs = []
+    export const summaries: {
+      summaries: string[]
+      regexps: {
+        summary: string
+        regexp: RegExp
+      }[]
+    } = {
+      summaries: [],
+      regexps: []
+    }
+
+    export function KLMethod(
+      summary: Interfaces,
+      { isPublic, isHidden, platform }: Extra = {
+        isPublic: false,
+        isHidden: false,
+        platform: null
+      }
+    ): MethodDecorator {
+      const item = endpoints[summary] as EndpointsItem
+
+      const path = item.path
+      const method = item.method as KLMethodType
+      const map: Record<KLMethodType, MethodDecorator> = {
+        GET: Get(path),
+        PUT: Put(path),
+        POST: Post(path),
+        DELETE: Delete(path)
+      }
+
+      const body =
+        ['POST', 'PUT'].includes(method) && item.dto && allDtos[item.dto as AllDtos]
+      let response
+      if (item.vo) {
+        response = Array.isArray(item.vo)
+          ? [allVos[item.vo[0] as AllVos]]
+          : allVos[item.vo as AllVos]
+      }
+
+      if (!summaries.summaries.includes(summary)) {
+        summaries.summaries.push(summary)
+        summaries.regexps.push({
+          summary,
+          regexp: pathToRegexp(\`\${method} /api${path}\`, [], {
+            strict: true
+          })
+        })
+      }
+
+      const decorators: MethodDecorator[] = [
+        map[method],
+        isPublic && KLPublic(),
+        platform && KLPlatform(platform),
+        !isPublic && UseGuards(JwtAuthGuard),
+        ['PUT', 'PATCH'].includes(method) && HttpCode(HttpStatus.OK)
+      ].filter(Boolean)
+
+      const swaggerEnable = process.env.SWAGGER_ENABLE !== 'false'
+      if (swaggerEnable) {
+        decorators.push(
+          ...[
+            summary && ApiOperation({ summary }),
+            isHidden && ApiExcludeEndpoint(),
+            body && ApiBody({ type: body }),
+            response && ApiResponse({ method, pagination: true, type: response })
+          ].filter(Boolean)
+        )
+      }
+
+      return applyDecorators(...decorators)
+    }
+    `
+  }
+
+  const KLPlatformDec = {
+    fileName: `${output}/decorators/kl-platform.decorator.ts`,
+    content: `import { SetMetadata } from '@nestjs/common'
+
+    export const platforms = ['app', 'ios', 'android', 'browser', 'wechat'] as const
+
+    export const isValidPlatform = (platform = '') =>
+      new RegExp(\`(\\\\[\${platforms.join('\\\\])|(\\\\[')}\\\\])\`).test(platform)
+
+    export type Plateform = typeof platforms[number]
+
+    export const ACCESS_PLATFORM_KEY = 'access-plateform-type'
+
+    export const KLPlatform = (...accesses: Plateform[]) =>
+      SetMetadata(ACCESS_PLATFORM_KEY, accesses)
+    `
+  }
+
+  const KLPublicDec = {
+    fileName: `${output}/decorators/kl-public.decorator.ts`,
+    content: `import { SetMetadata } from '@nestjs/common'
+
+    export const IS_PUBLIC_API = 'IS_PUBLIC_API'
+
+    export const KLPublic = () => SetMetadata(IS_PUBLIC_API, true)
+    `
+  }
+
   // @ts-ignore
   return [...modelFiles]
-    .concat([endpoints, typesFile, tablesFile, modelsFile, enumFiles])
+    .concat([
+      endpoints,
+      typesFile,
+      tablesFile,
+      modelsFile,
+      enumFiles,
+      apiResponseVo,
+      queryOptionsDto,
+      uploadFileVo,
+      apiResponseDec,
+      KLMethodDec,
+      KLPlatformDec,
+      KLPublicDec
+    ])
     .flat()
 }

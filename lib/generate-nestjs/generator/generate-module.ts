@@ -121,8 +121,8 @@ export const generateController = ({ model }: GenerateModuleParam) => {
 import { Body } from '@nestjs/common'
 import type { ${name}Model } from '@prisma/client'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { Connect${name}Dto, Create${name}Dto, Query${name}Dto, Update${name}Dto } from '@/@generated'
-import { KLController, KLParam, KLQuery, KLMethod, KLUser } from '@/decorators'
+import { Connect${name}Dto, Create${name}Dto, Query${name}Dto, Update${name}Dto, KLMethod } from '@/@generated'
+import { KLController, KLParam, KLQuery, KLUser } from '@/decorators'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ${name}Service } from './${kebab(name)}.service'
 
