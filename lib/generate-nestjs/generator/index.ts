@@ -24,6 +24,7 @@ import {
 } from './generate-module'
 import { generateQueryDto } from './generate-query-dto'
 import { generateUpdateDto } from './generate-update-dto'
+import { utilsStr, ipStr, endpointsStr } from './generate-utils'
 import { generateVo } from './generate-vo'
 import { convertClassName, convertFileName, getLabels } from './helpers'
 import { assignKLConfigField, parseKLConfModel } from './parse-kl-config'
@@ -1234,6 +1235,21 @@ export class UploadFileVo {
     `
   }
 
+  const UtilsUtils = {
+    fileName: `${output}/utils/utils.ts`,
+    content: utilsStr
+  }
+
+  const UtilsEndpoints = {
+    fileName: `${output}/utils/endpoints.ts`,
+    content: endpointsStr
+  }
+
+  const UtilsIP = {
+    fileName: `${output}/utils/ip.ts`,
+    content: ipStr
+  }
+
   // @ts-ignore
   return [...modelFiles]
     .concat([
@@ -1248,7 +1264,10 @@ export class UploadFileVo {
       apiResponseDec,
       KLMethodDec,
       KLPlatformDec,
-      KLPublicDec
+      KLPublicDec,
+      UtilsUtils,
+      UtilsEndpoints,
+      UtilsIP
     ])
     .flat()
 }
