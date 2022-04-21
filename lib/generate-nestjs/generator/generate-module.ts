@@ -21,7 +21,7 @@ import type { SchemaGeneratedModels, SchemaGeneratedModelMethods, Query${name}Dt
   Update${name}Dto } from '@/@generated'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PrismaService } from '@/common/prisma/prisma.service'
-import { buildWhere, buildDataForCreateOrUpdate, getSelectFields, builderOrderBy } from '@/utils'
+import { buildWhere, buildDataForCreateOrUpdate, getSelectFields, builderOrderBy } from '@/@generated/utils'
 
 type ModelInstance<T extends SchemaGeneratedModels> =
   InstanceType<typeof PrismaService>[T]
