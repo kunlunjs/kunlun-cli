@@ -1,6 +1,7 @@
 import { exec } from 'child_process'
 import { lstat } from 'fs/promises'
 import { join, sep } from 'path'
+// @ts-ignore
 import * as eta from 'eta'
 import { ensureFile, writeFile } from 'fs-extra'
 import { glob } from 'glob'
@@ -17,13 +18,13 @@ export async function renderFile(
   fullDistPath: string,
   data: RenderData
 ) {
-  const dist = await eta.renderFile(fullSourcePath, {
+  const view = await eta.renderFile(fullSourcePath, {
     ...data,
     ...inflected,
     safeString
   })
   await ensureFile(fullDistPath)
-  await writeFile(fullDistPath, dist)
+  await writeFile(fullDistPath, view)
 }
 
 export async function renderDir(

@@ -44,8 +44,8 @@ import {
   getJson5Loader,
   getHtmlLoader,
   getAssetLoader,
-  getRawLoader,
-  getMdxLoader
+  getRawLoader
+  // getMdxLoader
 } from './loaders'
 import type { WebpackConfig } from './types'
 
@@ -216,7 +216,7 @@ export const getCommonConfig = (
             // TODO
             // swc ? getSWCLoader() : getBabelLoader({ isEnvDevelopment }),
             // getVueLoader(loaders?.vue),
-            getMdxLoader(loaders?.mdx),
+            // getMdxLoader(loaders?.mdx),
             getHtmlLoader(),
             getSVGLoader(),
             getAvifLoader(),

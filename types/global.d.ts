@@ -90,10 +90,6 @@ declare module '*.module.sass' {
   export default classes;
 }
 
-declare module 'antd-dayjs-webpack-plugin' {
-  import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin'
-  export default AntdDayjsWebpackPlugin
-}
 
 /**
  * @deprecated
