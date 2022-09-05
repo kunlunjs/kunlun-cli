@@ -1,0 +1,24 @@
+.husky
+.github
+.vscode
+
+# minifier css
+**/*.min.css
+
+**/*.graphql
+
+# JavaScript/TypeScript
+**/*.js
+**/*.jsx
+**/*.ts
+**/*.tsx
+
+**/*.md
+**/*.mdx
+
+**/*.prisma
+
+**/*.yml
+**/*.yaml
+
+**/*.lock

@@ -1,0 +1,18 @@
+{
+  // "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "tools"],
+  "compilerOptions": {
+    "outDir": "dist",
+    // "declaration": false,
+    "module": "ESNext",
+    "target": "ES5",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "removeComments": true
+    // "target": "ES2020"
+  }
+}

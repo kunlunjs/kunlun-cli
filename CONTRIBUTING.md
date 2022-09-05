@@ -18,7 +18,7 @@ We would love for you to contribute to Kunlun and help make it even better than 
 
 To save your and our time, we will systematically close all issues that are requests for general support and redirect people to Stack Overflow.
 
-If you would like to chat about the question in real-time, you can reach out via our [gitter](https://gitter.im/turing-fe/kunlun-cli) channel.
+If you would like to chat about the question in real-time, you can reach out via our [gitter](https://gitter.im/kunlunjs/kunlun-cli) channel.
 
 ## <a name="issue"></a> Found a Bug?
 
@@ -50,14 +50,14 @@ We want to fix all the issues as soon as possible, but before fixing a bug we ne
 
 Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that doesn't have enough info to be reproduced.
 
-You can file new issues by filling out our [new issue form](https://github.com/turing-fe/kunlun-cli/issues/new).
+You can file new issues by filling out our [new issue form](https://github.com/kunlunjs/kunlun-cli/issues/new).
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-1. Search [GitHub](https://github.com/turing-fe/kunlun-cli/pulls) for an open or closed PR that relates to your submission. You don't want to duplicate effort.
-1. Fork the turing-fe/kunlun-cli repo.
+1. Search [GitHub](https://github.com/kunlunjs/kunlun-cli/pulls) for an open or closed PR that relates to your submission. You don't want to duplicate effort.
+1. Fork the kunlunjs/kunlun-cli repo.
 1. Get a gpg key to sign your commits, see [help](https://help.github.com/articles/about-gpg/).
 1. Create your patch, **including appropriate test cases**.
 1. Commit your changes using a descriptive commit message
@@ -76,7 +76,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 
    Note: you can use -u to set your branch in upstream and just push for the next times.
 
-1. In GitHub, send a pull request to `turing-fe/kunlun-cli:main`.
+1. In GitHub, send a pull request to `kunlunjs/kunlun-cli:main`.
 
 - If we suggest changes then:
 
@@ -156,7 +156,7 @@ to read on GitHub as well as in various git tools.
 
 Footer should contain a [closing reference to an issue](https://help.github.com/articles/closing-issues-via-commit-messages/) if any.
 
-Samples: (even more [samples](https://github.com/turing-fe/kunlun-cli/commits/main))
+Samples: (even more [samples](https://github.com/kunlunjs/kunlun-cli/commits/main))
 
 ```
 docs(changelog) update change log to beta.5
@@ -223,8 +223,8 @@ changes to be accepted, the CLA must be signed. It's a quick process, we promise
 
 [commit-message-format]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
 [corporate-cla]: http://code.google.com/legal/corporate-cla-v1.0.html
-[github]: https://github.com/turing-fe/kunlun-cli
-[gitter]: https://gitter.im/turing-fe/kunlun-cli
+[github]: https://github.com/kunlunjs/kunlun-cli
+[gitter]: https://gitter.im/kunlunjs/kunlun-cli
 [individual-cla]: http://code.google.com/legal/individual-cla-v1.0.html
 [js-style-guide]: https://google.github.io/styleguide/jsguide.html
 [jsfiddle]: http://jsfiddle.net

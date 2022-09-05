@@ -13,15 +13,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "web-vitals": "^2.1.4"
+    "@kunlunjs/cli": "^0.0.34",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "web-vitals": "^3.0.1"
   },
   "devDependencies": {
-    "@kunlunjs/cli": "^0.0.26",
-    "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.11",
-    "ts-node": "^10.6.0",
-    "typescript": "^4.6.2"
+    "@types/react": "^18.0.18",
+    "@types/react-dom": "^18.0.6",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
   }
 }
