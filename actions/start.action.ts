@@ -7,7 +7,7 @@ import { AbstractAction } from './abstract.action'
 
 export class StartAction extends AbstractAction<StartOptions> {
   public async handle(options: StartOptions) {
-    console.log('options: ', options)
+    console.log('options: ', options, Date())
     try {
       if (options.vite) {
         const viteCompiler = new ViteCompiler()

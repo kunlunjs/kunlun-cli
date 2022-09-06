@@ -41,9 +41,6 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 yarn.lock
 
-**/*.js
-**/*.d.ts
-
 lib/generator/*/files/**/*.*
 .graphqlconfig
 .node-version

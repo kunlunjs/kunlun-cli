@@ -3,5 +3,8 @@
  * @see https://github.com/kunlunjs/kunlun-fabric/blob/main/src/stylelint.ts
  */
 module.exports = {
-  extends: [require.resolve('@kunlunjs/fabric/dist/stylelint')]
+  extends: [require.resolve('@kunlunjs/fabric/dist/stylelint')],
+  rules: {
+    'keyframes-name-pattern': null
+  }
 }

@@ -33,7 +33,7 @@ import { defaultDefinePluginOption } from './helpers'
 import {
   getBabelLoader,
   getAvifLoader,
-  getSVGLoader,
+  getSVGLoaders,
   getImageLoader,
   getCSSLoader,
   getLessLoader,
@@ -218,7 +218,7 @@ export const getCommonConfig = (
             // getVueLoader(loaders?.vue),
             // getMdxLoader(loaders?.mdx),
             getHtmlLoader(),
-            getSVGLoader(),
+            ...getSVGLoaders(),
             getAvifLoader(),
             getImageLoader(),
             getAssetLoader(),

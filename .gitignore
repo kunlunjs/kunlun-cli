@@ -116,8 +116,6 @@ bin/**/*.d.ts
 bin/**/*.js
 commands/**/*.js
 commands/**/*.d.ts
-configs/**/*.d.ts
-configs/**/*.js
 examples/**/*.d.ts
 examples/**/*.js
 lib/**/*.d.ts

@@ -15,5 +15,5 @@
     // "types": []
   },
   "include": ["actions", "bin", "commands", "examples", "lib", "types"],
-  "exclude": ["node_modules", "e2e", "examples"]
+  "exclude": ["node_modules", "e2e", "examples", "**/**/*.d.ts", "dist"]
 }
